@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subkategori Jasa - Pengguna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .header, .description, .session-list, .worker-list, .testimonial-list {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+        .session-item, .worker-item, .testimonial-item {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .session-item:first-child, .worker-item:first-child, .testimonial-item:first-child {
+            border-top: none;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .worker-list, .testimonial-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .worker-item, .testimonial-item {
+            text-align: center;
+        }
+        .testimonial-text {
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>{{ subkategori.nama|default:"Layanan Bersih Rumah" }}</div>
+            <div>{{ subkategori.kategori.nama|default:"Kebersihan" }}</div>
+        </div>
+
+        <!-- Deskripsi -->
+        <div class="description">
+            <p>{{ subkategori.deskripsi|default:"Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional." }}</p>
+        </div>
+
+        <!-- Pilihan Sesi Layanan -->
+        <div class="session-list">
+            <h3>Pilihan Sesi Layanan</h3>
+            {% if sesi_layanan %}
+                {% for sesi in sesi_layanan %}
+                <div class="session-item">
+                    <span>{{ sesi.nama }}</span>
+                    <span>Rp {{ sesi.harga }}</span>
+                    <button class="button">Button Pesan</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Data dummy -->
+                <div class="session-item">
+                    <span>Sesi Layanan 1</span>
+                    <span>Rp 100.000</span>
+                    <button class="button">Button Pesan</button>
+                </div>
+                <div class="session-item">
+                    <span>Sesi Layanan 2</span>
+                    <span>Rp 150.000</span>
+                    <button class="button">Button Pesan</button>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Daftar Pekerja -->
+        <div class="worker-list">
+            <h3>Pekerja</h3>
+            {% if pekerja_list %}
+                {% for pekerja in pekerja_list %}
+                <div class="worker-item"><a href="{% url 'profil_pekerja' pekerja.id %}">{{ pekerja.nama }}</a></div>
+                {% endfor %}
+            {% else %}
+                <!-- Data dummy -->
+                <div class="worker-item">Nama Pekerja 1</div>
+                <div class="worker-item">Nama Pekerja 2</div>
+                <div class="worker-item">Nama Pekerja 3</div>
+                <div class="worker-item">Nama Pekerja 4</div>
+            {% endif %}
+        </div>
+
+        <!-- Button Bergabung -->
+        <div style="text-align: center; margin: 20px;">
+            <a href="{% url 'subkategori_pekerja' %}"><button class="button">Button Bergabung</button></a>
+        </div>
+
+        <!-- Testimoni -->
+        <div class="testimonial-list">
+            <h3>Testimoni</h3>
+            {% if testimoni_list %}
+                {% for testimoni in testimoni_list %}
+                <div class="testimonial-item">
+                    <span>{{ testimoni.nama_pengguna }}</span>
+                    <span>{{ testimoni.tanggal }}</span>
+                </div>
+                <p class="testimonial-text">{{ testimoni.teks }}</p>
+                <div class="testimonial-item">
+                    <span>{{ testimoni.nama_pekerja }}</span>
+                    <span>Rating: {{ testimoni.rating }}/5</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Data dummy -->
+                <div class="testimonial-item">
+                    <span>Nama Pengguna: Budi</span>
+                    <span>Tanggal: 2024-11-07</span>
+                </div>
+                <p class="testimonial-text">Layanan sangat memuaskan, pekerja sangat profesional dan teliti dalam bekerja.</p>
+                <div class="testimonial-item">
+                    <span>Nama Pekerja: Siti</span>
+                    <span>Rating: 5/5</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

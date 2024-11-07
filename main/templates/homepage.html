@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        /* Styling tambahan untuk kategori dan subkategori */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .category-card {
+            border: 2px solid #006BFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .category-header {
+            background-color: #006BFF;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+        .subcategory-list {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+        .subcategory-item {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .subcategory-item:hover {
+            background-color: #f5f5f5;
+        }
+        .subcategory-item:first-child {
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size: 40px;">Welcome to GOCLEAN!</h1>
+        <p style="font-size: 25px;">Sparkle Your Space, Elevate Your Place!</p>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <select id="categoryFilter" onchange="filterByCategory()">
+                <option value="">Kategori</option>
+                {% for kategori in kategori_list %}
+                    <option value="{{ kategori.id }}">{{ kategori.nama }}</option>
+                {% endfor %}
+            </select>
+            
+            <input type="text" id="searchBar" placeholder="Nama Subkategori" onkeyup="filterBySearch()">
+            
+            <button onclick="search()">Search</button>
+        </div>
+
+        <div class="category-card">
+            <div class="category-header">Kategori Jasa 1</div>
+            <ul class="subcategory-list">
+                <li class="subcategory-item">
+                    <a href="/subkategori/pengguna/" style="text-decoration: none; color: inherit;">
+                        Subkategori Jasa 1
+                    </a>
+                </li>
+                <li class="subcategory-item">
+                    <a href="/subkategori/pengguna/" style="text-decoration: none; color: inherit;">
+                        Subkategori Jasa 2
+                    </a>
+                </li>
+                <li class="subcategory-item">
+                    <a href="/subkategori/pengguna/" style="text-decoration: none; color: inherit;">
+                        Subkategori Jasa 3
+                    </a>
+                </li>
+            </ul>
+        </div>        
+        
+        <div class="category-card">
+            <div class="category-header">Kategori Jasa 2</div>
+            <ul class="subcategory-list">
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 1
+                        </button>
+                    </form>
+                </li>
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 2
+                        </button>
+                    </form>
+                </li>
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 3
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="category-card">
+            <div class="category-header">Kategori Jasa 3</div>
+            <ul class="subcategory-list">
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 1
+                        </button>
+                    </form>
+                </li>
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 2
+                        </button>
+                    </form>
+                </li>
+                <li class="subcategory-item">
+                    <form action="/subkategori/pengguna/" method="get">
+                        <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+                            Subkategori Jasa 3
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>                
+
+    <script>
+
+        function filterByCategory() {
+            const selectedCategory = document.getElementById("categoryFilter").value;
+            const subcategoryItems = document.querySelectorAll(".subcategory-item");
+    
+            subcategoryItems.forEach(item => {
+                const categoryId = item.getAttribute("data-category-id");
+                if (selectedCategory === "" || categoryId === selectedCategory) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    
+        function filterBySearch() {
+            const searchQuery = document.getElementById("searchBar").value.toLowerCase();
+            const subcategoryItems = document.querySelectorAll(".subcategory-item");
+    
+            subcategoryItems.forEach(item => {
+                const subcategoryName = item.textContent.toLowerCase();
+                if (subcategoryName.includes(searchQuery)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    
+        function search() {
+            filterByCategory();
+            filterBySearch();
+        }
+    </script>
+    
+</body>
+</html>    

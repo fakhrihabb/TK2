@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subkategori Jasa - Pengguna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .header, .description, .session-list, .worker-list, .testimonial-list {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+        }
+        .session-item, .worker-item, .testimonial-item {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .session-item:first-child, .worker-item:first-child, .testimonial-item:first-child {
+            border-top: none;
+        }
+        .button {
+            padding: 5px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .worker-list, .testimonial-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .worker-item, .testimonial-item {
+            text-align: center;
+        }
+        .testimonial-text {
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>Nama Subkategori: Layanan Bersih Rumah</div>
+            <div>Kategori: Kebersihan</div>
+        </div>
+
+        <!-- Deskripsi -->
+        <div class="description">
+            <p>Deskripsi singkat mengenai subkategori jasa yang dipilih. Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional.</p>
+        </div>
+
+        <!-- Pilihan Sesi Layanan -->
+        <div class="session-list">
+            <h3>Pilihan Sesi Layanan</h3>
+            <div class="session-item">
+                <span>Sesi Layanan 1</span>
+                <span>Rp 100.000</span>
+                <button class="button">Button Pesan</button>
+            </div>
+            <div class="session-item">
+                <span>Sesi Layanan 2</span>
+                <span>Rp 150.000</span>
+                <button class="button">Button Pesan</button>
+            </div>
+        </div>
+
+        <!-- Daftar Pekerja -->
+        <div class="worker-list">
+            <h3>Pekerja</h3>
+            <!-- Asumsi: Ganti "1", "2", dll dengan ID pekerja dari database -->
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 1 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 1
+                </a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 2 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 2
+                </a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 3 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 3
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- Testimoni -->
+        <div class="testimonial-list">
+            <h3>Testimoni</h3>
+            <div class="testimonial-item">
+                <span>Nama Pengguna: Budi</span>
+                <span>Tanggal: 2024-11-07</span>
+            </div>
+            <p class="testimonial-text">Layanan sangat memuaskan, pekerja sangat profesional dan teliti dalam bekerja.</p>
+            <div class="testimonial-item">
+                <span>Nama Pekerja: Siti</span>
+                <span>Rating: 5/5</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
