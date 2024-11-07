@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>View Pemesanan Jasa</title>
+    <style>
+        /* Styling CSS */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-bar select,
+        .filter-bar input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .filter-bar button {
+            padding: 10px 20px;
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-button {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .cancel-button {
+            background-color: #994329;
+        }
+        .testimonial-button {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Daftar Pemesanan Jasa</h2>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <!-- Dropdown Subkategori -->
+            <select id="filterSubkategori">
+                <option value="">Subkategori</option>
+                <option value="Subkategori Jasa 1">Subkategori 1</option>
+                <option value="Subkategori Jasa 2">Subkategori 2</option>
+                <option value="Subkategori Jasa 3">Subkategori 3</option>
+                <!-- Tambahkan opsi lain sesuai data -->
+            </select>
+
+            <!-- Dropdown Status Pesanan -->
+            <select id="filterStatus">
+                <option value="">Status Pesanan</option>
+                <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+                <option value="Mencari Pekerja">Mencari Pekerja</option>
+                <option value="Mencari Pekerja Terdekat">Mencari Pekerja Terdekat</option>
+                <option value="Dalam Proses">Dalam Proses</option>
+                <option value="Pesanan Selesai">Pesanan Selesai</option>
+                <option value="Sedang Diproses">Sedang Diproses</option>
+                <!-- Tambahkan opsi lain sesuai data -->
+            </select>
+
+            <input type="text" id="searchInput" placeholder="Search">
+            <button onclick="filterRows()">Cari</button>
+        </div>
+
+        <!-- Tabel Pemesanan Jasa -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Subkategori Jasa</th>
+                    <th>Sesi Layanan</th>
+                    <th>Harga</th>
+                    <th>Nama Pekerja</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td>Subkategori Jasa 1</td>
+                    <td>Sesi Layanan 1</td>
+                    <td>Rp 100.000</td>
+                    <td>Nama Pekerja 1</td>
+                    <td>Menunggu Pembayaran</td>
+                    <td><button class="action-button cancel-button" onclick="deleteDummyRow(this)">Batalkan</button></td>
+                </tr>
+                <tr>
+                    <td>Subkategori Jasa 2</td>
+                    <td>Sesi Layanan 2</td>
+                    <td>Rp 150.000</td>
+                    <td>Nama Pekerja 2</td>
+                    <td>Pesanan Selesai</td>
+                    <td><button class="action-button testimonial-button">Buat Testimoni</button></td>
+                </tr>
+                <tr>
+                    <td>Subkategori Jasa 3</td>
+                    <td>Sesi Layanan 3</td>
+                    <td>Rp 200.000</td>
+                    <td>Nama Pekerja 3</td>
+                    <td>Sedang Diproses</td>
+                    <td></td>
+                </tr>
+                <!-- Tambahkan baris lain sesuai data pesanan -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+<script>
+    // Fungsi untuk menghapus baris secara dinamis
+    function deleteDummyRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        alert('Pesanan berhasil dibatalkan.');
+    }
+
+    // Fungsi filter untuk subkategori, status, dan pencarian
+    function filterRows() {
+        const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
+        const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+        const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        rows.forEach(row => {
+            const subkategori = row.cells[0].textContent.toLowerCase();
+            const status = row.cells[4].textContent.toLowerCase();
+            const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
+
+            const matchesSubkategori = subkategoriFilter === "" || subkategori === subkategoriFilter;
+            const matchesStatus = statusFilter === "" || status === statusFilter;
+
+            if (matchesSubkategori && matchesStatus && containsKeyword) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>

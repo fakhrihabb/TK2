@@ -43,3 +43,10 @@ def subkategori_pengguna(request):
 
 def subkategori_pekerja(request):
     return render(request, 'subkategori_pekerja.html')
+
+def create_pemesanan(request):
+    if request.method == 'POST':
+        # Logika untuk menyimpan pemesanan
+        pass
+
+    return render(request, 'pemesanan_jasa/create_pemesanan.html')

@@ -35,15 +35,15 @@
             border-top: none;
         }
         .button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 5px 15px;
+            background-color: #006BFF;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         .button:hover {
-            background-color: #45a049;
+            background-color: #006BFF;
         }
         .worker-list, .testimonial-list {
             display: flex;
@@ -56,96 +56,74 @@
             margin-top: 10px;
             text-align: left;
         }
+        .join-message {
+            display: none;
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div>{{ subkategori.nama|default:"Layanan Bersih Rumah" }}</div>
-            <div>{{ subkategori.kategori.nama|default:"Kebersihan" }}</div>
+            <div>Nama Subkategori: Layanan Bersih Rumah</div>
+            <div>Kategori: Kebersihan</div>
         </div>
 
         <!-- Deskripsi -->
         <div class="description">
-            <p>{{ subkategori.deskripsi|default:"Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional." }}</p>
-        </div>
-
-        <!-- Pilihan Sesi Layanan -->
-        <div class="session-list">
-            <h3>Pilihan Sesi Layanan</h3>
-            {% if sesi_layanan %}
-                {% for sesi in sesi_layanan %}
-                <div class="session-item">
-                    <span>{{ sesi.nama }}</span>
-                    <span>Rp {{ sesi.harga }}</span>
-                    <button class="button">Button Pesan</button>
-                </div>
-                {% endfor %}
-            {% else %}
-                <!-- Data dummy -->
-                <div class="session-item">
-                    <span>Sesi Layanan 1</span>
-                    <span>Rp 100.000</span>
-                    <button class="button">Button Pesan</button>
-                </div>
-                <div class="session-item">
-                    <span>Sesi Layanan 2</span>
-                    <span>Rp 150.000</span>
-                    <button class="button">Button Pesan</button>
-                </div>
-            {% endif %}
+            <p>Deskripsi singkat mengenai subkategori jasa yang dipilih. Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional.</p>
         </div>
 
         <!-- Daftar Pekerja -->
         <div class="worker-list">
             <h3>Pekerja</h3>
-            {% if pekerja_list %}
-                {% for pekerja in pekerja_list %}
-                <div class="worker-item"><a href="{% url 'profil_pekerja' pekerja.id %}">{{ pekerja.nama }}</a></div>
-                {% endfor %}
-            {% else %}
-                <!-- Data dummy -->
-                <div class="worker-item">Nama Pekerja 1</div>
-                <div class="worker-item">Nama Pekerja 2</div>
-                <div class="worker-item">Nama Pekerja 3</div>
-                <div class="worker-item">Nama Pekerja 4</div>
-            {% endif %}
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 1 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 1
+                </a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 2 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 2
+                </a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 3 %}" style="text-decoration: none; color: inherit;">
+                    Nama Pekerja 3
+                </a>
+            </div>
         </div>
-
+        
         <!-- Button Bergabung -->
         <div style="text-align: center; margin: 20px;">
-            <a href="{% url 'subkategori_pekerja' %}"><button class="button">Button Bergabung</button></a>
+            <button class="button" onclick="joinService()">Button Bergabung</button>
+            <div class="join-message" id="joinMessage">Anda telah bergabung!</div>
         </div>
 
         <!-- Testimoni -->
         <div class="testimonial-list">
             <h3>Testimoni</h3>
-            {% if testimoni_list %}
-                {% for testimoni in testimoni_list %}
-                <div class="testimonial-item">
-                    <span>{{ testimoni.nama_pengguna }}</span>
-                    <span>{{ testimoni.tanggal }}</span>
-                </div>
-                <p class="testimonial-text">{{ testimoni.teks }}</p>
-                <div class="testimonial-item">
-                    <span>{{ testimoni.nama_pekerja }}</span>
-                    <span>Rating: {{ testimoni.rating }}/5</span>
-                </div>
-                {% endfor %}
-            {% else %}
-                <!-- Data dummy -->
-                <div class="testimonial-item">
-                    <span>Nama Pengguna: Budi</span>
-                    <span>Tanggal: 2024-11-07</span>
-                </div>
-                <p class="testimonial-text">Layanan sangat memuaskan, pekerja sangat profesional dan teliti dalam bekerja.</p>
-                <div class="testimonial-item">
-                    <span>Nama Pekerja: Siti</span>
-                    <span>Rating: 5/5</span>
-                </div>
-            {% endif %}
+            <div class="testimonial-item">
+                <span>Nama Pengguna: Budi</span>
+                <span>Tanggal: 2024-11-07</span>
+            </div>
+            <p class="testimonial-text">Layanan sangat memuaskan, pekerja sangat profesional dan teliti dalam bekerja.</p>
+            <div class="testimonial-item">
+                <span>Nama Pekerja: Siti</span>
+                <span>Rating: 5/5</span>
+            </div>
         </div>
     </div>
+
+    <script>
+        function joinService() {
+            // Menghilangkan tombol dan menampilkan pesan
+            document.querySelector('.button').style.display = 'none';
+            document.getElementById('joinMessage').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

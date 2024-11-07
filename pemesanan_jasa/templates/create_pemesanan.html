@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Pemesanan Jasa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 500px; /* Mengatur lebar maksimum form */
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-size: 16px;
+            width: 40%;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 55%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group .total-display {
+            font-size: 16px;
+            padding-top: 5px;
+            width: 55%;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .submit-button:hover {
+            background-color: #006BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h3>Pesan Jasa</h3>
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Tanggal Pemesanan -->
+            <div class="form-group">
+                <label for="tanggal_pemesanan">Tanggal Pemesanan:</label>
+                <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" required>
+            </div>
+
+            <!-- Diskon -->
+            <div class="form-group">
+                <label for="diskon">Diskon:</label>
+                <input type="text" id="diskon" name="diskon" placeholder="Kode Diskon" oninput="applyDiscount()">
+            </div>
+
+            <!-- Total Pembayaran -->
+            <div class="form-group">
+                <label>Total Pembayaran:</label>
+                <div class="total-display" id="total_pembayaran_display">Rp {{ harga_dasar|floatformat:0 }}</div>
+                <input type="hidden" id="total_pembayaran" name="total_pembayaran" value="{{ harga_dasar }}">
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="form-group">
+                <label for="metode_pembayaran">Metode Pembayaran:</label>
+                <select id="metode_pembayaran" name="metode_pembayaran">
+                    <option value="kartu_kredit">Kartu Kredit</option>
+                    <option value="transfer_bank">Transfer Bank</option>
+                    <option value="ewallet">e-Wallet</option>
+                </select>
+            </div>
+
+            <!-- Button Pesan Jasa -->
+            <button type="submit" class="submit-button">Pesan Jasa</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -36,14 +36,14 @@
         }
         .button {
             padding: 5px 15px;
-            background-color: #4CAF50;
+            background-color: #006BFF;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         .button:hover {
-            background-color: #45a049;
+            background-color: #006BFF;
         }
         .worker-list, .testimonial-list {
             display: flex;
@@ -77,12 +77,16 @@
             <div class="session-item">
                 <span>Sesi Layanan 1</span>
                 <span>Rp 100.000</span>
+                <form action="{% url 'create_pemesanan' %}" method="get" style="display: inline;">
                 <button class="button">Button Pesan</button>
+                </form>
             </div>
             <div class="session-item">
                 <span>Sesi Layanan 2</span>
                 <span>Rp 150.000</span>
+                <form action="{% url 'create_pemesanan' %}" method="get" style="display: inline;">
                 <button class="button">Button Pesan</button>
+                </form>
             </div>
         </div>
 
