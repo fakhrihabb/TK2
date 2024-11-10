@@ -1,8 +1,10 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 
+
+User = get_user_model()
 class PenggunaRegistrationForm(UserCreationForm):
     gender = forms.ChoiceField(choices=(('L', 'Male'), ('P', 'Female')),)
     phone_number = forms.CharField(max_length=20)
