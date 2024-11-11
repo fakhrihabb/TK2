@@ -17,18 +17,16 @@ class PenggunaRegisterForm(UserCreationForm):
         model = User
 
     @transaction.atomic
-    def save(self, commit=True):  # Tambahkan commit=True
-        user = super().save(commit=False)  # Save tanpa langsung menyimpan ke database
+    def save(self):
+        user = super().save(commit=False)
+        # user.gender = self.cleaned_data['gender']
+        # user.phone_number = self.cleaned_data['phone_number']
+        # user.birth_date = self.cleaned_data['birth_date']
+        # print(self.cleaned_data['birth_date'])
+        # user.address = self.cleaned_data['address']
         user.is_pengguna = True
-        if commit:  # Simpan hanya jika commit=True
-            user.save()
-        Pengguna.objects.create(
-            user=user,
-            gender=self.cleaned_data['gender'],
-            phone_number=self.cleaned_data['phone_number'],
-            birth_date=self.cleaned_data['birth_date'],
-            address=self.cleaned_data['address']
-        )
+        user.save()
+        pengguna = Pengguna.objects.create(user=user, gender=self.cleaned_data['gender'], phone_number=self.cleaned_data['phone_number'], birth_date=self.cleaned_data['birth_date'], address=self.cleaned_data['address'])
         return user
 
 class PekerjaRegisterForm(UserCreationForm):
@@ -55,22 +53,19 @@ class PekerjaRegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
 
-    @transaction.atomic
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.is_pekerja = True
-        user.save() if commit else None
 
-        # Pastikan semua field yang diperlukan untuk Pekerja disertakan
-        pekerja = Pekerja.objects.create(
-            user=user,
-            gender=self.cleaned_data['gender'],
-            phone_number=self.cleaned_data['phone_number'],
-            birth_date=self.cleaned_data['birth_date'],  # Tambahkan field birth_date
-            address=self.cleaned_data['address'],
-            bank=self.cleaned_data['bank'],
-            bank_number=self.cleaned_data['bank_number'],
-            npwp=self.cleaned_data['npwp'],
-            image_url=self.cleaned_data['image_url']
-        )
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.gender = self.cleaned_data['gender']
+        user.phone_number = self.cleaned_data['phone_number']
+        user.birth_date = self.cleaned_data['birth_date']
+        user.address = self.cleaned_data['address']
+        user.bank = self.cleaned_data['bank']
+        user.bank_number = self.cleaned_data['bank_number']
+        user.npwp = self.cleaned_data['npwp']
+        user.image_url = self.cleaned_data['image_url']
+        user.is_pekerja = True
+        user.save()
+        pekerja = Pekerja.objects.create(user=user, gender=self.cleaned_data['gender'], phone_number=self.cleaned_data['phone_number'], address=self.cleaned_data['address'], image_url=self.cleaned_data['image_url'], birth_date=self.cleaned_data['birth_date'])
         return user
