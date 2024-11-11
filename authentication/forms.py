@@ -31,8 +31,8 @@ class PenggunaRegisterForm(UserCreationForm):
 
 class PekerjaRegisterForm(UserCreationForm):
     GENDER_CHOICES = (
-        ('Laki', 'L'),
-        ('Perempuan', 'P')
+        ('Laki', 'Laki-laki'),
+        ('Perempuan', 'Perempuan')
     )
     BANK_CHOICES = (
         ('GoPay', 'GoPay'),
