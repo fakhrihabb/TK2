@@ -19,4 +19,13 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+<<<<<<< Updated upstream
+=======
+    path('', views.homepage, name='homepage'),
+    path('', include('authentication.urls')),
+    path('subkategori/', include('subkategori_layanan.urls')),
+    path('pemesanan/', include(('pemesanan_jasa.urls', 'pemesanan_jasa'), namespace='pemesanan_jasa')),
+    path('discounts/', include('discounts.urls')), 
+    path('feedback/', include('feedback.urls')),    
+>>>>>>> Stashed changes
 ]

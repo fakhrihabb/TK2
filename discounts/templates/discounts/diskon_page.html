@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diskon - Daftar Voucher & Promo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@700&family=Noto+Sans&display=swap" rel="stylesheet">
+    <style>
+        /* Styling Umum */
+        body {
+            background: linear-gradient(180deg, #BCF2F6, #08C2FF);
+            font-family: 'Noto Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, h2 {
+            font-family: 'Nunito Rounded', sans-serif;
+            text-align: center;
+            font-weight: bold;
+            color: #006BFF;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Section Container */
+        .section-container {
+            background-color: #ffffff7c;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px 0;
+        }
+
+        .voucher-card {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 15px;
+    padding: 25px;
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    margin: 15px auto;
+}
+
+.voucher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.voucher-details h4 {
+    font-size: 1.6rem;
+    color: #003072;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.voucher-details p {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+    line-height: 1.6;
+}
+
+.voucher-code span {
+    color: #006BFF;
+    font-weight: bold;
+}
+
+.discount-text {
+    color: #ff4500; /* Warna yang lebih mencolok untuk ajakan */
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.voucher-value {
+    background: linear-gradient(135deg, #006BFF, #08C2FF);
+    color: #ffffff;
+    padding: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    min-width: 120px;
+    margin-left: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-buy {
+    background-color: #006BFF;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn-buy:hover {
+    background-color: #0056cc;
+    color: #ffffff;
+}
+
+
+        .card-title {
+            font-size: 3rem;
+            color: #003072;
+            font-family: 'Nunito Rounded', sans-serif;
+            font-weight: bold;
+            position: relative;
+            text-align: center;
+        }
+
+        .promo-card {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #006BFF, #08C2FF);
+            border-radius: 20px;
+            padding: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: #000;
+            transition: all 0.3s ease;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+
+        .promo-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .promo-icon {
+            background-color: #e0f5fc;
+            padding: 15px;
+            border-radius: 15px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .promo-icon i {
+            color: #003072;
+            font-size: 50px;
+        }
+
+        .divider {
+            border-left: 3px dashed #000;
+            height: 80px;
+            margin-right: 10px;
+        }
+
+        .promo-details {
+            background-color: #e0f5fc;
+            border-radius: 15px;
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .promo-details h4 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: bold;
+            color: #003072;
+        }
+        .promo-details p {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #003072;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Section Voucher Carousel -->
+<div class="section-container">
+    <h2 class="card-title">VOUCHER</h2>
+    <div id="voucherCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% for voucher in vouchers %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="voucher-card">
+                    <div class="voucher-details">
+                        <h4 class="voucher-code">Gunakan Kode Voucher: <span>{{ voucher.kode }}</span>!</h4>
+                        <p><strong>Hanya Rp{{ voucher.harga }}</strong> untuk menikmati diskon menarik!</p>
+                        <p>Voucher ini memberikan potongan Rp{{ voucher.potongan }} untuk transaksi minimal Rp{{ voucher.min_transaksi }}.</p>
+                        <p>Voucher berlaku selama <strong>{{ voucher.jumlah_hari_berlaku }} hari</strong> setelah pembelian, dengan maksimal penggunaan hingga <strong>{{ voucher.kuota_penggunaan }} kali</strong>.</p>
+                        <p class="discount-text">Jangan lewatkan kesempatan ini untuk menghemat lebih banyak!</p>
+                        <button class="btn btn-primary btn-buy" data-toggle="modal" data-target="#beliVoucherModal{{ voucher.id }}">Dapatkan Sekarang</button>
+                    </div>
+                    <div class="voucher-value">
+                        <strong>Rp{{ voucher.harga }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Modal for each voucher -->
+            <div class="modal fade" id="beliVoucherModal{{ voucher.id }}" tabindex="-1" role="dialog" aria-labelledby="beliVoucherModalLabel{{ voucher.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="beliVoucherModalLabel{{ voucher.id }}">Konfirmasi Pembelian</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Apakah Anda yakin ingin membeli voucher "{{ voucher.kode }}" dengan harga Rp{{ voucher.harga }}?
+                        </div>
+                        <div class="modal-footer">
+                            <form action="{% url 'beli-voucher' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="voucher_id" value="{{ voucher.id }}">
+                                <button type="submit" class="btn btn-buy">Beli</button>
+                            </form>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Carousel Controls -->
+        <a class="carousel-control-prev" href="#voucherCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#voucherCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+<!-- Section Promo Carousel -->
+<div class="section-container justify-center">
+    <h2 class="card-title">PROMO</h2>
+    <div id="promoCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner justify-center">
+            {% for promo in promos %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="promo-card d-flex align-items-center">
+                    <div class="promo-icon d-flex align-items-center justify-content-center">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="promo-details text-center ml-3">
+                        <h4>{{ promo.kode }}</h4>
+                        <p>Berlaku hingga {{ promo.tanggal_akhir_berlaku }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+
+        <!-- Carousel Controls -->
+        <a class="carousel-control-prev" href="#promoCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#promoCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

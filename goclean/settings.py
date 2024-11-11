@@ -38,6 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+<<<<<<< Updated upstream
+=======
+    'subkategori_layanan',
+    'pemesanan_jasa',
+    'authentication',
+    'discounts',
+    'feedback'
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [
