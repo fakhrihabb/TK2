@@ -1,101 +1,205 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <nav
-      class="bg-[#006BFF] fixed w-full z-20 top-0 start-0 border-b border-gray-200"
-    >
-      <div
-        class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+{% load static %}
+<script src="https://cdn.tailwindcss.com"></script>
+<nav
+  class="bg-[#006BFF] fixed w-full z-20 top-0 start-0 border-b border-gray-200"
+>
+  {% if user.is_authenticated %}
+  <!-- logged in -->
+  <div
+    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+  >
+    <div class="flex">
+      <a
+        href="https://flowbite.com/"
+        class="flex items-center space-x-3 rtl:space-x-reverse"
       >
-        <div class="flex">
-          <a
-            href="https://flowbite.com/"
-            class="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <img
-              src="../static/images/Logo.png"
-              class="h-12"
-              alt="GOCLEAN Logo"
-            />
-          </a>
-          <div
-            class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 md:pl-10"
-            id="navbar-sticky"
-          >
-            <ul
-              class="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-[#006BFF]"
+        <img
+          src="{% static 'images/Logo.png' %}"
+          class="h-12"
+          alt="GOCLEAN Logo"
+        />
+      </a>
+      <div
+        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 md:pl-10"
+        id="navbar-sticky"
+      >
+        <ul
+          class="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-[#006BFF]"
+        >
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              aria-current="page"
+              >Home</a
             >
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-                  aria-current="page"
-                  >Home</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-                  >MyPay</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-                  >Services</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-                  >Contact</a
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <button
-            type="button"
-            class="text-white bg-red-700 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
-          >
-            Logout
-          </button>
-          <button
-            data-collapse-toggle="navbar-sticky"
-            type="button"
-            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-sticky"
-            aria-expanded="false"
-          >
-            <span class="sr-only">Open main menu</span>
-            <svg
-              class="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >MyPay</a
             >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-        </div>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Services</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Contact</a
+            >
+          </li>
+        </ul>
       </div>
-    </nav>
-  </body>
-</html>
+    </div>
+    <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button
+        type="button"
+        class="text-white bg-red-700 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+      >
+        Logout
+      </button>
+
+      <button
+        data-collapse-toggle="navbar-sticky"
+        type="button"
+        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-[#c7bc00] focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        aria-controls="navbar-sticky"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Open main menu</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- mobile -->
+  <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
+    <div class="pt-2 pb-3 space-y-1 mx-auto">
+      <a
+        href=""
+        class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Login
+      </a>
+      <a
+        href=""
+        class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+      >
+        Register
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <!-- Not logged in -->
+  <div
+    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+  >
+    <div class="flex">
+      <a
+        href="https://flowbite.com/"
+        class="flex items-center space-x-3 rtl:space-x-reverse"
+      >
+        <img
+          src="{% static 'images/Logo.png' %}"
+          class="h-12"
+          alt="GOCLEAN Logo"
+        />
+      </a>
+      <div
+        class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 md:pl-10"
+        id="navbar-sticky"
+      >
+        <ul
+          class="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-[#006BFF]"
+        >
+          <li>
+            <a
+              href="{% url 'authentication:login' %}"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              aria-current="page"
+              >Login</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'authentication:register' %}"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Register</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button
+        data-collapse-toggle="navbar-sticky"
+        type="button"
+        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-[#c7bc00] focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        aria-controls="navbar-sticky"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Open main menu</span>
+        <svg
+          class="w-5 h-5"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 17 14"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 1h15M1 7h15M1 13h15"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- mobile -->
+  <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
+    <div class="pt-2 pb-3 space-y-1 mx-auto">
+      <a
+        href=""
+        class="block text-center text-white hover:bg-[#c7bc00] font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Login
+      </a>
+      <a
+        href=""
+        class="block text-center hover:bg-[#c7bc00] text-white font-bold py-2 px-4 rounded transition duration-300"
+      >
+        Register
+      </a>
+    </div>
+    {% endif %}
+  </div>
+  <script>
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
+</nav>
