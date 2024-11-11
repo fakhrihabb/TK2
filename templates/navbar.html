@@ -41,20 +41,37 @@
               >MyPay</a
             >
           </li>
+          {% if user.is_pengguna %}
           <li>
             <a
               href="#"
               class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-              >Services</a
+              >Pesanan</a
             >
           </li>
           <li>
             <a
               href="#"
               class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-              >Contact</a
+              >Diskon</a
             >
           </li>
+          {% endif %} {% if user.is_pekerja %}
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Pekerjaan</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Status Pekerjaan</a
+            >
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
