@@ -5,10 +5,12 @@
 <div
   class="min-h-screen flex items-center justify-center w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
 >
-  <div class="max-w-md w-full space-y-8">
+  <div
+    class="max-w-md w-full space-y-8 bg-white px-10 py-5 rounded-md shadow-lg border border-gray-200"
+  >
     <div>
       <h2
-        class="mt-6 text-center text-black text-3xl font-extrabold text-gray-900"
+        class="mt-6 text-center text-black text-3xl font-semibold text-gray-900"
       >
         Login to your account
       </h2>
@@ -81,7 +83,10 @@
     <div class="text-center mt-4">
       <p class="text-sm text-black">
         Don't have an account yet?
-        <a href="" class="font-medium text-[#006BFF] hover:text-[#c7bc00]">
+        <a
+          href="{% url 'authentication:register' %}"
+          class="font-medium text-[#006BFF] hover:text-[#c7bc00]"
+        >
           Register Now
         </a>
       </p>

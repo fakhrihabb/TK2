@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from .models import Pengguna, Pekerja, User
 from django.views.generic import CreateView
 from .forms import PenggunaRegisterForm, PekerjaRegisterForm
+from django.contrib.auth import logout
 
 # Create your views here.
 
@@ -24,6 +25,9 @@ def login_user(request):
     context = {'form': form}
     return render(request, 'login.html', context)
 
+def logout_user(request):
+    logout(request)
+    return redirect('authentication:login')
 
 class PenggunaRegisterView(CreateView):
     model = User

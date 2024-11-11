@@ -5,10 +5,10 @@ from .models import User, Pekerja, Pengguna
 
 class PenggunaRegisterForm(UserCreationForm):
     GENDER_CHOICES = (
-        ('Laki', 'L'),
-        ('Perempuan', 'P')
+        ('Laki', 'Laki-laki'),
+        ('Perempuan', 'Perempuan')
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect(), required=True)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
     phone_number = forms.CharField(widget=forms.TextInput(), required=True)
     birth_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
@@ -41,7 +41,7 @@ class PekerjaRegisterForm(UserCreationForm):
         ('Virtual Account BNI', 'Virtual Account BNI'),
         ('Virtual Account Mandiri', 'Virtual Account Mandiri'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.RadioSelect(), required=True)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
     phone_number = forms.CharField(widget=forms.TextInput(), required=True)
     birth_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=True)
