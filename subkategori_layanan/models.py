@@ -1,23 +1,27 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+
+# subkategori_layanan/models.py
+from django.db import models
 
 class Kategori(models.Model):
     nama = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.nama
-
-
 class Pekerja(models.Model):
     nama = models.CharField(max_length=100)
-
+    deskripsi = models.TextField()
+    
     def __str__(self):
         return self.nama
 
 class Subkategori(models.Model):
     nama = models.CharField(max_length=100)
-    deskripsi = models.TextField()
     kategori = models.ForeignKey(Kategori, on_delete=models.CASCADE)
+    TIPE_CHOICES = [
+        ('pengguna', 'Pengguna'),
+        ('pekerja', 'Pekerja'),
+    ]
+    tipe = models.CharField(max_length=10, choices=TIPE_CHOICES, default='pengguna')
 
     def __str__(self):
         return self.nama
@@ -31,7 +35,7 @@ class SesiLayanan(models.Model):
         return self.nama_layanan
 
 class Testimoni(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Pengguna yang memberikan testimoni
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subkategori = models.ForeignKey(Subkategori, on_delete=models.CASCADE)  # Subkategori terkait
     rating = models.IntegerField()  # Misalnya skala 1-5
     komentar = models.TextField()  # Teks testimoni

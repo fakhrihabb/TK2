@@ -1,0 +1,33 @@
+input[type="text"],
+input[type="password"] {
+  border: 2px solid black;
+  padding: 8px;
+  width: 100%;
+  border-radius: 4px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: black;
+  outline: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.form-style form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #bcbcbc;
+  border-radius: 0.375rem;
+}
+.form-style form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: none;
+  border-color: #0053c7;
+  box-shadow: 0 0 0 3px #0053c7;
+}

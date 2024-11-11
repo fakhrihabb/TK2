@@ -7,8 +7,8 @@ def homepage(request):
 def subkategori_detail(request, subkategori_id):
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
     sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
-    pekerja_list = Pekerja.objects.filter(subkategori=subkategori)  # Tambahkan pekerja terkait
-    testimoni_list = Testimoni.objects.filter(subkategori=subkategori)  # Tambahkan testimoni terkait
+    pekerja_list = Pekerja.objects.filter(subkategori=subkategori)
+    testimoni_list = Testimoni.objects.filter(subkategori=subkategori)
 
     context = {
         'subkategori': subkategori,
@@ -18,7 +18,33 @@ def subkategori_detail(request, subkategori_id):
     }
     return render(request, 'subkategori_pengguna.html', context)
 
-from django.shortcuts import render
+def subkategori_pengguna(request, subkategori_id):
+    subkategori = get_object_or_404(Subkategori, id=subkategori_id)
+    sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
+    testimoni_list = Testimoni.objects.filter(subkategori=subkategori)
+
+    context = {
+        'subkategori': subkategori,
+        'sesi_layanan': sesi_layanan,
+        'testimoni_list': testimoni_list,
+    }
+    return render(request, 'subkategori_pengguna.html', context)
+
+def subkategori_pekerja(request, subkategori_id):
+    # Ambil subkategori berdasarkan ID dan pastikan tipe pekerja
+    subkategori = get_object_or_404(Subkategori, id=subkategori_id, tipe='pekerja')
+    
+    context = {
+        'subkategori': subkategori
+    }
+    return render(request, 'subkategori_pekerja.html', context)
+
+def create_pemesanan(request):
+    if request.method == 'POST':
+        # Logika untuk menyimpan pemesanan
+        pass
+
+    return render(request, 'pemesanan_jasa/create_pemesanan.html')
 
 def profil_pekerja(request, nama_pekerja):
     # Data statis untuk profil pekerja
@@ -35,18 +61,3 @@ def profil_pekerja(request, nama_pekerja):
         'pekerja': pekerja
     }
     return render(request, 'profil_pekerja.html', context)
-
-
-def subkategori_pengguna(request):
-    print("View subkategori_pengguna dipanggil")
-    return render(request, 'subkategori_pengguna.html')
-
-def subkategori_pekerja(request):
-    return render(request, 'subkategori_pekerja.html')
-
-def create_pemesanan(request):
-    if request.method == 'POST':
-        # Logika untuk menyimpan pemesanan
-        pass
-
-    return render(request, 'pemesanan_jasa/create_pemesanan.html')

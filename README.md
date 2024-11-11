@@ -1,5 +1,4 @@
 # GOCLEAN: Your home cleaning solution
-## Website by Queryious Minds
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lacinia ipsum in quam dignissim, eget tincidunt lorem mollis. Nulla massa eros, blandit eget dapibus in, aliquam vel erat. Curabitur fermentum ullamcorper sapien at lobortis. Sed eu pellentesque dolor, non mattis sapien. Proin ornare nec nisl in pulvinar. Suspendisse sed sagittis orci, a condimentum ligula. Aenean eu varius ipsum. Mauris auctor ipsum et mauris gravida, in rhoncus tortor eleifend. Nulla a suscipit erat. Fusce et odio sit amet velit volutpat accumsan. Praesent viverra sem at eros ultricies, et sodales purus pharetra. Quisque vitae interdum leo, at laoreet tortor.
 
