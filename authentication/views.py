@@ -1,21 +1,52 @@
+from lib2to3.fixes.fix_input import context
+
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-
-from authentication.forms import PenggunaRegistrationForm
-
-from django.contrib.auth import get_user_model
+from django.contrib.auth import login
+from .models import Pengguna, Pekerja, User
+from django.views.generic import CreateView
+from .forms import PenggunaRegisterForm, PekerjaRegisterForm
 
 # Create your views here.
-def register_pengguna(request):
-    args = {}
-    if request.method == "POST":
-        form = PenggunaRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('authentication:login')
-        return render(request, 'register.html', {'form': form})
-    else:
-        form = PenggunaRegistrationForm()
-    return render(request, 'register.html', {'form': form})
 
-def login(request):
-    pass
+def register(request):
+    return render(request, 'register.html')
+
+def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm(request)
+    context = {'form': form}
+    return render(request, 'login.html', context)
+
+
+class PenggunaRegisterView(CreateView):
+    model = User
+    form_class = PenggunaRegisterForm
+    template_name = 'pengguna_register.html'
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'pengguna'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('authentication:login')
+
+class PekerjaRegisterView(CreateView):
+    model = User
+    form_class = PekerjaRegisterForm
+    template_name = 'pekerja_register.html'
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'pekerja'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('authentication:login')
