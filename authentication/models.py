@@ -105,11 +105,13 @@ class Pekerja(models.Model):
         ('Virtual Account Mandiri', 'Virtual Account Mandiri'),
     )
     bank = models.CharField(max_length=23, choices=BANK_CHOICES, default='GoPay')
-    bank_number = models.CharField(max_length=20, unique=True)
+    bank_number = models.CharField(max_length=20)
     npwp = models.CharField(max_length=16)
     image_url = models.URLField(null=True, blank=True)
     class Meta:
-        unique_together = ('bank', 'bank_number')
+        constraints = [
+            models.UniqueConstraint(fields=['bank', 'bank_number'], name='bank constraint')
+        ]
 
     def __str__(self):
         return self.user.username

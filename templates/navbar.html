@@ -10,7 +10,7 @@
   >
     <div class="flex">
       <a
-        href="https://flowbite.com/"
+        href="{% url 'homepage' %}"
         class="flex items-center space-x-3 rtl:space-x-reverse"
       >
         <img
@@ -26,14 +26,14 @@
         <ul
           class="flex flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-[#006BFF]"
         >
-        <li>
-          <a
-            href="{% url 'homepage' %}"
-            class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
-            aria-current="page"
-            >Home</a
-          >
-        </li>
+          <li>
+            <a
+              href="{% url 'homepage' %}"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              aria-current="page"
+              >Home</a
+            >
+          </li>
           <li>
             <a
               href="#"
@@ -43,7 +43,11 @@
           </li>
           {% if user.is_pengguna %}
           <li>
-            <a href="{% url 'pemesanan_jasa:view_pemesanan' %}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]">Pesanan</a>
+            <a
+              href="{% url 'pemesanan_jasa:view_pemesanan' %}"
+              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:p-0 hover:text-[#FFF100]"
+              >Pesanan</a
+            >
           </li>
           <li>
             <a
@@ -130,7 +134,7 @@
   >
     <div class="flex">
       <a
-        href="https://flowbite.com/"
+        href="{% url 'not_logged_in' %}"
         class="flex items-center space-x-3 rtl:space-x-reverse"
       >
         <img

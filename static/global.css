@@ -28,6 +28,6 @@ form select {
 form textarea:focus,
 form select:focus {
   outline: none;
-  border-color: #0053c7;
-  box-shadow: 0 0 0 3px #0053c7;
+  border-color: #006BFF;
+  box-shadow: 0 0 0 3px #006BFF;
 }
