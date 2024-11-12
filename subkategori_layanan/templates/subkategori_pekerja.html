@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subkategori Jasa - Pengguna</title>
+    <!-- Menambahkan FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,6 +66,71 @@
             color: green;
             font-weight: bold;
         }
+                
+        .testimonial-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center; 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+        }
+                
+        .testimonial-list {
+            background: linear-gradient(to right, #006BFF, #08c2ff);
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .testimonial-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: #006BFF;
+        }
+
+        .testimonial-body {
+            margin-top: 10px;
+            text-align: justify;
+        }
+
+        .testimonial-footer {
+            display: flex;
+            justify-content: space-between; 
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #006BFF;
+        }
+
+        .testimonial-footer span {
+            display: inline-block;
+        }
+
+        .testimonial-footer .worker-name {
+            font-weight: bold;
+        }
+
+        .testimonial-footer .rating {
+            font-weight: bold;
+            color: #000000; 
+        }
+
+
+        .testimonial-text {
+            color: #333;
+        }
+
+    </style>
     </style>
 </head>
 <body>
@@ -107,16 +174,24 @@
 
         <!-- Testimoni -->
         <div class="testimonial-list">
-            <h3>Testimoni</h3>
-            <div class="testimonial-item">
-                <span>Nama Pengguna: Budi</span>
-                <span>Tanggal: 2024-11-07</span>
-            </div>
-            <p class="testimonial-text">Layanan sangat memuaskan, pekerja sangat profesional dan teliti dalam bekerja.</p>
-            <div class="testimonial-item">
-                <span>Nama Pekerja: Siti</span>
-                <span>Rating: 5/5</span>
-            </div>
+            <h3 class="testimonial-title">Testimoni</h3>
+            {% for testimoni in testimonis|slice:":3" %}
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
+                        <span>Tanggal: {{ testimoni.date_created }}</span>
+                    </div>
+                    <div class="testimonial-body">
+                        <p class="testimonial-text">{{ testimoni.comment }}</p>
+                    </div>
+                    <div class="testimonial-footer">
+                        <span class="worker-name">Nama Pekerja</span>
+                        <span class="rating">Rating: {{ testimoni.rating }}/5</span>
+                    </div> 
+                </div>
+            {% empty %}
+                <p>Tidak ada testimoni untuk ditampilkan.</p>
+            {% endfor %}
         </div>
     </div>
 

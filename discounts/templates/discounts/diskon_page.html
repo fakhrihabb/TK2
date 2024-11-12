@@ -10,7 +10,7 @@
     <style>
         /* Styling Umum */
         body {
-            background: linear-gradient(180deg, #BCF2F6, #08C2FF);
+            background: linear-gradient(160deg, #e1f8fe, #006BFF);
             font-family: 'Noto Sans', sans-serif;
             margin: 0;
             padding: 0;
@@ -237,7 +237,7 @@
                             Apakah Anda yakin ingin membeli voucher "{{ voucher.kode }}" dengan harga Rp{{ voucher.harga }}?
                         </div>
                         <div class="modal-footer">
-                            <form action="{% url 'beli-voucher' %}" method="post">
+                            <form action="{% url 'discounts:beli_voucher' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="voucher_id" value="{{ voucher.id }}">
                                 <button type="submit" class="btn btn-buy">Beli</button>

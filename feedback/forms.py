@@ -7,6 +7,6 @@ class TestimoniForm(forms.ModelForm):
         fields = ['user', 'rating', 'comment']
         widgets = {
             'user': forms.TextInput(attrs={'placeholder': 'Your Name'}),
-            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'rating': forms.RadioSelect(attrs={'class': 'star-rating'}), 
             'comment': forms.Textarea(attrs={'placeholder': 'Your Feedback'}),
         }

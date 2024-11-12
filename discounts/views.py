@@ -1,9 +1,12 @@
-import json
-import os
-from django.conf import settings
-from django.shortcuts import render, redirect
+# discounts/views.py
+from django.shortcuts import redirect, render
 from django.contrib import messages
 from .forms import PembelianVoucherForm
+import os
+import json
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 def load_dummy_data():
     file_path = os.path.join(settings.BASE_DIR, 'discounts/fixtures/dummy_discounts.json')
@@ -11,8 +14,13 @@ def load_dummy_data():
         data = json.load(json_file)
     return data
 
+
+@login_required
 def diskon_list(request):
-    data = load_dummy_data()  
+    if not request.user.is_pengguna:
+        return HttpResponseForbidden("Anda tidak memiliki akses ke halaman ini.")
+    
+    data = load_dummy_data()
     vouchers = data['vouchers']
     promos = data['promos']
     
@@ -22,6 +30,7 @@ def diskon_list(request):
         'pembelian_form': PembelianVoucherForm()
     }
     return render(request, 'discounts/diskon_page.html', context)
+
 
 def beli_voucher(request):
     if request.method == 'POST':
@@ -47,4 +56,4 @@ def beli_voucher(request):
             else:
                 messages.error(request, "Maaf, saldo Anda tidak cukup untuk membeli voucher ini.")
                 
-    return redirect('diskon-page')
+    return redirect('discounts:diskon_page')  
