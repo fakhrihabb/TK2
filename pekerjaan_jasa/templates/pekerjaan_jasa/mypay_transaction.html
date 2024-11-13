@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MyPay Transaction</title>
+    <script>
+        function updateForm() {
+            const category = document.getElementById("category").value;
+            document.getElementById("topup-form").style.display = category === "TOP UP" ? "block" : "none";
+            document.getElementById("service-form").style.display = category === "PAY SERVICE" ? "block" : "none";
+            document.getElementById("transfer-form").style.display = category === "TRANSFER" ? "block" : "none";
+            document.getElementById("withdrawal-form").style.display = category === "WITHDRAWAL" ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+    <h1>MyPay Transaction</h1>
+    <p>Balance: Rp {{ balance }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="category">Select Transaction Type:</label>
+        <select id="category" name="category" onchange="updateForm()">
+            <option value="">-- Select --</option>
+            <option value="TOP UP">TOP UP MyPay</option>
+            <option value="PAY SERVICE">PAY SERVICE</option>
+            <option value="TRANSFER">TRANSFER MyPay</option>
+            <option value="WITHDRAWAL">WITHDRAWAL</option>
+        </select>
+
+        <!-- TOP UP Form -->
+        <div id="topup-form" style="display: none;">
+            <label>Nominal Top Up:</label>
+            <input type="number" name="amount" min="1" required>
+            <button type="submit">Top Up</button>
+        </div>
+
+        <!-- PAY SERVICE Form -->
+        <div id="service-form" style="display: none;">
+            <label>Select Service:</label>
+            <select name="service">
+                {% for service, price in services.items %}
+                    <option value="{{ service }}">{{ service | capfirst }} - Rp {{ price }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Bayar</button>
+        </div>
+
+        <!-- TRANSFER Form -->
+        <div id="transfer-form" style="display: none;">
+            <label>NoHP Tujuan:</label>
+            <input type="number" name="phone" required>
+            
+            <label>Nominal Transfer:</label>
+            <input type="number" name="amount" min="1" required>
+            <button type="submit">Bayar</button>
+        </div>
+
+        <!-- WITHDRAWAL Form -->
+        <div id="withdrawal-form" style="display: none;">
+            <label>Nama Bank:</label>
+            <select name="bank">
+                {% for bank in banks %}
+                    <option value="{{ bank }}">{{ bank }}</option>
+                {% endfor %}
+            </select>
+            
+            <label>No Rekening:</label>
+            <input type="text" name="account_number" required>
+
+            <label>Nominal Withdrawal:</label>
+            <input type="number" name="amount" min="1" required>
+            <button type="submit">Bayar</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!-- pekerjaan_jasa/templates/pekerjaan_jasa/urutan_pekerjaan.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Job Orders</title>
+    <!-- Pastikan JavaScript dipanggil setelah elemen HTML sudah dimuat -->
+    <script src="{% static 'pekerjaan_jasa/js/urutan_pekerjaan.js' %}"></script>
+</head>
+<body>
+    <h1>Job Orders</h1>
+    <form method="get">
+        <select name="category" id="category" onchange="updateSubcategoryOptions()">
+            <option value="">Select Category</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="subcategory" id="subcategory">
+            <option value="">Select Subcategory</option>
+            <!-- Subcategory options populated dynamically based on selected category -->
+        </select>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <div>
+        {% for order in orders %}
+            <div>
+                <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
+                <p>Order Date: {{ order.order_date }} | Work Date: {{ order.work_date }}</p>
+                <p>Total Cost: {{ order.total_cost }}</p>
+                <a href="{% url 'pekerjaan_jasa:accept_order' order.id %}">Kerjakan Pesanan</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

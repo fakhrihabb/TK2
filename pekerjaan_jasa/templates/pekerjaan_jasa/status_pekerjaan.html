@@ -1,0 +1,28 @@
+<!-- pekerjaan_jasa/templates/pekerjaan_jasa/status_pekerjaan.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Job Status</title>
+</head>
+<body>
+    <h1>Job Status</h1>
+    <div>
+        {% for job in jobs %}
+            <div>
+                <p>{{ job.subcategory.name }} - {{ job.customer_name }}</p>
+                <p>Order Date: {{ job.order_date }} | Work Date: {{ job.work_date }}</p>
+                <p>Total Cost: {{ job.total_cost }}</p>
+                
+                {% if job.status == 'menunggu' %}
+                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'tiba' %}">Tiba di Lokasi</a>
+                {% elif job.status == 'tiba' %}
+                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'dilakukan' %}">Melakukan Pelayanan Jasa</a>
+                {% elif job.status == 'dilakukan' %}
+                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'selesai' %}">Selesai Melakukan Pelayanan</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

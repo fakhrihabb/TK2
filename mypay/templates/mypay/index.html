@@ -1,0 +1,25 @@
+<!-- mypay/templates/mypay/index.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MyPay - Balance and History</title>
+    <link rel="stylesheet" href="{% static 'mypay/css/styles.css' %}">
+</head>
+<body>
+    <div class="mypay-container">
+        <h1>Saldo: Rp{{ balance }}</h1>
+        <a href="{% url 'mypay:transaksi' %}">Lakukan Transaksi</a>
+
+        <h2>Riwayat Transaksi</h2>
+        <div id="transaction-history">
+            {% for transaction in transactions %}
+                <div>{{ transaction.date }} - {{ transaction.get_category_display }}: Rp{{ transaction.amount }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="{% static 'mypay/js/main.js' %}"></script>
+</body>
+</html>
