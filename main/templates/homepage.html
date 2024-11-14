@@ -1,0 +1,214 @@
+{% load static %}
+{% include 'navbar.html' %}
+<br><br><br><br>
+{% if not user.is_authenticated %}
+    <div class="grid h-screen place-items-center bg-gray-100">
+        <div class="flex flex-col bg-white p-10 shadow-lg rounded-md">
+            <h1 class="text-xl font-semibold">Oops! Anda belum login :(</h1>
+            <div class="flex justify-center mt-2 gap-2">
+                <a href="{% url 'authentication:login' %}">
+                    <div class="bg-[#006BFF] py-2 px-4 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500">Login</div>
+                </a>
+                <a href="{% url 'authentication:register' %}">
+                    <div class="bg-[#006BFF] py-2 px-4 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500">Register</div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% else %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <!-- Google Fonts Noto Sans and Nunito -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Nunito:wght@400;700&display=swap">
+    <style>
+        /* Font untuk seluruh halaman */
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        /* Centered Welcome Message */
+        .welcome-message {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .welcome-message h1 {
+            font-size: 40px;
+            margin: 0;
+            color: #333;
+            font-weight: 700; /* Mengubah ketebalan font menjadi lebih tebal */
+        }
+        .welcome-message p {
+            font-size: 25px;
+            margin: 10px 0 30px;
+            color: #666;
+            font-weight: 200;
+        }
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-bar select,
+        .filter-bar input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            width: 30%;
+        }
+        .filter-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .filter-bar button:hover {
+            background-color: #0056cc;
+        }
+        .category-card {
+            border: 2px solid #006BFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+        }
+        .category-header {
+            background-color: #006BFF;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+        .subcategory-list {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+        .subcategory-item {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .subcategory-item:hover {
+            background-color: #f5f5f5;
+        }
+        .subcategory-item:first-child {
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-message">
+        <h1 style="font-weight: 700;">Welcome to GOCLEAN!</h1>
+        <p style="font-weight: 200;">Sparkle Your Space, Elevate Your Place!</p>
+    </div>
+    
+    <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <select id="categoryFilter" onchange="filterByCategory()">
+                <option value="">Kategori</option>
+                {% for kategori in kategori_list %}
+                    <option value="{{ kategori.id }}">{{ kategori.nama }}</option>
+                {% endfor %}
+            </select>
+            
+            <input type="text" id="searchBar" placeholder="Nama Subkategori" onkeyup="filterBySearch()">
+            
+            <button onclick="search()">Search</button>
+        </div>
+
+        {% for kategori in kategori_list %}
+            {% if is_pengguna and "(Pengguna)" in kategori.nama %}
+                <div class="category-card">
+                    <div class="category-header">{{ kategori.nama }}</div>
+                    <ul class="subcategory-list">
+                        {% for subkategori in subkategori_list %}
+                            {% if subkategori.kategori == kategori %}
+                                <li class="subcategory-item">
+                                    <a href="{% url 'subkategori_pengguna' subkategori.id %}" style="text-decoration: none; color: inherit;">
+                                        {{ subkategori.nama }}
+                                    </a>                                    
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% elif is_pekerja and "(Pekerja)" in kategori.nama %}
+                <div class="category-card">
+                    <div class="category-header">{{ kategori.nama }}</div>
+                    <ul class="subcategory-list">
+                        {% for subkategori in subkategori_list %}
+                            {% if subkategori.kategori == kategori %}
+                                <li class="subcategory-item">
+                                    <a href="{% url 'subkategori_pekerja' subkategori.id %}" style="text-decoration: none; color: inherit;">
+                                        {{ subkategori.nama }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script>
+        function filterByCategory() {
+            const selectedCategory = document.getElementById("categoryFilter").value;
+            const subcategoryItems = document.querySelectorAll(".subcategory-item");
+    
+            subcategoryItems.forEach(item => {
+                const categoryId = item.getAttribute("data-category-id");
+                if (selectedCategory === "" || categoryId === selectedCategory) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    
+        function filterBySearch() {
+            const searchQuery = document.getElementById("searchBar").value.toLowerCase();
+            const subcategoryItems = document.querySelectorAll(".subcategory-item");
+    
+            subcategoryItems.forEach(item => {
+                const subcategoryName = item.textContent.toLowerCase();
+                if (subcategoryName.includes(searchQuery)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    
+        function search() {
+            filterByCategory();
+            filterBySearch();
+        }
+    </script>
+    
+</body>
+</html> 
+{% endif %}

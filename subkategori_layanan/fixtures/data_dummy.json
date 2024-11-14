@@ -1,0 +1,206 @@
+[
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 1,
+        "fields": {
+            "nama": "Kategori Jasa 1 (Pengguna)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 2,
+        "fields": {
+            "nama": "Kategori Jasa 2 (Pengguna)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 3,
+        "fields": {
+            "nama": "Kategori Jasa 3 (Pengguna)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 4,
+        "fields": {
+            "nama": "Kategori Jasa 1 (Pekerja)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 5,
+        "fields": {
+            "nama": "Kategori Jasa 2 (Pekerja)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.kategori",
+        "pk": 6,
+        "fields": {
+            "nama": "Kategori Jasa 3 (Pekerja)"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 1,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pengguna)",
+            "kategori": 1,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 2,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pengguna)",
+            "kategori": 1,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 3,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pengguna)",
+            "kategori": 1,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 4,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pengguna)",
+            "kategori": 2,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 5,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pengguna)",
+            "kategori": 2,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 6,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pengguna)",
+            "kategori": 2,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 7,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pengguna)",
+            "kategori": 3,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 8,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pengguna)",
+            "kategori": 3,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 9,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pengguna)",
+            "kategori": 3,
+            "tipe": "pengguna"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 10,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pekerja)",
+            "kategori": 4,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 11,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pekerja)",
+            "kategori": 4,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 12,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pekerja)",
+            "kategori": 4,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 13,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pekerja)",
+            "kategori": 5,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 14,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pekerja)",
+            "kategori": 5,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 15,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pekerja)",
+            "kategori": 5,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 16,
+        "fields": {
+            "nama": "Subkategori Jasa 1 (Pekerja)",
+            "kategori": 6,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 17,
+        "fields": {
+            "nama": "Subkategori Jasa 2 (Pekerja)",
+            "kategori": 6,
+            "tipe": "pekerja"
+        }
+    },
+    {
+        "model": "subkategori_layanan.subkategori",
+        "pk": 18,
+        "fields": {
+            "nama": "Subkategori Jasa 3 (Pekerja)",
+            "kategori": 6,
+            "tipe": "pekerja"
+        }
+    }
+]

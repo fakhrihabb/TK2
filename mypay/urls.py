@@ -4,8 +4,6 @@ from . import views
 
 app_name = 'mypay'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('view/', views.mypay, name='view'),
     path('transaksi/', views.transaksi, name='transaksi'),
-    path('pekerjaan_jasa/', include('pekerjaan_jasa.urls')), 
-    path('', views.index, name='index'),
 ]

@@ -5,10 +5,10 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from .models import Transaction
 
-def index(request):
+def mypay(request):
     balance = sum(transaction.amount for transaction in Transaction.objects.all())
     transactions = Transaction.objects.all()
-    return render(request, 'mypay/index.html', {'balance': balance, 'transactions': transactions})
+    return render(request, 'mypay/mypay.html', {'balance': balance, 'transactions': transactions})
 
 def transaksi(request):
     if request.method == 'POST':
@@ -18,6 +18,6 @@ def transaksi(request):
         
         # Tambahkan transaksi baru
         Transaction.objects.create(category=category, amount=amount, description=description)
-        return redirect('mypay:index')
+        return redirect('mypay:mypay')
     
     return render(request, 'mypay/transaksi.html')
