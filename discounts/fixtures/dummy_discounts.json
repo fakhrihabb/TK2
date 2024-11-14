@@ -3,7 +3,7 @@
         {
             "id": 1,
             "kode": "VCR10",
-            "potongan": 10.0,
+            "potongan": 100000.0,
             "min_transaksi": 50000.0,
             "jumlah_hari_berlaku": 30,
             "kuota_penggunaan": 5,
@@ -12,7 +12,7 @@
         {
             "id": 2,
             "kode": "VCR20",
-            "potongan": 20.0,
+            "potongan": 20000.0,
             "min_transaksi": 100000.0,
             "jumlah_hari_berlaku": 15,
             "kuota_penggunaan": 3,
@@ -21,7 +21,7 @@
         {
             "id": 3,
             "kode": "VCR30",
-            "potongan": 30.0,
+            "potongan": 30000.0,
             "min_transaksi": 150000.0,
             "jumlah_hari_berlaku": 10,
             "kuota_penggunaan": 2,
@@ -30,7 +30,7 @@
         {
             "id": 4,
             "kode": "VCR50",
-            "potongan": 50.0,
+            "potongan": 50000.0,
             "min_transaksi": 200000.0,
             "jumlah_hari_berlaku": 7,
             "kuota_penggunaan": 1,
@@ -39,7 +39,7 @@
         {
             "id": 5,
             "kode": "NEWUSER10",
-            "potongan": 10.0,
+            "potongan": 10000.0,
             "min_transaksi": 0.0,
             "jumlah_hari_berlaku": 60,
             "kuota_penggunaan": 10,
@@ -48,7 +48,7 @@
         {
             "id": 6,
             "kode": "HOLIDAY15",
-            "potongan": 15.0,
+            "potongan": 15000.0,
             "min_transaksi": 75000.0,
             "jumlah_hari_berlaku": 20,
             "kuota_penggunaan": 4,
