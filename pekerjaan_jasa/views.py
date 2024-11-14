@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .models import ServiceSubcategory
 
 # View untuk menampilkan job orders, termasuk form filter kategori dan subkategori
-def job_orders(request):
+def pekerjaan_jasa(request):
     categories = ServiceCategory.objects.all()
     selected_category = request.GET.get('category')
     selected_subcategory = request.GET.get('subcategory')
@@ -32,7 +32,7 @@ def accept_order(request, order_id):
     order.status = 'menunggu'
     order.assigned_worker = request.user
     order.save()
-    return redirect('pekerjaan_jasa:job_orders')  # Pastikan nama URL-nya sesuai
+    return redirect('pekerjaan_jasa:pekerjaan_jasa')  # Pastikan nama URL-nya sesuai
 
 # View untuk status pekerjaan
 def job_status(request):
