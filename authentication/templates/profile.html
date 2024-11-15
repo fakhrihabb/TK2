@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% block meta %}
+<title>Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+{% endblock meta %} {% block content %} {% include 'navbar.html' %}
+<div
+  class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
+>
+  <div
+    class="space-y-8 form-style bg-white mt-20 rounded-md border-gray-200 shadow-lg pb-10 w-full max-w-md"
+  >
+    <button
+      href=""
+      class="mt-2 ml-2 text-white w-fit py-1 bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+    >
+      <a
+        class="mx-3 text-white text-xl"
+        href="{% url 'authentication:register' %}"
+        ><</a
+      >
+    </button>
+    <div class="px-10">
+      <h2 class="mt-4 text-center text-3xl font-semibold text-black">
+        Buat akun pengguna
+      </h2>
+
+      {% if messages %}
+      <div class="mt-4">
+        {% for message in messages %}
+        <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <span class="block sm:inline">{{ message }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

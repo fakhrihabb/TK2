@@ -1,6 +1,7 @@
 
 from lib2to3.fixes.fix_input import context
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
@@ -29,6 +30,11 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('authentication:login')
+
+@login_required
+def view_profile(request):
+    user = request.user
+    return render(request, "profile.html", context={'user': user})
 
 class PenggunaRegisterView(CreateView):
     model = User
