@@ -114,10 +114,6 @@ def move_to_status(request, order_id):
     if order.status == 'mencari':
         order.status = 'menunggu'
         order.save()
-        messages.success(
-            request,
-            'Pesanan berhasil diambil! Detail pesanan dapat dilihat pada halaman "Status Pekerjaan"!'
-        )
     else:
         messages.error(request, 'Pesanan sudah dipindahkan sebelumnya!')
     return redirect('pekerjaan_jasa:pekerjaan_jasa')
