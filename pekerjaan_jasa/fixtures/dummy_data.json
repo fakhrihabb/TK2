@@ -69,7 +69,7 @@
                 "customer_name": "John Doe",
                 "order_date": "2024-11-01",
                 "work_date": "2024-11-02",
-                "total_cost": "150000.00",
+                "total_cost": "150000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -82,7 +82,7 @@
                 "customer_name": "Jane Smith",
                 "order_date": "2024-11-05",
                 "work_date": "2024-11-06",
-                "total_cost": "200000.00",
+                "total_cost": "200000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -95,7 +95,7 @@
                 "customer_name": "Alice Johnson",
                 "order_date": "2024-11-10",
                 "work_date": "2024-11-11",
-                "total_cost": "300000.00",
+                "total_cost": "300000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -108,7 +108,7 @@
                 "customer_name": "Michael Brown",
                 "order_date": "2024-11-02",
                 "work_date": "2024-11-03",
-                "total_cost": "100000.00",
+                "total_cost": "100000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -121,7 +121,7 @@
                 "customer_name": "Emily White",
                 "order_date": "2024-11-06",
                 "work_date": "2024-11-07",
-                "total_cost": "120000.00",
+                "total_cost": "120000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -134,7 +134,7 @@
                 "customer_name": "David Green",
                 "order_date": "2024-11-08",
                 "work_date": "2024-11-09",
-                "total_cost": "150000.00",
+                "total_cost": "150000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -147,7 +147,7 @@
                 "customer_name": "Sophia Wilson",
                 "order_date": "2024-11-03",
                 "work_date": "2024-11-04",
-                "total_cost": "160000.00",
+                "total_cost": "160000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -160,7 +160,7 @@
                 "customer_name": "Liam Harris",
                 "order_date": "2024-11-09",
                 "work_date": "2024-11-10",
-                "total_cost": "190000.00",
+                "total_cost": "190000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -173,7 +173,7 @@
                 "customer_name": "Olivia Clark",
                 "order_date": "2024-11-11",
                 "work_date": "2024-11-12",
-                "total_cost": "250000.00",
+                "total_cost": "250000",
                 "status": "mencari",
                 "assigned_worker": null
             }
@@ -186,7 +186,7 @@
                 "customer_name": "James Turner",
                 "order_date": "2024-11-13",
                 "work_date": "2024-11-14",
-                "total_cost": "110000.00",
+                "total_cost": "110000",
                 "status": "mencari",
                 "assigned_worker": null
             }

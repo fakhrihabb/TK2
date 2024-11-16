@@ -1,4 +1,4 @@
-<!-- pekerjaan_jasa/templates/pekerjaan_jasa/urutan_pekerjaan.html -->
+{% include 'navbar.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,32 +6,146 @@
     <title>Job Orders</title>
     <!-- Pastikan JavaScript dipanggil setelah elemen HTML sudah dimuat -->
     <script src="{% static 'pekerjaan_jasa/js/urutan_pekerjaan.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            font-family: 'Nunito Rounded', sans-serif;
+            background-color: #F2F2F2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            padding-top: 90px;
+            padding-bottom: 10px;
+            color: #006BFF;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select, button {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #08C2FF;
+        }
+        
+
+        .order-card {
+            background-color: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .order-card p:first-child {
+            font-weight: 600;
+            color: #006BFF;
+        }
+
+        .order-card .action-button {
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .action-button a {
+            text-decoration: none;
+            background-color: #FFF100;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button a:hover {
+            background-color: #08C2FF;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Job Orders</h1>
+    <h1>Daftar Pekerjaan</h1>
     <form method="get">
         <select name="category" id="category" onchange="updateSubcategoryOptions()">
-            <option value="">Select Category</option>
+            <option value="">Pilih Kategori</option>
             {% for category in categories %}
                 <option value="{{ category.id }}">{{ category.name }}</option>
             {% endfor %}
         </select>
 
         <select name="subcategory" id="subcategory">
-            <option value="">Select Subcategory</option>
-            <!-- Subcategory options populated dynamically based on selected category -->
+            <option value="">Pilih Subkategori</option>
         </select>
-
-        <button type="submit">Search</button>
+        
+        <script>
+            function updateSubcategoryOptions() {
+                var categoryId = document.getElementById("category").value;
+                var subcategoryDropdown = document.getElementById("subcategory");
+        
+                // Hapus opsi lama
+                subcategoryDropdown.innerHTML = '<option value="">Pilih Subkategori</option>';
+        
+                if (categoryId) {
+                    // Fetch menggunakan URL reverse Django
+                    fetch(`{% url 'pekerjaan_jasa:get_subcategories' 'categoryIdPlaceholder' %}`.replace('categoryIdPlaceholder', categoryId))
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(function (subcategory) {
+                                var option = document.createElement("option");
+                                option.value = subcategory.id;
+                                option.textContent = subcategory.name;
+                                subcategoryDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Error fetching subcategories:", error);
+                        });
+                }
+            }
+        </script>
+        
+        <button type="submit">Cari</button>
     </form>
 
     <div>
         {% for order in orders %}
-            <div>
+            <div class="order-card">
                 <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
-                <p>Order Date: {{ order.order_date }} | Work Date: {{ order.work_date }}</p>
-                <p>Total Cost: {{ order.total_cost }}</p>
-                <a href="{% url 'pekerjaan_jasa:accept_order' order.id %}">Kerjakan Pesanan</a>
+                <p>Tanggal Pemesanan: {{ order.order_date }}</p>
+                <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
+                <p>Total Biaya: Rp{{ order.total_cost }}</p>
+                <div class="action-button">
+                    <a href="{% url 'pekerjaan_jasa:accept_order' order.id %}">Kerjakan Pesanan</a>
+                </div>
             </div>
         {% endfor %}
     </div>
