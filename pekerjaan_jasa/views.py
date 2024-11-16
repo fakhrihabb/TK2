@@ -42,33 +42,24 @@ def pekerjaan_jasa(request):
     })
 
 
-
-# View untuk menerima pesanan (mengubah status dan menetapkan pekerja)
-def accept_order(request, order_id):
-    try:
-        order = ServiceOrder.objects.get(id=order_id)
-    except ServiceOrder.DoesNotExist:
-        raise Http404("Order not found")
-    
-    order.status = 'menunggu'
-    order.assigned_worker = request.user
-    order.save()
-    return redirect('pekerjaan_jasa:pekerjaan_jasa')  # Pastikan nama URL-nya sesuai
-
 # View untuk status pekerjaan
 def job_status(request):
     categories = ServiceCategory.objects.all()
     selected_category = request.GET.get('category')
     subcategories = ServiceSubcategory.objects.filter(category_id=selected_category) if selected_category else []
 
-    # Buat URL dinamis dengan placeholder
+    # Ambil pesanan dengan status 'menunggu'
+    orders = ServiceOrder.objects.filter(status='menunggu')
+
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
     return render(request, 'pekerjaan_jasa/status_pekerjaan.html', {
         'categories': categories,
         'subcategories': subcategories,
+        'orders': orders,
         'get_subcategories_url': get_subcategories_url,
     })
+
 
 # View untuk memperbarui status pekerjaan
 def update_status(request, order_id, new_status):
@@ -94,13 +85,16 @@ def get_subcategories(request, category_id):
 
 def move_to_status(request, order_id):
     order = get_object_or_404(ServiceOrder, id=order_id)
-    if order.status == 'waiting':
-        order.status = 'in_progress'
+    if order.status == 'mencari':
+        order.status = 'menunggu'
         order.save()
-        messages.success(request, 'Pesanan berhasil dipindahkan ke status pekerjaan!')
+        messages.success(
+            request,
+            'Pesanan berhasil diambil! Detail pesanan dapat dilihat pada halaman "Status Pekerjaan"!'
+        )
     else:
         messages.error(request, 'Pesanan sudah dipindahkan sebelumnya!')
-    return redirect('pekerjaan_jasa:job-status')
+    return redirect('pekerjaan_jasa:pekerjaan_jasa')
 
 def accept_order(request, order_id):
     try:

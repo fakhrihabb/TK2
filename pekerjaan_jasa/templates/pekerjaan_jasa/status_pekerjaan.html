@@ -3,7 +3,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Job Orders</title>
     <!-- Pastikan JavaScript dipanggil setelah elemen HTML sudah dimuat -->
     <script src="{% static 'pekerjaan_jasa/js/urutan_pekerjaan.js' %}"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@400;600;700&display=swap" rel="stylesheet">
@@ -120,14 +119,15 @@
                 var categoryId = document.getElementById("category").value;
                 var subcategoryDropdown = document.getElementById("subcategory");
         
+                // Reset opsi lama
                 subcategoryDropdown.innerHTML = '<option value="">Pilih Subkategori</option>';
         
                 if (categoryId) {
-                    // Gunakan URL dari views
-                    const url = "{{ get_subcategories_url }}".replace("%s", categoryId);
-                    fetch(url)
+                    // Gunakan URL langsung dengan categoryId
+                    fetch(`/pekerjaan-jasa/get-subcategories/${categoryId}/`)
                         .then(response => response.json())
                         .then(data => {
+                            // Tambahkan opsi subkategori baru
                             data.forEach(subcategory => {
                                 const option = document.createElement("option");
                                 option.value = subcategory.id;
@@ -144,32 +144,34 @@
 
     <div>
         {% for order in orders %}
-        <div class="order-card">
-            <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
-            <p>Tanggal Pemesanan: {{ order.order_date }}</p>
-            <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
-            <p>Total Biaya: Rp{{ order.total_cost }}</p>
-            <p>Status: {{ order.status }}</p>
-            <div class="action-button">
-                {% if order.status == "Menunggu Pekerja Berangkat" %}
-                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                        {% csrf_token %}
-                        <button type="submit" name="next_status" value="Pekerja Tiba Di Lokasi">Tiba Di Lokasi</button>
-                    </form>
-                {% elif order.status == "Pekerja Tiba Di Lokasi" %}
-                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                        {% csrf_token %}
-                        <button type="submit" name="next_status" value="Pelayanan Jasa Sedang Dilakukan">Melakukan Pelayanan Jasa</button>
-                    </form>
-                {% elif order.status == "Pelayanan Jasa Sedang Dilakukan" %}
-                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                        {% csrf_token %}
-                        <button type="submit" name="next_status" value="Pesanan Selesai">Selesai Melakukan Pelayanan</button>
-                    </form>
-                {% endif %}
+            <div class="order-card">
+                <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
+                <p>Tanggal Pemesanan: {{ order.order_date }}</p>
+                <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
+                <p>Total Biaya: Rp{{ order.total_cost }}</p>
+                <div class="action-button">
+                    {% if order.status == "Menunggu Pekerja Berangkat" %}
+                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="next_status" value="Pekerja Tiba Di Lokasi">Tiba Di Lokasi</button>
+                        </form>
+                    {% elif order.status == "Pekerja Tiba Di Lokasi" %}
+                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="next_status" value="Pelayanan Jasa Sedang Dilakukan">Melakukan Pelayanan Jasa</button>
+                        </form>
+                    {% elif order.status == "Pelayanan Jasa Sedang Dilakukan" %}
+                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="next_status" value="Pesanan Selesai">Selesai Melakukan Pelayanan</button>
+                        </form>
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        {% empty %}
+            <p>Tidak ada pekerjaan dalam status ini.</p>
         {% endfor %}
     </div>
+    
 </body>
 </html>

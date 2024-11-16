@@ -28,7 +28,7 @@ class ServiceOrder(models.Model):
     customer_name = models.CharField(max_length=100)
     order_date = models.DateField()
     work_date = models.DateField()
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='mencari')
     assigned_worker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 

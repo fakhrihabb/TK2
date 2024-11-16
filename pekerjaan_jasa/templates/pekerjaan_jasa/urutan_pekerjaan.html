@@ -99,6 +99,7 @@
             background-color: #08C2FF;
             color: white;
         }
+
     </style>
 </head>
 <body>
@@ -150,13 +151,91 @@
                 <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
                 <p>Total Biaya: Rp{{ order.total_cost }}</p>
                 <div class="action-button">
-                    <form method="post" action="{% url 'pekerjaan_jasa:move_to_status' order.id %}">
+                    <form method="post" action="{% url 'pekerjaan_jasa:move_to_status' order.id %}" class="order-form">
                         {% csrf_token %}
-                        <button type="submit">Kerjakan Pesanan</button>
+                        <button type="submit" class="kerjakanPesananBtn">Kerjakan Pesanan</button>
                     </form>
                 </div>
             </div>
         {% endfor %}
     </div>
+    
+    <!-- Snackbar -->
+    <div id="snackbar"></div>
+    
+    <style>
+        #snackbar {
+            visibility: hidden; /* Default hidden */
+            min-width: 250px;
+            background-color: #FFF100;
+            color: #000;
+            text-align: center;
+            border-radius: 5px;
+            padding: 16px;
+            position: fixed; 
+            z-index: 1000;
+            bottom: 80%; 
+            left: 50%;
+            transform: translateX(-50%); 
+            font-size: 17px;
+            opacity: 0; 
+            transition: opacity 0.5s ease-in-out; 
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            opacity: 1; 
+        }
+
+        @-webkit-keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @-webkit-keyframes fadeout {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+
+        @keyframes fadeout {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+
+    </style>
+    
+    <script>
+        // Fungsi untuk menampilkan snackbar
+        function showSnackbar(message, callback) {
+            var snackbar = document.getElementById("snackbar");
+            snackbar.textContent = message;
+            snackbar.classList.add("show");
+    
+            // Sembunyikan snackbar setelah 3 detik
+            setTimeout(function () {
+                snackbar.classList.remove("show");
+                if (callback) callback(); // Eksekusi callback jika ada
+            }, 3000);
+        }
+    
+        // Tambahkan event listener ke semua form
+        document.querySelectorAll(".order-form").forEach(function (form) {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault(); // Cegah pengiriman form sementara
+    
+                // Tampilkan snackbar
+                showSnackbar("Pesanan berhasil ditambahkan ke halaman Status Pekerjaan!", function () {
+                    form.submit(); // Kirim form setelah snackbar selesai
+                });
+            });
+        });
+    </script>
+    
+    
 </body>
 </html>
