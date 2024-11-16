@@ -119,7 +119,9 @@
             <select name="category" id="category" onchange="updateFormState()" value="{{ request.POST.category|default:'topup' }}">
                 <option value="topup" {% if request.POST.category == 'topup' %}selected{% endif %}>Top Up MyPay</option>
                 <option value="jasa" {% if request.POST.category == 'jasa' %}selected{% endif %}>Bayar Jasa</option>
-                <option value="transfer" {% if request.POST.category == 'transfer' %}selected{% endif %}>Transfer MyPay</option>
+                {% if user.is_pengguna %}
+                    <option value="transfer" {% if request.POST.category == 'transfer' %}selected{% endif %}>Transfer MyPay</option>
+                {% endif %}
                 <option value="withdrawal" {% if request.POST.category == 'withdrawal' %}selected{% endif %}>Withdrawal</option>
             </select>
 
