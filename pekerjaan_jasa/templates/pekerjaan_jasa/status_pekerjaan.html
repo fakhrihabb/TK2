@@ -1,33 +1,174 @@
-<!-- pekerjaan_jasa/templates/pekerjaan_jasa/status_pekerjaan.html -->
 {% include 'navbar.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Job Status</title>
-</head>
-<style>
-    h1 {
+    <title>Job Orders</title>
+    <!-- Pastikan JavaScript dipanggil setelah elemen HTML sudah dimuat -->
+    <script src="{% static 'pekerjaan_jasa/js/urutan_pekerjaan.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            font-family: 'Nunito Rounded', sans-serif;
+            background-color: #F2F2F2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
             padding-top: 90px;
-    }
-</style>
+            padding-bottom: 10px;
+            color: #006BFF;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select, button {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #08C2FF;
+        }
+        
+
+        .order-card {
+            background-color: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 550px; 
+            margin: 20px auto; 
+            position: relative; 
+        }
+
+        .order-card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .order-card p:first-child {
+            font-weight: 600;
+            color: #006BFF;
+        }
+
+        .order-card .action-button {
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .action-button {
+            position: absolute; /* Jadikan tombol absolut */
+            top: 50%; /* Posisikan di tengah vertikal */
+            right: 20px; /* Jarak dari kanan */
+            transform: translateY(-50%); /* Sesuaikan agar benar-benar di tengah */
+        }
+        .action-button a {
+            text-decoration: none;
+            background-color: #FFF100;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .action-button a:hover {
+            background-color: #08C2FF;
+            color: white;
+        }
+    </style>
+</head>
 <body>
-    <h1>Job Status</h1>
+    <h1>Status Pekerjaan</h1>
+    <form method="get">
+        <select name="category" id="category" onchange="updateSubcategoryOptions()">
+            <option value="">Pilih Kategori</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="subcategory" id="subcategory">
+            <option value="">Pilih Subkategori</option>
+        </select>
+        
+        <script>
+            function updateSubcategoryOptions() {
+                var categoryId = document.getElementById("category").value;
+                var subcategoryDropdown = document.getElementById("subcategory");
+        
+                subcategoryDropdown.innerHTML = '<option value="">Pilih Subkategori</option>';
+        
+                if (categoryId) {
+                    // Gunakan URL dari views
+                    const url = "{{ get_subcategories_url }}".replace("%s", categoryId);
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(subcategory => {
+                                const option = document.createElement("option");
+                                option.value = subcategory.id;
+                                option.textContent = subcategory.name;
+                                subcategoryDropdown.appendChild(option);
+                            });
+                        });
+                }
+            }
+        </script>
+        
+        <button type="submit">Cari</button>
+    </form>
+
     <div>
-        {% for job in jobs %}
-            <div>
-                <p>{{ job.subcategory.name }} - {{ job.customer_name }}</p>
-                <p>Order Date: {{ job.order_date }} | Work Date: {{ job.work_date }}</p>
-                <p>Total Cost: {{ job.total_cost }}</p>
-                
-                {% if job.status == 'menunggu' %}
-                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'tiba' %}">Tiba di Lokasi</a>
-                {% elif job.status == 'tiba' %}
-                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'dilakukan' %}">Melakukan Pelayanan Jasa</a>
-                {% elif job.status == 'dilakukan' %}
-                    <a href="{% url 'pekerjaan_jasa:update_status' job.id 'selesai' %}">Selesai Melakukan Pelayanan</a>
+        {% for order in orders %}
+        <div class="order-card">
+            <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
+            <p>Tanggal Pemesanan: {{ order.order_date }}</p>
+            <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
+            <p>Total Biaya: Rp{{ order.total_cost }}</p>
+            <p>Status: {{ order.status }}</p>
+            <div class="action-button">
+                {% if order.status == "Menunggu Pekerja Berangkat" %}
+                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="next_status" value="Pekerja Tiba Di Lokasi">Tiba Di Lokasi</button>
+                    </form>
+                {% elif order.status == "Pekerja Tiba Di Lokasi" %}
+                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="next_status" value="Pelayanan Jasa Sedang Dilakukan">Melakukan Pelayanan Jasa</button>
+                    </form>
+                {% elif order.status == "Pelayanan Jasa Sedang Dilakukan" %}
+                    <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="next_status" value="Pesanan Selesai">Selesai Melakukan Pelayanan</button>
+                    </form>
                 {% endif %}
             </div>
+        </div>
         {% endfor %}
     </div>
 </body>

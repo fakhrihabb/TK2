@@ -58,6 +58,9 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 550px; 
+            margin: 20px auto; 
+            position: relative; 
         }
 
         .order-card p {
@@ -76,6 +79,12 @@
             margin-top: 10px;
         }
 
+        .action-button {
+            position: absolute; /* Jadikan tombol absolut */
+            top: 50%; /* Posisikan di tengah vertikal */
+            right: 20px; /* Jarak dari kanan */
+            transform: translateY(-50%); /* Sesuaikan agar benar-benar di tengah */
+        }
         .action-button a {
             text-decoration: none;
             background-color: #FFF100;
@@ -85,7 +94,7 @@
             font-weight: 600;
             transition: background-color 0.3s ease;
         }
-
+        
         .action-button a:hover {
             background-color: #08C2FF;
             color: white;
@@ -111,28 +120,25 @@
                 var categoryId = document.getElementById("category").value;
                 var subcategoryDropdown = document.getElementById("subcategory");
         
-                // Hapus opsi lama
+                // Reset opsi lama
                 subcategoryDropdown.innerHTML = '<option value="">Pilih Subkategori</option>';
         
                 if (categoryId) {
-                    // Fetch menggunakan URL reverse Django
-                    fetch(`{% url 'pekerjaan_jasa:get_subcategories' 'categoryIdPlaceholder' %}`.replace('categoryIdPlaceholder', categoryId))
+                    // Gunakan URL langsung dengan categoryId
+                    fetch(`/pekerjaan-jasa/get-subcategories/${categoryId}/`)
                         .then(response => response.json())
                         .then(data => {
-                            data.forEach(function (subcategory) {
-                                var option = document.createElement("option");
+                            // Tambahkan opsi subkategori baru
+                            data.forEach(subcategory => {
+                                const option = document.createElement("option");
                                 option.value = subcategory.id;
                                 option.textContent = subcategory.name;
                                 subcategoryDropdown.appendChild(option);
                             });
-                        })
-                        .catch(error => {
-                            console.error("Error fetching subcategories:", error);
                         });
                 }
             }
         </script>
-        
         <button type="submit">Cari</button>
     </form>
 
@@ -144,7 +150,10 @@
                 <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
                 <p>Total Biaya: Rp{{ order.total_cost }}</p>
                 <div class="action-button">
-                    <a href="{% url 'pekerjaan_jasa:accept_order' order.id %}">Kerjakan Pesanan</a>
+                    <form method="post" action="{% url 'pekerjaan_jasa:move_to_status' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Kerjakan Pesanan</button>
+                    </form>
                 </div>
             </div>
         {% endfor %}
