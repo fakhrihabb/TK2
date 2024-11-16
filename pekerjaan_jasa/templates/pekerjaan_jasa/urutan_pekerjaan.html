@@ -100,6 +100,16 @@
             color: white;
         }
 
+        .no-orders {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px; /* Sesuaikan tinggi minimum agar elemen ini terlihat */
+            text-align: center;
+            color: #555; /* Warna teks opsional */
+            font-size: 18px; /* Ukuran font opsional */
+        }
+
     </style>
 </head>
 <body>
@@ -157,7 +167,11 @@
                     </form>
                 </div>
             </div>
-        {% endfor %}
+    {% empty %}
+        <div class="no-orders">
+            <p>Tidak ada pekerjaan dalam status ini.</p>
+        </div>
+    {% endfor %}
     </div>
     
     <!-- Snackbar -->
@@ -234,8 +248,6 @@
                 });
             });
         });
-    </script>
-    
-    
+    </script>    
 </body>
 </html>

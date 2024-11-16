@@ -46,10 +46,22 @@ def pekerjaan_jasa(request):
 def job_status(request):
     categories = ServiceCategory.objects.all()
     selected_category = request.GET.get('category')
-    subcategories = ServiceSubcategory.objects.filter(category_id=selected_category) if selected_category else []
+    selected_subcategory = request.GET.get('subcategory')  # Tambahkan ini untuk mengambil subkategori yang dipilih
 
     # Ambil pesanan dengan status 'menunggu'
     orders = ServiceOrder.objects.filter(status='menunggu')
+    if selected_category:
+        orders = orders.filter(subcategory__category_id=selected_category)
+    if selected_subcategory:  # Sekarang aman karena variabel sudah didefinisikan
+        orders = orders.filter(subcategory_id=selected_subcategory)
+
+    # Validasi kategori dan subkategori
+    if selected_category and not ServiceCategory.objects.filter(id=selected_category).exists():
+        selected_category = None
+    if selected_subcategory and not ServiceSubcategory.objects.filter(id=selected_subcategory).exists():
+        selected_subcategory = None
+
+    subcategories = ServiceSubcategory.objects.filter(category_id=selected_category) if selected_category else []
 
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
@@ -59,6 +71,7 @@ def job_status(request):
         'orders': orders,
         'get_subcategories_url': get_subcategories_url,
     })
+
 
 
 # View untuk memperbarui status pekerjaan
