@@ -154,30 +154,34 @@
 
     <div>
         {% for order in orders %}
-            <div class="order-card">
-                <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
-                <p>Tanggal Pemesanan: {{ order.order_date }}</p>
-                <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
-                <p>Total Biaya: Rp{{ order.total_cost }}</p>
-                <div class="action-button">
-                    {% if order.status == "Menunggu Pekerja Berangkat" %}
-                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                            {% csrf_token %}
-                            <button type="submit" name="next_status" value="Pekerja Tiba Di Lokasi">Tiba Di Lokasi</button>
-                        </form>
-                    {% elif order.status == "Pekerja Tiba Di Lokasi" %}
-                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                            {% csrf_token %}
-                            <button type="submit" name="next_status" value="Pelayanan Jasa Sedang Dilakukan">Melakukan Pelayanan Jasa</button>
-                        </form>
-                    {% elif order.status == "Pelayanan Jasa Sedang Dilakukan" %}
-                        <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id %}">
-                            {% csrf_token %}
-                            <button type="submit" name="next_status" value="Pesanan Selesai">Selesai Melakukan Pelayanan</button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
+    <div class="order-card">
+        <p>{{ order.subcategory.name }} - {{ order.customer_name }}</p>
+        <p>Tanggal Pemesanan: {{ order.order_date }}</p>
+        <p>Tanggal Pekerjaan: {{ order.work_date }}</p>
+        <p>Total Biaya: Rp{{ order.total_cost }}</p>
+
+        <div class="action-button">
+            {% if order.status == "menunggu" %}
+                <!-- Button 1 -->
+                <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id 'tiba' %}">
+                    {% csrf_token %}
+                    <button type="submit">Tiba Di Lokasi</button>
+                </form>
+            {% elif order.status == "tiba" %}
+                <!-- Button 2 -->
+                <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id 'dilakukan' %}">
+                    {% csrf_token %}
+                    <button type="submit">Melakukan Pelayanan Jasa</button>
+                </form>
+            {% elif order.status == "dilakukan" %}
+                <!-- Button 3 -->
+                <form method="post" action="{% url 'pekerjaan_jasa:update_status' order.id 'selesai' %}">
+                    {% csrf_token %}
+                    <button type="submit">Selesai Melakukan Pelayanan</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
         {% empty %}
             <div class="no-orders">
                 <p>Tidak ada pekerjaan dalam status ini.</p>

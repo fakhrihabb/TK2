@@ -8,6 +8,7 @@ from django.core.serializers import serialize
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
+from django.http import HttpResponseNotFound, JsonResponse
 
 # View untuk menampilkan job orders, termasuk form filter kategori dan subkategori
 def pekerjaan_jasa(request):
@@ -49,7 +50,7 @@ def job_status(request):
     selected_subcategory = request.GET.get('subcategory')  # Tambahkan ini untuk mengambil subkategori yang dipilih
 
     # Ambil pesanan dengan status 'menunggu'
-    orders = ServiceOrder.objects.filter(status='menunggu')
+    orders = ServiceOrder.objects.exclude(status="dibatalkan")
     if selected_category:
         orders = orders.filter(subcategory__category_id=selected_category)
     if selected_subcategory:  # Sekarang aman karena variabel sudah didefinisikan
@@ -76,14 +77,26 @@ def job_status(request):
 
 # View untuk memperbarui status pekerjaan
 def update_status(request, order_id, new_status):
-    try:
-        order = ServiceOrder.objects.get(id=order_id, assigned_worker=request.user)
-    except ServiceOrder.DoesNotExist:
-        raise Http404("Order not found")
+    # Dapatkan pesanan berdasarkan ID
+    order = get_object_or_404(ServiceOrder, id=order_id)
+    
+    # Validasi transisi status
+    valid_transitions = {
+        "menunggu": "tiba",
+        "tiba": "dilakukan",
+        "dilakukan": "selesai",
+    }
 
+    # Cek apakah transisi valid
+    if new_status != valid_transitions.get(order.status):
+        return HttpResponseNotFound("Transisi status tidak valid.")
+
+    # Update status pesanan
     order.status = new_status
     order.save()
-    return redirect('pekerjaan_jasa:job-status')  # Pastikan nama URL-nya sesuai
+
+    # Redirect kembali ke halaman job-status
+    return redirect('pekerjaan_jasa:job-status')
 
 # View untuk mendapatkan subcategories berdasarkan kategori
 def get_subcategories(request, category_id):
