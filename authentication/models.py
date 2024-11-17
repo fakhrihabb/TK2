@@ -1,7 +1,3 @@
-import uuid
-
-from django.apps import apps
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -75,22 +71,18 @@ class User(AbstractUser):
     is_pekerja = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    saldo_mypay = models.IntegerField(default=0)
-
-class Pengguna(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-
     GENDER_CHOICES = (
-        ('L', 'Laki'),
+        ('L', 'Laki-laki'),
         ('P', 'Perempuan'),
     )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='L')
     phone_number = models.CharField(max_length=20, unique=True)
     birth_date = models.DateField()
     address = models.CharField(max_length=100)
+    saldo_mypay = models.IntegerField(default=0)
 
-    def __str__(self):
-        return self.user.username
+    USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'address', 'gender', 'birth_date']
 
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)

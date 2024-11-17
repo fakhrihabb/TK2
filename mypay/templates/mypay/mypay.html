@@ -101,7 +101,7 @@
 
         <!-- Top section with No HP and Lakukan Transaksi button -->
         <div class="top-section">
-            <div>No HP: {{ phone_number }}</div>
+            <div>No HP: {{ user.phone_number }}</div>
             <a href="{% url 'mypay:transaksi' %}" class="transaction-button">Lakukan Transaksi</a>
         </div>
 
