@@ -27,7 +27,7 @@ def login_user(request):
         if not User.objects.filter(phone_number=phone_number).exists():
             # Display an error message if the username does not exist
             messages.error(request, 'Invalid Phone Number')
-            return redirect('/login/')
+            return redirect('authentication:login')
 
         # Authenticate the user with the provided phone no and password
         user = authenticate(phone_number=phone_number, password=password)
@@ -35,7 +35,7 @@ def login_user(request):
         if user is None:
             # Display an error message if authentication fails (invalid password)
             messages.error(request, "Invalid Password")
-            return redirect('login')
+            return redirect('authentication:login')
         else:
             # Log in the user and redirect to the home page upon successful login
             login(request, user)

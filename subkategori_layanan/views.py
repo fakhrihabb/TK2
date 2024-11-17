@@ -2,12 +2,18 @@ from django.shortcuts import render, get_object_or_404
 from .models import Subkategori, SesiLayanan, Pekerja
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from django.core.management import call_command
 import json
 import os
 from django.conf import settings
 
 def homepage(request):
     return render(request, 'homepage.html')
+
+def load_fixtures():
+    fixture_path = os.path.join(settings.BASE_DIR, 'subkategori_layanan/fixtures/data_dummy.json')
+    call_command('loaddata', fixture_path, verbosity=0)
+
 
 def subkategori_detail(request, subkategori_id):
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
@@ -28,6 +34,8 @@ def load_dummy_testimoni():
     return data
 
 def subkategori_pengguna(request, subkategori_id):
+    load_fixtures()
+
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
     sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
 
