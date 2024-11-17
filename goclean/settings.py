@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'mypay',
+    'pekerjaan_jasa',
     'subkategori_layanan',
     'pemesanan_jasa',
     'authentication',
