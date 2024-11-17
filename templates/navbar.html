@@ -76,19 +76,75 @@
       </div>
     </div>
     <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-      <a href="{% url 'authentication:logout' %}">
+      <!-- <a href="{% url 'authentication:logout' %}">
         <button
           type="button"
-          class="text-white bg-red-700 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
+          class="text-white bg-red-700 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center transition duration-300"
         >
           Logout
         </button>
-      </a>
+      </a> -->
 
       <button
-        data-collapse-toggle="navbar-sticky"
+        id="dropdownDefaultButton"
+        data-dropdown-toggle="dropdown"
+        class="text-white bg-[#006BFF] hover:text-[#FFF100] font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 text-left transition duration-300"
         type="button"
-        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-[#c7bc00] focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+      >
+        <div class="flex flex-col justify-start align-center">
+          <div>Hi, {{user.first_name}} {{user.last_name}}</div>
+          <div class="text-xs">
+            {% if user.is_pekerja %} Pekerja {% elif user.is_pengguna %}
+            Pengguna {% endif %}
+          </div>
+        </div>
+
+        <svg
+          class="w-2.5 h-2.5 ms-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div
+        id="dropdown"
+        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700"
+      >
+        <ul
+          class="py-2 text-sm text-gray-700 dark:text-gray-200"
+          aria-labelledby="dropdownDefaultButton"
+        >
+          <li>
+            <a
+              href="{% url 'authentication:view_profile' %}"
+              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >Profile</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'authentication:logout' %}"
+              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-red-600"
+              >Log Out</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <button
+        type="button"
+        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-[#c7bc00] dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 hover:bg-blue-700 transition duration-300"
         aria-controls="navbar-sticky"
         aria-expanded="false"
       >
@@ -114,17 +170,44 @@
   <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
     <div class="pt-2 pb-3 space-y-1 mx-auto">
       <a
-        href=""
-        class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+        href="{% url 'homepage' %}"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
       >
-        Login
+        Home
       </a>
       <a
-        href=""
-        class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+        href="#"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
       >
-        Register
+        MyPay
       </a>
+      {% if user.is_pengguna %}
+      <a
+        href="{% url 'pemesanan_jasa:view_pemesanan' %}"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Pesanan
+      </a>
+      <a
+        href="#"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Diskon
+      </a>
+      {% endif %} {% if user.is_pekerja %}
+      <a
+        href="#"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Pekerjaan
+      </a>
+      <a
+        href="#"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2"
+      >
+        Status Pekerjaan
+      </a>
+      {% endif %}
     </div>
   </div>
   {% else %}
@@ -172,7 +255,7 @@
       <button
         data-collapse-toggle="navbar-sticky"
         type="button"
-        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-[#c7bc00] focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        class="mobile-menu-button inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         aria-controls="navbar-sticky"
         aria-expanded="false"
       >
@@ -199,14 +282,14 @@
   <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
     <div class="pt-2 pb-3 space-y-1 mx-auto">
       <a
-        href=""
-        class="block text-center text-white hover:bg-[#c7bc00] font-bold py-2 px-4 rounded transition duration-300 mb-2"
+        href="{% url 'authentication:login' %}"
+        class="block text-center text-white hover:bg-blue-600 font-bold py-2 px-4 rounded transition duration-300 mb-2"
       >
         Login
       </a>
       <a
-        href=""
-        class="block text-center hover:bg-[#c7bc00] text-white font-bold py-2 px-4 rounded transition duration-300"
+        href="{% url 'authentication:register' %}"
+        class="block text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
       >
         Register
       </a>
@@ -221,4 +304,5 @@
       menu.classList.toggle("hidden");
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 </nav>

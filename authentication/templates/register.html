@@ -2,6 +2,31 @@
 <title>Register</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 {% endblock meta %} {% block content %} {% include 'navbar.html' %}
+{% if user.is_authenticated %}
+<div
+  class="flex align-center justify-center min-w-screen min-h-screen bg-gray-100"
+>
+  <div
+    class="flex flex-col align-center justify-center min-w-screen min-h-screen"
+  >
+    <div class="shadow-lg p-10 border border-gray-200 rounded-md">
+      <h1 class="text-3xl text-center font-semibold">
+        You are already logged in!
+      </h1>
+      <p class="text-center font-regular mt-2">
+        You must log out to register new user!
+      </p>
+      <div class="flex flex-col pt-5 text-center">
+        <a
+          href="{% url 'authentication:logout' %}"
+          class="bg-red-700 py-2 rounded-lg text-white hover:bg-red-900 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+          ><button>Log Out</button></a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
 <div
   class="flex align-center justify-center min-w-screen min-h-screen bg-gray-100"
 >
@@ -25,4 +50,4 @@
     </div>
   </div>
 </div>
-{% endblock content %}
+{% endif %} {% endblock content %}

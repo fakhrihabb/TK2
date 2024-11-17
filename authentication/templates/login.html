@@ -5,6 +5,31 @@
 <div
   class="min-h-screen flex items-center justify-center w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
 >
+  {% if user.is_authenticated %}
+  <div
+    class="flex align-center justify-center min-w-screen min-h-screen bg-gray-100"
+  >
+    <div
+      class="flex flex-col align-center justify-center min-w-screen min-h-screen"
+    >
+      <div class="shadow-lg p-10 border border-gray-200 rounded-md">
+        <h1 class="text-3xl text-center font-semibold">
+          You are already logged in!
+        </h1>
+        <p class="text-center font-regular mt-2">
+          You must log out first before logging in as a different user!
+        </p>
+        <div class="flex flex-col pt-5 text-center">
+          <a
+            href="{% url 'authentication:logout' %}"
+            class="bg-red-700 py-2 rounded-lg text-white hover:bg-red-900 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+            ><button>Log Out</button></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
   <div
     class="max-w-md w-full space-y-8 bg-white px-10 py-5 rounded-md shadow-lg border border-gray-200"
   >
@@ -15,19 +40,23 @@
         Login to your account
       </h2>
     </div>
-    <form class="mt-8 space-y-6" method="POST" action="{% url 'authentication:login' %}">
+    <form
+      class="mt-8 space-y-6"
+      method="POST"
+      action="{% url 'authentication:login' %}"
+    >
       {% csrf_token %}
       <input type="hidden" name="remember" value="true" />
       <div class="rounded-md shadow-sm -space-y-px">
         <div>
-          <label for="username" class="sr-only">Username</label>
+          <label for="phone_number" class="sr-only">Phone Number</label>
           <input
-            id="username"
-            name="username"
+            id="phone_number"
+            name="phone_number"
             type="text"
             required
             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#FFF100] focus:border-[#FFF100] focus:z-10 sm:text-sm"
-            placeholder="Username"
+            placeholder="Phone Number"
           />
         </div>
         <div>
@@ -93,5 +122,4 @@
     </div>
   </div>
 </div>
-
-{% endblock content %}
+{% endif %} {% endblock content %}
