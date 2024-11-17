@@ -24,7 +24,7 @@
                 <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher berlaku selama <strong>{{ voucher.jumlah_hari_berlaku }} hari</strong> setelah pembelian, dengan maksimal penggunaan hingga <strong>{{ voucher.kuota_penggunaan }} kali</strong>.</p>
                 <button class="btn btn-primary btn-buy" 
                         style="background-color: #006BFF; color: white; font-weight: bold; padding: 10px 20px; border-radius: 20px; margin-top: 10px;" 
-                        onclick="buyVoucher({{ voucher.harga }}, '{{ voucher.kode }}', '{{ voucher.jumlah_hari_berlaku }}', {{ voucher.kuota_penggunaan }})">
+                        onclick="buyVoucher('{{ voucher.harga }}', '{{ voucher.kode }}', '{{ voucher.jumlah_hari_berlaku }}', '{{ voucher.kuota_penggunaan }}')">
                     Dapatkan Sekarang
                 </button>
             </div>
@@ -73,7 +73,7 @@
     if (userBalance >= voucherPrice) {
         userBalance -= voucherPrice;
         modalMessage.innerHTML = `
-            <div style="background-color: #d4edda; color: #155724; font-size: 0.85rem; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center;">
+            <div style="background-color: #d4edda; color: #155724; font-size: 1rem; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center;">
                 <h3 style="font-weight: bold; margin-bottom: 10px;">SUKSES</h3>
                 <p>Selamat! Anda berhasil membeli voucher <strong>${voucherCode}</strong>.</p>
                 <p>Voucher ini berlaku hingga <strong>${voucherExpiry}</strong> dengan kuota penggunaan sebanyak <strong>${voucherQuota}</strong> kali.</p>
