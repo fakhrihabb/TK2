@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <br><br><br><br>
     <meta charset="UTF-8">
     <title>View Pemesanan Jasa</title>
     <!-- Import Google Fonts Noto Sans and Nunito -->
@@ -96,6 +95,70 @@
         .action-button:hover {
             opacity: 0.9;
         }
+
+        /* Form Testimoni */
+        #testimonialForm {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+        }
+        #testimonialForm label {
+            font-weight: bold;
+        }
+        #testimonialForm textarea, #testimonialForm select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        /* Close Button */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .close-button:hover {
+            color: #ff4d4d; /* Warna merah saat di-hover untuk memperjelas fungsi close */
+        }
+
+        /* Submit Button */
+        .submit-button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            background-color: #006BFF;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 16px; /* Ukuran font untuk Submit */
+        }
+
+        .submit-button:hover {
+            background-color: #08C2FF; /* Warna lebih terang saat di-hover */
+        }
+
     </style>
 </head>
 <body>
@@ -154,7 +217,7 @@
                     <td>Rp 150.000</td>
                     <td>Nama Pekerja 2</td>
                     <td>Pesanan Selesai</td>
-                    <td><button class="action-button testimonial-button">Buat Testimoni</button></td>
+                    <td><button class="action-button testimonial-button" onclick="openTestimonialForm()">Buat Testimoni</button></td>
                 </tr>
                 <tr>
                     <td>Subkategori Jasa 3</td>
@@ -167,10 +230,52 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Form Testimoni -->
+    <div id="testimonialForm">
+        <button class="close-button" onclick="closeTestimonialForm()">✖</button>
+        <h3 style="text-align: center; font-weight: bold; color: #006BFF;">Form Testimoni</h3>
+        <label for="rating">Rating:</label>
+        <select id="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <label for="comment">Komentar:</label>
+        <textarea id="comment" rows="4" placeholder="Tulis komentar Anda di sini..."></textarea>
+        <button class="submit-button" onclick="submitTestimonial()">Submit</button>
+    </div>
 </body>
 </html>
 
 <script>
+    // Fungsi untuk menampilkan form testimoni
+    function openTestimonialForm() {
+        document.getElementById('testimonialForm').style.display = 'block';
+    }
+
+    // Fungsi untuk menutup form testimoni
+    function closeTestimonialForm() {
+        document.getElementById('testimonialForm').style.display = 'none';
+    }
+
+    // Fungsi untuk menyembunyikan form dan mengirim data
+    function submitTestimonial() {
+        const rating = document.getElementById('rating').value;
+        const comment = document.getElementById('comment').value;
+        
+        alert('Testimoni berhasil ditambahkan:\nRating: ' + rating + '\nKomentar: ' + comment);
+
+        // Menyembunyikan form setelah submit
+        closeTestimonialForm();
+
+        // Clear form input
+        document.getElementById('rating').value = '1';
+        document.getElementById('comment').value = '';
+    }
+
     // Fungsi untuk menghapus baris secara dinamis
     function deleteDummyRow(button) {
         const row = button.closest('tr');

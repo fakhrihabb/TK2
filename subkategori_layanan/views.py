@@ -1,5 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Subkategori, SesiLayanan, Pekerja, Testimoni
+from .models import Subkategori, SesiLayanan, Pekerja
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+import json
+import os
+from django.conf import settings
 
 def homepage(request):
     return render(request, 'homepage.html')
@@ -8,34 +13,44 @@ def subkategori_detail(request, subkategori_id):
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
     sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
     pekerja_list = Pekerja.objects.filter(subkategori=subkategori)
-    testimoni_list = Testimoni.objects.filter(subkategori=subkategori)
 
     context = {
         'subkategori': subkategori,
         'sesi_layanan': sesi_layanan,
         'pekerja_list': pekerja_list,
-        'testimoni_list': testimoni_list,
     }
     return render(request, 'subkategori_pengguna.html', context)
+
+def load_dummy_testimoni():
+    file_path = os.path.join(settings.BASE_DIR, 'feedback/fixtures/dummy_testimoni.json')
+    with open(file_path, 'r') as json_file:
+        data = json.load(json_file)
+    return data
 
 def subkategori_pengguna(request, subkategori_id):
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
     sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
-    testimoni_list = Testimoni.objects.filter(subkategori=subkategori)
+
+    data = load_dummy_testimoni()  
+    testimonis = data['testimonis']  
 
     context = {
         'subkategori': subkategori,
         'sesi_layanan': sesi_layanan,
-        'testimoni_list': testimoni_list,
+        'testimonis': testimonis,
     }
     return render(request, 'subkategori_pengguna.html', context)
 
 def subkategori_pekerja(request, subkategori_id):
-    # Ambil subkategori berdasarkan ID dan pastikan tipe pekerja
     subkategori = get_object_or_404(Subkategori, id=subkategori_id, tipe='pekerja')
-    
+
+    data = load_dummy_testimoni()  
+    testimonis = data['testimonis']  
+
     context = {
-        'subkategori': subkategori
+        'subkategori': subkategori,
+        'testimonis': testimonis,
+
     }
     return render(request, 'subkategori_pekerja.html', context)
 

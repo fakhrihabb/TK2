@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testimonials</title>
+    <style>
+        .star-rating {
+            display: flex;
+            direction: row-reverse;
+            justify-content: flex-end;
+        }
+    
+        .star-rating input {
+            display: none;
+        }
+    
+        .star-rating label {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+    
+        .star-rating input:checked ~ label,
+        .star-rating input:hover ~ label {
+            color: #ff0; 
+        }
+    
+        .star-rating input:hover {
+            color: #ff0;
+        }
+    </style>    
+</head>
+<body>
+    <div class="container">
+        <h2>Leave a Testimonial</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                {{ form.user }}
+            </div>
+            <div>
+                {{ form.rating }} 
+            </div>
+            <div>
+                {{ form.comment }}
+            </div>
+            <button type="submit">Kirim</button>
+        </form>
+    </div>
+</body>
+</html>
