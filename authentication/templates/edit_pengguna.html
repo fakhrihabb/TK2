@@ -2,7 +2,7 @@
 <title>Register</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 {% endblock meta %} {% block content %} {% include 'navbar.html' %}
-    {% if user.is_authenticated and user.is_pekerja %}
+{% if user.is_authenticated and user.is_pengguna %}
 <div
   class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
 >
@@ -117,15 +117,15 @@
     class="flex flex-col align-center justify-center min-w-screen min-h-screen"
   >
     <div class="shadow-lg p-10 border border-gray-200 rounded-md">
-      <h1 class="text-3xl text-center font-semibold">Anda bukan pekerja!</h1>
+      <h1 class="text-3xl text-center font-semibold">Anda bukan pengguna!</h1>
       <p class="text-center font-regular mt-2">
         Anda tidak seharusnya mengakses url ini!
       </p>
       <div class="flex flex-col pt-5 text-center">
         <a
-          href="{% url 'authentication:update_pengguna' %}"
-          class="bg-bg-[#006BFF] py-2 rounded-lg text-white hover:bg-blue-800 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
-          ><button>Edit profil pengguna</button></a
+          href="{% url 'authentication:update_pekerja' %}"
+          class="bg-[#006BFF] py-2 rounded-lg text-white hover:bg-blue-800 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+          ><button>Edit profil pekerja</button></a
         >
       </div>
     </div>

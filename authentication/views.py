@@ -1,17 +1,14 @@
-
-from lib2to3.fixes.fix_input import context
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.forms import ModelForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.urls import reverse_lazy
-
+from django.contrib.auth import login, authenticate
+from django.urls import reverse_lazy, reverse
 from .models import Pengguna, Pekerja, User
 from django.views.generic import CreateView, UpdateView
-from .forms import PenggunaRegisterForm, PekerjaRegisterForm, UpdatePekerjaForm, UpdateUserForm
+from .forms import PenggunaRegisterForm, PekerjaRegisterForm, UpdatePekerjaForm, UpdateUserForm, UserLoginForm
 from django.contrib.auth import logout
 
 # Create your views here.
@@ -19,17 +16,33 @@ from django.contrib.auth import logout
 def register(request):
     return render(request, 'register.html')
 
+
 def login_user(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+    # Check if the HTTP request method is POST (form submission)
+    if request.method == "POST":
+        phone_number = request.POST.get('phone_number')
+        password = request.POST.get('password')
+
+        # Check if a user with the provided phone no exists
+        if not User.objects.filter(phone_number=phone_number).exists():
+            # Display an error message if the username does not exist
+            messages.error(request, 'Invalid Phone Number')
+            return redirect('/login/')
+
+        # Authenticate the user with the provided phone no and password
+        user = authenticate(phone_number=phone_number, password=password)
+
+        if user is None:
+            # Display an error message if authentication fails (invalid password)
+            messages.error(request, "Invalid Password")
+            return redirect('login')
+        else:
+            # Log in the user and redirect to the home page upon successful login
             login(request, user)
             return redirect('homepage')
-    else:
-        form = AuthenticationForm(request)
-    context = {'form': form}
-    return render(request, 'login.html', context)
+
+    # Render the login page template (GET request)
+    return render(request, 'login.html')
 
 def logout_user(request):
     logout(request)
@@ -53,6 +66,16 @@ def update_pekerja(request):
         user_form = UpdateUserForm(instance=request.user)
     return render(request, 'edit_pekerja.html', {'u_form': user_form,'p_form': pekerja_form})
 
+def update_pengguna(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        if user_form.is_valid():
+            user_form.save()
+            return redirect('authentication:view_profile')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+    return render(request, 'edit_pengguna.html', {'u_form': user_form})
+
 
 class PenggunaRegisterView(CreateView):
     model = User
@@ -65,7 +88,7 @@ class PenggunaRegisterView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('authentication:login')
+        return redirect('authentication:view_profile')
 
 class PekerjaRegisterView(CreateView):
     model = User
@@ -78,4 +101,4 @@ class PekerjaRegisterView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('authentication:login')
+        return redirect('homepage')

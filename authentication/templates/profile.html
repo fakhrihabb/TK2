@@ -10,41 +10,42 @@
   >
     <div class="px-10">
       <h2 class="my-6 text-center text-3xl font-semibold text-black">
-        Hi, {{user.username}}
+        Hi, {{user.first_name}} {{ user.last_name }}
       </h2>
     </div>
-    {% if user.is_pekerja %}
     <div>
       <div class="grid grid-cols-12 gap-2 px-12">
+        {% if user.is_pekerja %}
         <div class="col-span-12 flex justify-center">
           <img
             class="object-scale-down w-48 mb-4 p-2 border-4 rounded-lg border-gray-200"
             src="{{user.pekerja.image_url}}"
           />
         </div>
-
+        {% endif %}
         <p class="col-span-3 text-start">Nama</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.username}}</p>
+        <p class="col-span-8 text-start">{{user.first_name}} {{ user.last_name }}</p>
         <p class="col-span-3 text-start">Jenis Kelamin</p>
         <p class="col-span-1">:</p>
-        {% if user.pekerja.gender == "L" %}
+        {% if user.gender == "Laki" %}
         <p class="col-span-8 text-start">Laki-laki</p>
         {% else %}
         <p class="col-span-8 text-start">Perempuan</p>
         {% endif %}
         <p class="col-span-3 text-start">No. HP</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.phone_number}}</p>
+        <p class="col-span-8 text-start">{{user.phone_number}}</p>
         <p class="col-span-3 text-start">Tanggal Lahir</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.birth_date}}</p>
+        <p class="col-span-8 text-start">{{user.birth_date}}</p>
         <p class="col-span-3 text-start">Alamat</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.address}}</p>
+        <p class="col-span-8 text-start">{{user.address}}</p>
         <p class="col-span-3 text-start">Saldo MyPay</p>
         <p class="col-span-1">:</p>
         <p class="col-span-8 text-start">-</p>
+        {% if user.is_pekerja %}
         <p class="col-span-3 text-start">Nama Bank</p>
         <p class="col-span-1">:</p>
         <p class="col-span-8 text-start">{{user.pekerja.bank}}</p>
@@ -56,10 +57,11 @@
         <p class="col-span-8 text-start">{{user.pekerja.npwp}}</p>
         <p class="col-span-3 text-start">Rating</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">0</p>
+        <p class="col-span-8 text-start">-</p>
         <p class="col-span-3 text-start">Pesanan Selesai</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">0</p>
+        <p class="col-span-8 text-start">-</p>
+        {% endif %} {% if user.is_pekerja %}
         <a
           href="{% url 'authentication:update_pekerja' %}"
           class="mt-4 col-span-2"
@@ -68,38 +70,19 @@
             Edit
           </button>
         </a>
+        {% elif user.is_pengguna %}
+        <a
+          href="{% url 'authentication:update_pengguna' %}"
+          class="mt-4 col-span-2"
+        >
+          <button class="bg-[#006BFF] hover:bg-blue-800 text-white py-2 px-4">
+            Edit
+          </button>
+        </a>
       </div>
     </div>
-    {% elif user.is_pengguna %}
-    <div>
-      <div class="grid grid-cols-12 gap-2 px-12">
-        <p class="col-span-3 text-start">Nama</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.username}}</p>
-        <p class="col-span-3 text-start">Level</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">-</p>
-        <p class="col-span-3 text-start">Jenis Kelamin</p>
-        <p class="col-span-1">:</p>
-        {% if user.pengguna.gender == "Laki" %}
-        <p class="col-span-8 text-start">Laki-laki</p>
-        {% else %}
-        <p class="col-span-8 text-start">Perempuan</p>
-        {% endif %}
-        <p class="col-span-3 text-start">No. HP</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pengguna.phone_number}}</p>
-        <p class="col-span-3 text-start">Tanggal Lahir</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pengguna.birth_date}}</p>
-        <p class="col-span-3 text-start">Alamat</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pengguna.address}}</p>
-        <p class="col-span-3 text-start">Saldo MyPay</p>
-        <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">-</p>
-      </div>
-    </div>
+    {% else %}
+    <div></div>
     {% endif %}
   </div>
 </div>
