@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PenggunaRegisterView, PekerjaRegisterView, register, login_user, logout_user, view_profile
+from .views import PenggunaRegisterView, PekerjaRegisterView, register, login_user, logout_user, view_profile, update_pekerja
 from django.shortcuts import redirect
 
 app_name = 'authentication'
@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('accounts/login/', lambda request: redirect('authentication:login')),
     path('profile/', view_profile, name='view_profile'),
+    path('edit-pekerja/', update_pekerja, name='update_pekerja'),
 ]

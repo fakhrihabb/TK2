@@ -1,13 +1,17 @@
 
 from lib2to3.fixes.fix_input import context
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from django.forms import ModelForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
+from django.urls import reverse_lazy
+
 from .models import Pengguna, Pekerja, User
-from django.views.generic import CreateView
-from .forms import PenggunaRegisterForm, PekerjaRegisterForm
+from django.views.generic import CreateView, UpdateView
+from .forms import PenggunaRegisterForm, PekerjaRegisterForm, UpdatePekerjaForm, UpdateUserForm
 from django.contrib.auth import logout
 
 # Create your views here.
@@ -35,6 +39,20 @@ def logout_user(request):
 def view_profile(request):
     user = request.user
     return render(request, "profile.html", context={'user': user})
+
+def update_pekerja(request):
+    if request.method == 'POST':
+        pekerja_form = UpdatePekerjaForm(request.POST, instance=request.user.pekerja)
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        if pekerja_form.is_valid() and user_form.is_valid():
+            pekerja_form.save()
+            user_form.save()
+            return redirect('homepage')
+    else:
+        pekerja_form = UpdatePekerjaForm(instance=request.user.pekerja)
+        user_form = UpdateUserForm(instance=request.user)
+    return render(request, 'edit_pekerja.html', {'u_form': user_form,'p_form': pekerja_form})
+
 
 class PenggunaRegisterView(CreateView):
     model = User

@@ -69,3 +69,13 @@ class PekerjaRegisterForm(UserCreationForm):
         user.save()
         pekerja = Pekerja.objects.create(user=user, gender=self.cleaned_data['gender'], phone_number=self.cleaned_data['phone_number'], address=self.cleaned_data['address'], image_url=self.cleaned_data['image_url'], birth_date=self.cleaned_data['birth_date'])
         return user
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username']
+
+class UpdatePekerjaForm(forms.ModelForm):
+    class Meta:
+        model = Pekerja
+        fields = ['gender', 'phone_number', 'birth_date', 'address', 'bank', 'bank_number', 'npwp', 'image_url']

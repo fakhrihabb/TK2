@@ -1,5 +1,8 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 
 # Create your models here.
 # class Profile(models.Model):
@@ -72,7 +75,6 @@ class User(AbstractUser):
 
 class Pengguna(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-
     GENDER_CHOICES = (
         ('L', 'Laki'),
         ('P', 'Perempuan'),
