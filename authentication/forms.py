@@ -1,3 +1,5 @@
+import uuid
+
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -23,6 +25,7 @@ class PenggunaRegisterForm(UserCreationForm):
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
+        user.username = uuid.uuid4().hex
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.gender = self.cleaned_data['gender']
@@ -66,6 +69,7 @@ class PekerjaRegisterForm(UserCreationForm):
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
+        user.username = uuid.uuid4().hex
         user.gender = self.cleaned_data['gender']
         user.phone_number = self.cleaned_data['phone_number']
         user.birth_date = self.cleaned_data['birth_date']
