@@ -1,6 +1,4 @@
-<p align='center'>
-GOCLEAN: Sparkle Your Space, Elevate Your Place!
-</p>
+# <p align='center'> GOCLEAN: Sparkle Your Space, Elevate Your Place! </p>
 
 ![Logo](https://github.com/user-attachments/assets/279e3338-37a8-4ae7-816c-c41efa5209ac)
 
