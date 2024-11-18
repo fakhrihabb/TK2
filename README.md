@@ -1,5 +1,7 @@
 # GOCLEAN: Sparkle Your Space, Elevate Your Place!
 
+![Logo](https://github.com/user-attachments/assets/279e3338-37a8-4ae7-816c-c41efa5209ac)
+
 GOCLEAN adalah platform yang dibuat menggunakan Django untuk menyediakan layanan pemesanan jasa rumah tangga. Proyek ini dirancang untuk mempermudah pengguna dalam mengakses layanan seperti pembersihan rumah, servis AC, dan lainnya melalui platform berbasis web.
 
 ## Who are we?
