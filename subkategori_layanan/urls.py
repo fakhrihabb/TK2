@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('pengguna/<int:subkategori_id>/', views.subkategori_pengguna, name='subkategori_pengguna'),
-path('pekerja/<int:subkategori_id>/', views.subkategori_pekerja, name='subkategori_pekerja'),    path('profil/<str:nama_pekerja>/', views.profil_pekerja, name='profil_pekerja'),
+    path('pekerja/<int:subkategori_id>/', views.subkategori_pekerja, name='subkategori_pekerja'),    path('profil/<str:nama_pekerja>/', views.profil_pekerja, name='profil_pekerja'),
+    path('load-dummy-data/', views.load_dummy_data, name='load_dummy_data'),
 ]

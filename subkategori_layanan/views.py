@@ -3,16 +3,47 @@ from .models import Subkategori, SesiLayanan, Pekerja
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.management import call_command
-import json
 import os
 from django.conf import settings
 
+import json
+from django.http import JsonResponse
+from .models import Kategori, Subkategori
+from django.shortcuts import render
+
+
+def load_dummy_data(request):
+    try:
+        # Path ke file JSON
+        file_path = 'subkategori_layanan/fixtures/data_dummy.json'
+
+        # Membaca file JSON
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+
+        # Iterasi data dan simpan ke database
+        for item in data:
+            model_name = item['model']
+            fields = item['fields']
+
+            if model_name == 'subkategori_layanan.kategori':
+                Kategori.objects.update_or_create(
+                    id=item['pk'],
+                    defaults={'nama': fields['nama']}
+                )
+            elif model_name == 'subkategori_layanan.subkategori':
+                kategori = Kategori.objects.get(id=fields['kategori'])
+                Subkategori.objects.update_or_create(
+                    id=item['pk'],
+                    defaults={'nama': fields['nama'], 'kategori': kategori}
+                )
+
+        return JsonResponse({"status": "success", "message": "Data loaded successfully."})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+
 def homepage(request):
     return render(request, 'homepage.html')
-
-def load_fixtures():
-    fixture_path = os.path.join(settings.BASE_DIR, 'subkategori_layanan/fixtures/data_dummy.json')
-    call_command('loaddata', fixture_path, verbosity=0)
 
 
 def subkategori_detail(request, subkategori_id):
@@ -34,7 +65,7 @@ def load_dummy_testimoni():
     return data
 
 def subkategori_pengguna(request, subkategori_id):
-    load_fixtures()
+
 
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
     sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
