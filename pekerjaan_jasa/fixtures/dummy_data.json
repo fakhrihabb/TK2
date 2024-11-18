@@ -1,0 +1,195 @@
+[
+    {
+        "model": "pekerjaan_jasa.servicecategory",
+        "pk": 1,
+        "fields": {
+            "name": "Home Cleaning"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicecategory",
+        "pk": 2,
+        "fields": {
+            "name": "Car Wash"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 1,
+        "fields": {
+            "category": 1,
+            "name": "Setrika"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 2,
+        "fields": {
+            "category": 1,
+            "name": "Pembersihan Dapur"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 3,
+        "fields": {
+            "category": 1,
+            "name": "Daily Cleaning"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 4,
+        "fields": {
+            "category": 2,
+            "name": "Small Size Car"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 5,
+        "fields": {
+            "category": 2,
+            "name": "Medium Size Car"
+        }
+    },
+    {
+        "model": "pekerjaan_jasa.servicesubcategory",
+        "pk": 6,
+        "fields": {
+            "category": 2,
+            "name": "Big Size Car"
+        }
+    },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 1,
+            "fields": {
+                "subcategory": 1,
+                "customer_name": "John Doe",
+                "order_date": "2024-11-01",
+                "work_date": "2024-11-02",
+                "total_cost": "150000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 2,
+            "fields": {
+                "subcategory": 2,
+                "customer_name": "Jane Smith",
+                "order_date": "2024-11-05",
+                "work_date": "2024-11-06",
+                "total_cost": "200000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 3,
+            "fields": {
+                "subcategory": 3,
+                "customer_name": "Alice Johnson",
+                "order_date": "2024-11-10",
+                "work_date": "2024-11-11",
+                "total_cost": "300000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 4,
+            "fields": {
+                "subcategory": 4,
+                "customer_name": "Michael Brown",
+                "order_date": "2024-11-02",
+                "work_date": "2024-11-03",
+                "total_cost": "100000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 5,
+            "fields": {
+                "subcategory": 5,
+                "customer_name": "Emily White",
+                "order_date": "2024-11-06",
+                "work_date": "2024-11-07",
+                "total_cost": "120000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 6,
+            "fields": {
+                "subcategory": 6,
+                "customer_name": "David Green",
+                "order_date": "2024-11-08",
+                "work_date": "2024-11-09",
+                "total_cost": "150000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 7,
+            "fields": {
+                "subcategory": 1,
+                "customer_name": "Sophia Wilson",
+                "order_date": "2024-11-03",
+                "work_date": "2024-11-04",
+                "total_cost": "160000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 8,
+            "fields": {
+                "subcategory": 2,
+                "customer_name": "Liam Harris",
+                "order_date": "2024-11-09",
+                "work_date": "2024-11-10",
+                "total_cost": "190000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 9,
+            "fields": {
+                "subcategory": 3,
+                "customer_name": "Olivia Clark",
+                "order_date": "2024-11-11",
+                "work_date": "2024-11-12",
+                "total_cost": "250000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        },
+        {
+            "model": "pekerjaan_jasa.serviceorder",
+            "pk": 10,
+            "fields": {
+                "subcategory": 4,
+                "customer_name": "James Turner",
+                "order_date": "2024-11-13",
+                "work_date": "2024-11-14",
+                "total_cost": "110000",
+                "status": "mencari",
+                "assigned_worker": null
+            }
+        }
+    ]
+    

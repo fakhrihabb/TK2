@@ -1,0 +1,102 @@
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diskon - Daftar Voucher & Promo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@700&family=Noto+Sans&display=swap" rel="stylesheet">
+</head>
+<body style="background: linear-gradient(160deg, #e1f8fe, #006BFF); font-family: 'Noto Sans', sans-serif; margin: 0; padding: 0 30px;  margin-top: 80px; display: flex; flex-direction: column; align-items: center;">
+
+<!-- Section Voucher Carousel -->
+<div class="section-container" style="background-color: #ffffff7c; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 1000px; margin: 20px;">
+    <h2 class="card-title" style="font-family: 'Nunito Rounded', sans-serif; text-align: center; font-weight: bold; color: #006BFF; font-size: 2rem; margin-bottom: 1rem;">VOUCHER</h2>
+    
+    <div class="carousel-container" style="display: flex; overflow-x: auto; gap: 15px; padding: 20px 0;">
+        {% for voucher in vouchers %}
+        <div class="carousel-item" style="flex-shrink: 0; width: 100%; max-width: 700px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 15px; padding: 25px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); position: relative; overflow: hidden; margin: 15px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div class="voucher-details" style="flex-grow: 1; text-align: left;">
+                <h4 class="voucher-code" style="font-size: 1.6rem; color: #003072; font-weight: bold; margin-bottom: 10px;">Gunakan Kode Voucher: <span style="color: #006BFF; font-weight: bold;">{{ voucher.kode }}</span>!</h4>
+                <p style="font-size: 1rem; color: #555; margin: 5px 0;"><strong>Hanya Rp{{ voucher.harga }}</strong> untuk menikmati diskon menarik!</p>
+                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher ini memberikan potongan Rp{{ voucher.potongan }} untuk transaksi minimal Rp{{ voucher.min_transaksi }}.</p>
+                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher berlaku selama <strong>{{ voucher.jumlah_hari_berlaku }} hari</strong> setelah pembelian, dengan maksimal penggunaan hingga <strong>{{ voucher.kuota_penggunaan }} kali</strong>.</p>
+                <button class="btn btn-primary btn-buy" 
+                        style="background-color: #006BFF; color: white; font-weight: bold; padding: 10px 20px; border-radius: 20px; margin-top: 10px;" 
+                        onclick="buyVoucher('{{ voucher.harga }}', '{{ voucher.kode }}', '{{ voucher.jumlah_hari_berlaku }}', '{{ voucher.kuota_penggunaan }}')">
+                    Dapatkan Sekarang
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Custom Modal Notifikasi -->
+<div id="notificationModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+    <div style="background: white; padding: 20px; border-radius: 10px; width: 80%; max-width: 400px; text-align: center;">
+        <div id="modalMessage" style="margin-bottom: 20px;"></div>
+        <button onclick="closeModal()" style="background-color: #006BFF; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold;">Tutup</button>
+    </div>
+</div>
+
+<!-- Section Promo Carousel -->
+<div class="section-container" style="background-color: #ffffff7c; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 1000px; margin: 20px 20px;">
+    <h2 class="card-title" style="font-family: 'Nunito Rounded', sans-serif; text-align: center; font-weight: bold; color: #006BFF; font-size: 2rem; margin-bottom: 1rem;">PROMO</h2>
+
+    <div class="carousel-container" style="display: flex; overflow-x: auto; gap: 15px; padding: 30px 0;">
+        {% for promo in promos %}
+        <div class="carousel-item" style="flex-shrink: 0; width: 100%; max-width: 500px; background: linear-gradient(135deg, #006BFF, #08C2FF); color: #fff; border-radius: 15px; padding: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); display: flex; justify-content: center; margin: 10px; transition: transform 0.3s ease-in-out;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <div class="promo-card" style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-grow: 1;">
+                <div class="promo-icon" style="background-color: #e0f5fc; padding: 15px; border-radius: 15px; margin-right: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-shopping-bag" style="color: #003072; font-size: 50px;"></i>
+                </div>
+                <div class="promo-details" style="background-color: #e0f5fc; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex-grow: 1;">
+                    <h4 style="font-size: 2rem; margin: 0; font-weight: bold; color: #003072;">{{ promo.kode }}</h4>
+                    <p style="font-size: 1.2rem; margin: 0; color: #003072; font-style: italic;">Berlaku hingga {{ promo.tanggal_akhir_berlaku }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Saldo pengguna (contoh)
+    let userBalance = 50000;
+
+    function buyVoucher(voucherPrice, voucherCode, voucherExpiry, voucherQuota) {
+    const modalMessage = document.getElementById("modalMessage");
+    const notificationModal = document.getElementById("notificationModal");
+
+    if (userBalance >= voucherPrice) {
+        userBalance -= voucherPrice;
+        modalMessage.innerHTML = `
+            <div style="background-color: #d4edda; color: #155724; font-size: 1rem; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center;">
+                <h3 style="font-weight: bold; margin-bottom: 10px;">SUKSES</h3>
+                <p>Selamat! Anda berhasil membeli voucher <strong>${voucherCode}</strong>.</p>
+                <p>Voucher ini berlaku hingga <strong>${voucherExpiry}</strong> dengan kuota penggunaan sebanyak <strong>${voucherQuota}</strong> kali.</p>
+            </div>
+        `;
+    } else {
+        modalMessage.innerHTML = `
+            <div style="background-color: #f8d7da; color: #721c24; font-size: 1rem; border: 1px solid #f5c6cb; border-radius: 8px; padding: 20px; text-align: center;">
+                <h3 style="font-weight: bold; margin-bottom: 10px;">GAGAL</h3>
+                <p>Maaf, saldo Anda tidak cukup untuk membeli voucher <strong>${voucherCode}</strong>.</p>
+            </div>
+        `;
+    }
+
+    // Show modal
+    notificationModal.style.display = "flex";
+    }
+
+    function closeModal() {
+        const notificationModal = document.getElementById("notificationModal");
+        notificationModal.style.display = "none";
+    }
+
+</script>
+</body>
+</html>

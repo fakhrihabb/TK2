@@ -1,0 +1,243 @@
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subkategori Jasa - Pengguna</title>
+    <!-- Import Google Fonts Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Menambahkan FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+            padding: 80px;
+            background-color: #ffffff;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header, .description, .session-list, .worker-list, .testimonial-list {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #08C2FF;
+            color: white;
+            font-weight: 700;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .description h3, .session-list h3{
+            color: #006BFF;
+            margin: 0 ;
+        }
+
+        .worker-list h3, .testimonial-list h3{
+            color: #ffffff;
+            margin: auto;
+        }
+        .description {
+            background-color: #F0F8FF;
+            color: #333;
+            font-size: 1rem;
+        }
+        .session-item, .worker-item, .testimonial-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+        }
+        .session-item:first-child, .worker-item:first-child, .testimonial-item:first-child {
+            border-top: none;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+        .button:hover {
+            background-color: #08C2FF;
+        }
+        .worker-list, .testimonial-list {
+        background: linear-gradient(to right, #006BFF,#08c2ff);
+        color: #333;
+        padding: 15px;
+        border-radius: 8px;
+        }
+        
+        .worker-item, .testimonial-item {
+            text-align: left;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ffffff;
+        }
+        .worker-item a, .testimonial-text {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 100;
+        }
+        .worker-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .testimonial-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center; 
+            margin-bottom: 20px; 
+            text-transform: uppercase; 
+        }
+
+        .testimonial-list {
+            background: linear-gradient(to right, #006BFF, #08c2ff);
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .testimonial-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: #006BFF;
+        }
+
+        .testimonial-body {
+            margin-top: 10px;
+            text-align: justify;
+        }
+
+        .testimonial-footer {
+            display: flex;
+            justify-content: space-between; 
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #006BFF;
+        }
+
+        .testimonial-footer span {
+            display: inline-block;
+        }
+
+        .testimonial-footer .worker-name {
+            font-weight: bold;
+        }
+
+        .testimonial-footer .rating {
+            font-weight: bold;
+            color: #000000; 
+        }
+
+
+        .testimonial-text {
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>Nama Subkategori: Layanan Bersih Rumah</div>
+            <div>Kategori: Kebersihan</div>
+        </div>
+
+        <!-- Deskripsi -->
+        <div class="description">
+            <h3>Deskripsi</h3>
+            <p>Deskripsi singkat mengenai subkategori jasa yang dipilih. Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional.</p>
+        </div>
+
+        <!-- Pilihan Sesi Layanan -->
+        <div class="session-list">
+            <h3>Pilihan Sesi Layanan</h3>
+            <div class="session-item">
+                <span>Sesi Layanan 1</span>
+                <span>Rp 100.000</span>
+                <form action="{% url 'pemesanan_jasa:create_pemesanan' %}" method="get" style="display: inline;">
+                    <button class="button">Pesan</button>
+                </form>                
+            </div>
+            <div class="session-item">
+                <span>Sesi Layanan 2</span>
+                <span>Rp 150.000</span>
+                <form action="{% url 'pemesanan_jasa:create_pemesanan' %}" method="get" style="display: inline;">
+                    <button class="button">Pesan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Daftar Pekerja -->
+        <div class="worker-list">
+            <h3>Pekerja</h3>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 1 %}">Nama Pekerja 1</a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 2 %}">Nama Pekerja 2</a>
+            </div>
+            <div class="worker-item">
+                <a href="{% url 'profil_pekerja' 3 %}">Nama Pekerja 3</a>
+            </div>
+        </div>
+
+        <!-- Testimoni -->
+        <div class="testimonial-list">
+            <h3 class="testimonial-title">Testimoni</h3>
+            {% for testimoni in testimonis|slice:":3" %}
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
+                        <span>Tanggal: {{ testimoni.date_created }}</span>
+                    </div>
+                    <div class="testimonial-body">
+                        <p class="testimonial-text">{{ testimoni.comment }}</p>
+                    </div>
+                    <div class="testimonial-footer">
+                        <span class="worker-name">Nama Pekerja</span>
+                        <span class="rating">Rating: {{ testimoni.rating }}/5</span>
+                    </div> 
+                </div>
+            {% empty %}
+                <p>Tidak ada testimoni untuk ditampilkan.</p>
+            {% endfor %}
+        </div>
+
+
+
+
+
+
+    </div>
+</body>
+</html>

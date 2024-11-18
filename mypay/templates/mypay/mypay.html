@@ -1,0 +1,121 @@
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MyPay - Balance and History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Rounded:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Nunito Rounded', sans-serif;
+            background-color: #FFFFFF;
+            color: #333;
+            margin: 10;
+            padding: 20px;
+            padding-top: 90px; 
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Container for the main MyPay box */
+        .mypay-container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Top section with phone number and transaction button */
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-section div {
+            border: 2px solid #f2f2f2;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 400;
+        }
+
+        /* Saldo styling */
+        .saldo {
+            color: #000000; /* Set color to blue #006BFF */
+            font-size: 1.5em; /* Increase font size */
+            font-weight: 700;
+            margin-bottom: 20px; /* Add space below the saldo */
+        }
+
+        .transaction-button {
+            background-color: #FFF100;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 15px;
+            text-align: center;
+            border-radius: 8px;
+            /* border: 2px solid #BCF2F6; */
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .transaction-button:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Transaction history section */
+        .transaction-history {
+            margin-top: 20px;
+        }
+
+        .transaction-history h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f2f2f2;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: #000000;
+            font-weight: 400;
+        }
+
+        .transaction-item .nominal {
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <div class="mypay-container">
+        <!-- Saldo placed at the top of the container, aligned to the left -->
+        <div class="saldo">Saldo: Rp{{ balance }}</div>
+
+        <!-- Top section with No HP and Lakukan Transaksi button -->
+        <div class="top-section">
+            <div>No HP: {{ user.phone_number }}</div>
+            <a href="{% url 'mypay:transaksi' %}" class="transaction-button">Lakukan Transaksi</a>
+        </div>
+
+        <!-- Transaction history section -->
+        <div class="transaction-history">
+            <h2>Riwayat Transaksi</h2>
+            {% for transaction in transactions %}
+                <div class="transaction-item">
+                    <span class="nominal">{{ transaction.amount | floatformat:2 }}</span>
+                    <span>{{ transaction.date }}</span>
+                    <span>{{ transaction.get_category_display }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
