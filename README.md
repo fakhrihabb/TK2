@@ -1,7 +1,17 @@
-# GOCLEAN: Your home cleaning solution
+# GOCLEAN: Sparkle Your Space, Elevate Your Place!
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lacinia ipsum in quam dignissim, eget tincidunt lorem mollis. Nulla massa eros, blandit eget dapibus in, aliquam vel erat. Curabitur fermentum ullamcorper sapien at lobortis. Sed eu pellentesque dolor, non mattis sapien. Proin ornare nec nisl in pulvinar. Suspendisse sed sagittis orci, a condimentum ligula. Aenean eu varius ipsum. Mauris auctor ipsum et mauris gravida, in rhoncus tortor eleifend. Nulla a suscipit erat. Fusce et odio sit amet velit volutpat accumsan. Praesent viverra sem at eros ultricies, et sodales purus pharetra. Quisque vitae interdum leo, at laoreet tortor.
+GOCLEAN adalah platform yang dibuat menggunakan Django untuk menyediakan layanan pemesanan jasa rumah tangga. Proyek ini dirancang untuk mempermudah pengguna dalam mengakses layanan seperti pembersihan rumah, servis AC, dan lainnya melalui platform berbasis web.
 
-Nam venenatis, nulla et elementum scelerisque, nisl nunc tincidunt nunc, et sollicitudin leo mi in dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo, arcu nec convallis accumsan, turpis nisi interdum ante, quis efficitur nisi nulla nec diam. Nunc vulputate ligula et iaculis varius. Sed id quam sem. Sed quis odio porta mauris euismod pharetra sit amet a massa. Aenean eget ante condimentum, fermentum dolor vitae, luctus orci. Nullam nibh diam, tincidunt ac euismod quis, egestas sed leo. Cras quis malesuada odio, vel faucibus enim.
+## Who are we?
+Proyek Django ini di-develop oleh tim **Queryious Minds** yang beranggotakan:
+1. Adinda Maharani W. (2306165856)
+2. Fakhri Habibi (2306223206)
+3. Leonita Cecilia (2306165710)
+4. Talitha Zenda (2306245554)
 
-Pellentesque gravida, mauris a porttitor ornare, elit velit malesuada justo, at eleifend ex felis sed urna. Aliquam erat volutpat. Phasellus quis tempus elit. Fusce et turpis eleifend, mollis dolor eu, posuere ex. Aliquam tincidunt tortor quis lorem cursus, et varius enim cursus. Vivamus eu leo sagittis, ultrices mauris ac, fermentum diam. Cras venenatis eleifend neque, vel tincidunt tellus posuere nec. Quisque posuere, dolor a rutrum consequat, nisl enim iaculis sem, in rhoncus neque libero sed mauris. Nunc consequat malesuada posuere. Mauris fringilla vel ligula at varius. Pellentesque malesuada mauris et justo rhoncus, ut varius quam tristique.
+### Pembagian tugas (TK 1)
+Adapun pembagian tugas dalam pengembangan proyek ini, yakni sebagai berikut:
+1. Adinda Maharani W. **(BIRU)**: **_CR Testimoni, R Diskon, C Pembelian Voucher, dan trigger pembatasan penggunaan voucher_**
+2. Fakhri Habibi **(KUNING)**: **_Navbar, R Login & Logout, CR Registrasi, RU Profile, trigger pengecekan no HP yang terdaftar, dan trigger pengecekan pasangan nama bank dan nomor rekening pekerja_**
+3. Leonita Cecilia **(MERAH)**: **_R MyPay, CR Transaksi MyPay, RU Pekerjaan Jasa, RU Status Pekerjaan Jasa, dan trigger Pengiriman nominal pekerjaan ke pekerja secara otomatis_**
+4. Talitha Zenda **(HIJAU)**: **_R Homepage, R Subkategori Jasa & Sesi Layanan, CRU Pemesanan Jasa, dan trigger pengembalian saldo my pay pengguna yang membatalkan transaksi try my pay_**
