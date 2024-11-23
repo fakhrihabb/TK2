@@ -75,7 +75,7 @@ class User(AbstractUser):
         ('L', 'Laki-laki'),
         ('P', 'Perempuan'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='L')
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, default='L')
     phone_number = models.CharField(max_length=20, unique=True)
     birth_date = models.DateField()
     address = models.CharField(max_length=100)
