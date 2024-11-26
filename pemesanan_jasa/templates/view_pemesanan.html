@@ -2,14 +2,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-{#    <meta charset="UTF-8">#}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>View Pemesanan Jasa</title>
     <!-- Import Google Fonts Noto Sans and Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Styling CSS */
-                body {
+        body {
             font-family: 'Nunito', sans-serif;
             margin: 0;
             padding: 0;
@@ -116,7 +114,6 @@
             opacity: 0.9;
         }
 
-        /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             th, td {
                 font-size: 12px;
@@ -158,141 +155,9 @@
                 gap: 10px;
             }
         }
-
-        /* Form Testimoni */
-        #testimonialForm {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            max-width: 300px;
-            width: 100%;
-            text-align: center;
-        }
-        #testimonialForm label {
-            font-weight: bold;
-        }
-        #testimonialForm textarea, #testimonialForm select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        /* Close Button */
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #333;
-            padding: 5px;
-            transition: color 0.3s;
-        }
-
-        .close-button:hover {
-            color: #ff4d4d; /* Warna merah saat di-hover untuk memperjelas fungsi close */
-        }
-
-        /* Submit Button */
-        .submit-button {
-            padding: 10px;
-            width: 100%;
-            border: none;
-            border-radius: 5px;
-            background-color: #006BFF;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            font-size: 16px; /* Ukuran font untuk Submit */
-        }
-
-        .submit-button:hover {
-            background-color: #08C2FF; /* Warna lebih terang saat di-hover */
-        }
-
     </style>
 </head>
 <body>
-{#    <div class="container">#}
-{#        <h2>Daftar Pemesanan Jasa</h2>#}
-{##}
-{#        <!-- Filter Bar -->#}
-{#        <div class="filter-bar">#}
-{#            <!-- Dropdown Subkategori -->#}
-{#            <select id="filterSubkategori">#}
-{#                <option value="">Subkategori</option>#}
-{#                <option value="Subkategori Jasa 1">Subkategori 1</option>#}
-{#                <option value="Subkategori Jasa 2">Subkategori 2</option>#}
-{#                <option value="Subkategori Jasa 3">Subkategori 3</option>#}
-{#            </select>#}
-{##}
-{#            <!-- Dropdown Status Pesanan -->#}
-{#            <select id="filterStatus">#}
-{#                <option value="">Status Pesanan</option>#}
-{#                <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>#}
-{#                <option value="Mencari Pekerja">Mencari Pekerja</option>#}
-{#                <option value="Mencari Pekerja Terdekat">Mencari Pekerja Terdekat</option>#}
-{#                <option value="Dalam Proses">Dalam Proses</option>#}
-{#                <option value="Pesanan Selesai">Pesanan Selesai</option>#}
-{#                <option value="Sedang Diproses">Sedang Diproses</option>#}
-{#            </select>#}
-{##}
-{#            <input type="text" id="searchInput" placeholder="Search">#}
-{#            <button onclick="filterRows()">Cari</button>#}
-{#        </div>#}
-{##}
-{#        <!-- Tabel Pemesanan Jasa -->#}
-{#        <table>#}
-{#            <thead>#}
-{#                <tr>#}
-{#                    <th>Subkategori Jasa</th>#}
-{#                    <th>Sesi Layanan</th>#}
-{#                    <th>Harga</th>#}
-{#                    <th>Nama Pekerja</th>#}
-{#                    <th>Status</th>#}
-{#                    <th>Aksi</th>#}
-{#                </tr>#}
-{#            </thead>#}
-{#            <tbody id="tableBody">#}
-{#                <tr>#}
-{#                    <td>Subkategori Jasa 1</td>#}
-{#                    <td>Sesi Layanan 1</td>#}
-{#                    <td>Rp 100.000</td>#}
-{#                    <td>Nama Pekerja 1</td>#}
-{#                    <td>Menunggu Pembayaran</td>#}
-{#                    <td><button class="action-button cancel-button" onclick="deleteDummyRow(this)">Batalkan</button></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td>Subkategori Jasa 2</td>#}
-{#                    <td>Sesi Layanan 2</td>#}
-{#                    <td>Rp 150.000</td>#}
-{#                    <td>Nama Pekerja 2</td>#}
-{#                    <td>Pesanan Selesai</td>#}
-{#                    <td><button class="action-button testimonial-button" onclick="openTestimonialForm()">Buat Testimoni</button></td>#}
-{#                </tr>#}
-{#                <tr>#}
-{#                    <td>Subkategori Jasa 3</td>#}
-{#                    <td>Sesi Layanan 3</td>#}
-{#                    <td>Rp 200.000</td>#}
-{#                    <td>Nama Pekerja 3</td>#}
-{#                    <td>Sedang Diproses</td>#}
-{#                    <td></td>#}
-{#                </tr>#}
-{#            </tbody>#}
-{#        </table>#}
-{#    </div>#}
     <div class="container">
         <h2>Daftar Pemesanan Jasa</h2>
 
@@ -325,115 +190,54 @@
         <table>
             <thead>
                 <tr>
-                    <th>Subkategori Jasa</th>
-                    <th>Sesi Layanan</th>
-                    <th>Harga</th>
-                    <th>Nama Pekerja</th>
+                    <th>Tanggal Pemesanan</th>
+                    <th>Diskon</th>
+                    <th>Total Pembayaran</th>
+                    <th>Metode Pembayaran</th>
                     <th>Status</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <tr>
-                    <td>Subkategori Jasa 1</td>
-                    <td>Sesi Layanan 1</td>
-                    <td>Rp 100.000</td>
-                    <td>Nama Pekerja 1</td>
-                    <td>Menunggu Pembayaran</td>
-                    <td><button class="action-button cancel-button" onclick="deleteDummyRow(this)">Batalkan</button></td>
-                </tr>
-                <tr>
-                    <td>Subkategori Jasa 2</td>
-                    <td>Sesi Layanan 2</td>
-                    <td>Rp 150.000</td>
-                    <td>Nama Pekerja 2</td>
-                    <td>Pesanan Selesai</td>
-                    <td><button class="action-button testimonial-button" onclick="openTestimonialForm()">Buat Testimoni</button></td>
-                </tr>
-                <tr>
-                    <td>Subkategori Jasa 3</td>
-                    <td>Sesi Layanan 3</td>
-                    <td>Rp 200.000</td>
-                    <td>Nama Pekerja 3</td>
-                    <td>Sedang Diproses</td>
-                    <td></td>
-                </tr>
+            <tbody>
+                {% for pesanan in daftar_pesanan %}
+                    <tr>
+                        <td>{{ pesanan.tanggal_pemesanan }}</td>
+                        <td>{{ pesanan.diskon }}</td>
+                        <td>Rp {{ pesanan.total_pembayaran|floatformat:0 }}</td>
+                        <td>{{ pesanan.metode_pembayaran }}</td>
+                        <td>{{ pesanan.status }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">Tidak ada pemesanan.</td>
+                    </tr>
+                {% endfor %}
             </tbody>
-        </table>
+        </table>        
     </div>
 
-    <!-- Form Testimoni -->
-    <div id="testimonialForm">
-        <button class="close-button" onclick="closeTestimonialForm()">✖</button>
-        <h3 style="text-align: center; font-weight: bold; color: #006BFF;">Form Testimoni</h3>
-        <label for="rating">Rating:</label>
-        <select id="rating">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-        <label for="comment">Komentar:</label>
-        <textarea id="comment" rows="4" placeholder="Tulis komentar Anda di sini..."></textarea>
-        <button class="submit-button" onclick="submitTestimonial()">Submit</button>
-    </div>
+    <script>
+        // Fungsi filter untuk subkategori, status, dan pencarian
+        function filterRows() {
+            const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+
+            rows.forEach(row => {
+                const subkategori = row.cells[0].textContent.toLowerCase();
+                const status = row.cells[4].textContent.toLowerCase();
+                const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
+
+                const matchesSubkategori = subkategoriFilter === "" || subkategori === subkategoriFilter;
+                const matchesStatus = statusFilter === "" || status === statusFilter;
+
+                if (matchesSubkategori && matchesStatus && containsKeyword) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
-
-<script>
-    // Fungsi untuk menampilkan form testimoni
-    function openTestimonialForm() {
-        document.getElementById('testimonialForm').style.display = 'block';
-    }
-
-    // Fungsi untuk menutup form testimoni
-    function closeTestimonialForm() {
-        document.getElementById('testimonialForm').style.display = 'none';
-    }
-
-    // Fungsi untuk menyembunyikan form dan mengirim data
-    function submitTestimonial() {
-        const rating = document.getElementById('rating').value;
-        const comment = document.getElementById('comment').value;
-
-        alert('Testimoni berhasil ditambahkan:\nRating: ' + rating + '\nKomentar: ' + comment);
-
-        // Menyembunyikan form setelah submit
-        closeTestimonialForm();
-
-        // Clear form input
-        document.getElementById('rating').value = '1';
-        document.getElementById('comment').value = '';
-    }
-
-    // Fungsi untuk menghapus baris secara dinamis
-    function deleteDummyRow(button) {
-        const row = button.closest('tr');
-        row.remove();
-        alert('Pesanan berhasil dibatalkan.');
-    }
-
-    // Fungsi filter untuk subkategori, status, dan pencarian
-    function filterRows() {
-        const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
-        const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
-        const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#tableBody tr');
-
-        rows.forEach(row => {
-            const subkategori = row.cells[0].textContent.toLowerCase();
-            const status = row.cells[4].textContent.toLowerCase();
-            const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
-
-            const matchesSubkategori = subkategoriFilter === "" || subkategori === subkategoriFilter;
-            const matchesStatus = statusFilter === "" || status === statusFilter;
-
-            if (matchesSubkategori && matchesStatus && containsKeyword) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-</script>

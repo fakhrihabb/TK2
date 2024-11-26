@@ -1,46 +1,45 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Subkategori, SesiLayanan, Pekerja
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.management import call_command
 import os
 from django.conf import settings
-
+from uuid import UUID
 import json
 from django.http import JsonResponse
 from .models import Kategori, Subkategori
 from django.shortcuts import render
 
+# def load_dummy_data(request):
+#     try:
+#         # Path ke file JSON
+#         file_path = 'subkategori_layanan/fixtures/data_dummy.json'
 
-def load_dummy_data(request):
-    try:
-        # Path ke file JSON
-        file_path = 'subkategori_layanan/fixtures/data_dummy.json'
+#         # Membaca file JSON
+#         with open(file_path, 'r') as file:
+#             data = json.load(file)
 
-        # Membaca file JSON
-        with open(file_path, 'r') as file:
-            data = json.load(file)
+#         # Iterasi data dan simpan ke database
+#         for item in data:
+#             model_name = item['model']
+#             fields = item['fields']
 
-        # Iterasi data dan simpan ke database
-        for item in data:
-            model_name = item['model']
-            fields = item['fields']
+#             if model_name == 'subkategori_layanan.kategori':
+#                 Kategori.objects.update_or_create(
+#                     id=item['pk'],
+#                     defaults={'nama': fields['nama']}
+#                 )
+#             elif model_name == 'subkategori_layanan.subkategori':
+#                 kategori = Kategori.objects.get(id=fields['kategori'])
+#                 Subkategori.objects.update_or_create(
+#                     id=item['pk'],
+#                     defaults={'nama': fields['nama'], 'kategori': kategori}
+#                 )
 
-            if model_name == 'subkategori_layanan.kategori':
-                Kategori.objects.update_or_create(
-                    id=item['pk'],
-                    defaults={'nama': fields['nama']}
-                )
-            elif model_name == 'subkategori_layanan.subkategori':
-                kategori = Kategori.objects.get(id=fields['kategori'])
-                Subkategori.objects.update_or_create(
-                    id=item['pk'],
-                    defaults={'nama': fields['nama'], 'kategori': kategori}
-                )
-
-        return JsonResponse({"status": "success", "message": "Data loaded successfully."})
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+#         return JsonResponse({"status": "success", "message": "Data loaded successfully."})
+#     except Exception as e:
+#         return JsonResponse({"status": "error", "message": str(e)})
 
 def homepage(request):
     return render(request, 'homepage.html')
@@ -65,13 +64,18 @@ def load_dummy_testimoni():
     return data
 
 def subkategori_pengguna(request, subkategori_id):
-
-
+    # Ambil Subkategori berdasarkan ID integer
     subkategori = get_object_or_404(Subkategori, id=subkategori_id)
-    sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
 
-    data = load_dummy_testimoni()  
-    testimonis = data['testimonis']  
+    # Ambil SesiLayanan berdasarkan subkategori
+    sesi_layanan = SesiLayanan.objects.filter(subkategori_id=subkategori)
+
+    # Debug: Tampilkan hasil query sesi_layanan
+    print(f"Sesi Layanan untuk Subkategori ID {subkategori_id}: {sesi_layanan}")
+
+    # (Opsional) Load testimoni dummy
+    data = load_dummy_testimoni()
+    testimonis = data['testimonis']
 
     context = {
         'subkategori': subkategori,
@@ -81,7 +85,7 @@ def subkategori_pengguna(request, subkategori_id):
     return render(request, 'subkategori_pengguna.html', context)
 
 def subkategori_pekerja(request, subkategori_id):
-    subkategori = get_object_or_404(Subkategori, id=subkategori_id, tipe='pekerja')
+    subkategori = get_object_or_404(Subkategori, id=subkategori_id)
 
     data = load_dummy_testimoni()  
     testimonis = data['testimonis']  
@@ -89,7 +93,6 @@ def subkategori_pekerja(request, subkategori_id):
     context = {
         'subkategori': subkategori,
         'testimonis': testimonis,
-
     }
     return render(request, 'subkategori_pekerja.html', context)
 
@@ -115,3 +118,13 @@ def profil_pekerja(request, nama_pekerja):
         'pekerja': pekerja
     }
     return render(request, 'profil_pekerja.html', context)
+
+def subkategori_list(request):
+    subkategoris = Subkategori.objects.all()  # Ambil semua data Subkategori
+    context = {'subkategoris': subkategoris}
+    return render(request, 'subkategori_layanan/subkategori_list.html', context)
+
+from django.shortcuts import render
+
+def not_logged_in(request):
+    return render(request, 'not_logged_in.html')

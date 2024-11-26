@@ -167,36 +167,31 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <div>Nama Subkategori: Layanan Bersih Rumah</div>
-            <div>Kategori: Kebersihan</div>
-        </div>
+        <div>Nama Subkategori: {{ subkategori.nama }}</div>
+        <div>Kategori: {{ subkategori.kategori.nama }}</div>
 
         <!-- Deskripsi -->
         <div class="description">
             <h3>Deskripsi</h3>
-            <p>Deskripsi singkat mengenai subkategori jasa yang dipilih. Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional.</p>
+            <p>{{ subkategori.deskripsi }}</p>
         </div>
-
-        <!-- Pilihan Sesi Layanan -->
+        
+        <!-- subkategori_pengguna.html -->
         <div class="session-list">
             <h3>Pilihan Sesi Layanan</h3>
-            <div class="session-item">
-                <span>Sesi Layanan 1</span>
-                <span>Rp 100.000</span>
-                <form action="{% url 'pemesanan_jasa:create_pemesanan' %}" method="get" style="display: inline;">
-                    <button class="button">Pesan</button>
-                </form>                
-            </div>
-            <div class="session-item">
-                <span>Sesi Layanan 2</span>
-                <span>Rp 150.000</span>
-                <form action="{% url 'pemesanan_jasa:create_pemesanan' %}" method="get" style="display: inline;">
-                    <button class="button">Pesan</button>
-                </form>
-            </div>
+            {% for sesi in sesi_layanan %}
+                <div class="session-item">
+                    <span>Sesi {{ sesi.sesi }}</span>
+                    <span>Rp {{ sesi.harga|floatformat:0 }}</span>
+                    <form action="{% url 'pemesanan_jasa:create_pemesanan' sesi.id %}" method="get" style="display: inline;">
+                        <button class="button">Pesan</button>
+                    </form>
+                </div>
+            {% empty %}
+                <p>Tidak ada sesi layanan tersedia.</p>
+            {% endfor %}
         </div>
-
+                
         <!-- Daftar Pekerja -->
         <div class="worker-list">
             <h3>Pekerja</h3>
@@ -232,12 +227,6 @@
                 <p>Tidak ada testimoni untuk ditampilkan.</p>
             {% endfor %}
         </div>
-
-
-
-
-
-
     </div>
 </body>
 </html>

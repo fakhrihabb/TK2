@@ -140,38 +140,37 @@
         </div>
 
         {% for kategori in kategori_list %}
-            {% if is_pengguna and "(Pengguna)" in kategori.nama %}
-                <div class="category-card">
-                    <div class="category-header">{{ kategori.nama }}</div>
-                    <ul class="subcategory-list">
-                        {% for subkategori in subkategori_list %}
-                            {% if subkategori.kategori == kategori %}
-                                <li class="subcategory-item">
-                                    <a href="{% url 'subkategori_pengguna' subkategori.id %}" style="text-decoration: none; color: inherit;">
-                                        {{ subkategori.nama }}
-                                    </a>                                    
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% elif is_pekerja and "(Pekerja)" in kategori.nama %}
-                <div class="category-card">
-                    <div class="category-header">{{ kategori.nama }}</div>
-                    <ul class="subcategory-list">
-                        {% for subkategori in subkategori_list %}
-                            {% if subkategori.kategori == kategori %}
-                                <li class="subcategory-item">
-                                    <a href="{% url 'subkategori_pekerja' subkategori.id %}" style="text-decoration: none; color: inherit;">
+            <div class="category-card">
+                <div class="category-header">{{ kategori.nama }}</div>
+                <ul class="subcategory-list">
+                    {% for subkategori in subkategori_list %}
+                        {% if subkategori.kategori == kategori %}
+                            <li class="subcategory-item">
+                                {% if is_pengguna %}
+                                    <a href="{% url 'subkategori_pengguna' subkategori.id %}">
                                         {{ subkategori.nama }}
                                     </a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
+                                {% elif is_pekerja %}
+                                    <a href="{% url 'subkategori_pekerja' subkategori.id %}">
+                                        {{ subkategori.nama }}
+                                    </a>
+                                {% endif %}
+                            </li>
             {% endif %}
         {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>Debug Kategori List:</h3>
+    <pre>{{ kategori_list }}</pre>
+</div>
+<div>
+    <h3>Debug Subkategori List:</h3>
+    <pre>{{ subkategori_list }}</pre>
+</div>
+
+{% endfor %}
+
     </div>
 
     <script>

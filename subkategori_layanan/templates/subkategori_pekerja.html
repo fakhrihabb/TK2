@@ -136,15 +136,14 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <div>Nama Subkategori: Layanan Bersih Rumah</div>
-            <div>Kategori: Kebersihan</div>
-        </div>
+        <div>Nama Subkategori: {{ subkategori.nama }}</div>
+        <div>Kategori: {{ subkategori.kategori.nama }}</div>
 
         <!-- Deskripsi -->
         <div class="description">
-            <p>Deskripsi singkat mengenai subkategori jasa yang dipilih. Layanan ini mencakup pembersihan rumah secara menyeluruh dengan tenaga profesional.</p>
-        </div>
+            <h3>Deskripsi</h3>
+            <p>{{ subkategori.deskripsi }}</p>
+        </div>        
 
         <!-- Daftar Pekerja -->
         <div class="worker-list">

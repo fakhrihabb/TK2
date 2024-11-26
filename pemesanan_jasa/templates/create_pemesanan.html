@@ -77,41 +77,30 @@
     <div class="form-container">
         <h3>Pesan Jasa</h3>
         <br><br>
-        <form method="post">
+        <form method="POST">
             {% csrf_token %}
-
-            <!-- Tanggal Pemesanan -->
-            <div class="form-group">
-                <label for="tanggal_pemesanan">Tanggal Pemesanan:</label>
+            <div>
+                <label for="tanggal_pemesanan">Tanggal Pemesanan</label>
                 <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" required>
             </div>
-
-            <!-- Diskon -->
-            <div class="form-group">
-                <label for="diskon">Diskon:</label>
-                <input type="text" id="diskon" name="diskon" placeholder="Kode Diskon" oninput="applyDiscount()">
+            <div>
+                <label for="diskon">Diskon</label>
+                <input type="text" id="diskon" name="diskon" placeholder="Masukkan kode diskon">
             </div>
-
-            <!-- Total Pembayaran -->
-            <div class="form-group">
-                <label>Total Pembayaran:</label>
-                <div class="total-display" id="total_pembayaran_display">Rp {{ harga_dasar|floatformat:0 }}</div>
-                <input type="hidden" id="total_pembayaran" name="total_pembayaran" value="{{ harga_dasar }}">
-            </div>
-
-            <!-- Metode Pembayaran -->
-            <div class="form-group">
-                <label for="metode_pembayaran">Metode Pembayaran:</label>
-                <select id="metode_pembayaran" name="metode_pembayaran">
-                    <option value="kartu_kredit">Kartu Kredit</option>
-                    <option value="transfer_bank">Transfer Bank</option>
-                    <option value="ewallet">e-Wallet</option>
+            <div>
+                <label for="metode_pembayaran">Metode Pembayaran</label>
+                <select id="metode_pembayaran" name="metode_pembayaran" required>
+                    <option value="transfer">Transfer</option>
+                    <option value="cash">Cash</option>
                 </select>
             </div>
-
-            <!-- Button Pesan Jasa -->
-            <button type="submit" class="submit-button">Pesan Jasa</button>
-        </form>
+            <div>
+                <p>Total Pembayaran: Rp {{ harga_dasar|floatformat:0 }}</p>
+            </div>
+            <div>
+                <button type="submit">Pesan</button>
+            </div>
+        </form>                
     </div>
 </body>
 </html>
