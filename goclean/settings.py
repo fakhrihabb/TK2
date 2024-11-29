@@ -86,12 +86,12 @@ WSGI_APPLICATION = 'goclean.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'SvWVSXUEToAcRZHhRVnSlCUnGbwGdBkZ',
-        'HOST': 'junction.proxy.rlwy.net',
-        'PORT': '39285',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres.cvcodnolmjlcawbfcebn',
+        'PASSWORD': 'KYX-6ri@DN8Q.wc',
+        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+        'PORT': '5432',
     }
 }
 
