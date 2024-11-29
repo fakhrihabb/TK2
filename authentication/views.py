@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy, reverse
+from django.db import connection
+
 from .models import Pengguna, Pekerja, User
 from django.views.generic import CreateView, UpdateView
 from .forms import PenggunaRegisterForm, PekerjaRegisterForm, UpdatePekerjaForm, UpdateUserForm, UserLoginForm
@@ -16,6 +18,10 @@ from django.contrib.auth import logout
 def register(request):
     return render(request, 'register.html')
 
+def register_pengguna(request):
+    if request.method == 'POST':
+        with connection.cursor() as cursor:
+            email = request.POST['email']
 
 def login_user(request):
     # Check if the HTTP request method is POST (form submission)
@@ -77,28 +83,28 @@ def update_pengguna(request):
     return render(request, 'edit_pengguna.html', {'u_form': user_form})
 
 
-class PenggunaRegisterView(CreateView):
-    model = User
-    form_class = PenggunaRegisterForm
-    template_name = 'pengguna_register.html'
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'pengguna'
-        return super().get_context_data(**kwargs)
-
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('authentication:view_profile')
-
-class PekerjaRegisterView(CreateView):
-    model = User
-    form_class = PekerjaRegisterForm
-    template_name = 'pekerja_register.html'
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'pekerja'
-        return super().get_context_data(**kwargs)
-
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('homepage')
+# class PenggunaRegisterView(CreateView):
+#     model = User
+#     form_class = PenggunaRegisterForm
+#     template_name = 'pengguna_register.html'
+#     def get_context_data(self, **kwargs):
+#         kwargs['user_type'] = 'pengguna'
+#         return super().get_context_data(**kwargs)
+#
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('authentication:view_profile')
+#
+# class PekerjaRegisterView(CreateView):
+#     model = User
+#     form_class = PekerjaRegisterForm
+#     template_name = 'pekerja_register.html'
+#     def get_context_data(self, **kwargs):
+#         kwargs['user_type'] = 'pekerja'
+#         return super().get_context_data(**kwargs)
+#
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('homepage')
