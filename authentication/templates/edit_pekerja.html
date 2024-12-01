@@ -1,100 +1,234 @@
 {% extends 'base.html' %} {% block meta %}
-<title>Register</title>
+<title>Edit Profil</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-{% endblock meta %} {% block content %} {% include 'navbar.html' %}
-    {% if user.is_authenticated and user.is_pekerja %}
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
 <div
   class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
 >
   <div
     class="space-y-8 form-style bg-white mt-20 rounded-md border-gray-200 shadow-lg pb-10 w-full max-w-md"
   >
+    <button
+      class="mt-2 ml-2 text-white w-fit py-1 bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+    >
+      <a
+        class="mx-3 text-white text-xl"
+        href="{% url 'authentication:register' %}"
+        ><</a
+      >
+    </button>
     <div class="px-10">
       <h2 class="mt-4 text-center text-3xl font-semibold text-black">
-        Edit profile
+        Edit Profil
       </h2>
-      <form class="mt-8 space-y-6 px-10" method="POST">
-        {% csrf_token %}
+      <form id="registrationForm" class="mt-8 space-y-6 px-10" method="POST">
+      {% csrf_token %}
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
-          {% for field in u_form %}
-          <div class="{% if not forloop.first %} mt-5 {% endif %}">
+          <div class="form-group">
             <label
-              for="{{ field.id_for_label }}"
+              for="first_name"
               class="mb-2 font-semibold text-black"
             >
-              {{ field.label }}
+              First Name
             </label>
             <div class="relative mb-4">
-              {{ field }}
+              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="John" value="{{ user.name.split.0 }}">
               <div
                 class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
               >
-                {% if field.errors %}
-                <svg
-                  class="h-5 w-5 text-red-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                {% endif %}
               </div>
             </div>
-            {% if field.errors %} {% for error in field.errors %}
-            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %} {% endif %}
           </div>
-          {% endfor %} {% for field in p_form %}
-          <div class="{% if not forloop.first %} mt-5 {% endif %}">
+          <div class="form-group mt-5">
             <label
-              for="{{ field.id_for_label }}"
+              for="last_name"
               class="mb-2 font-semibold text-black"
             >
-              {{ field.label }}
+              Last Name
             </label>
             <div class="relative mb-4">
-              {{ field }}
+              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Doe" value="{{ user.name.split.1 }}">
               <div
                 class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
               >
-                {% if field.errors %}
-                <svg
-                  class="h-5 w-5 text-red-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                {% endif %}
               </div>
             </div>
-            {% if field.errors %} {% for error in field.errors %}
-            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %} {% endif %}
           </div>
-          {% endfor %}
+          <div class="form-group mt-5">
+            <label
+              for="gender"
+              class="mb-2 font-semibold text-black"
+            >
+              Gender
+            </label>
+            <div class="relative mb-4">
+              <select class="form-control" id="gender" name="gender">
+                {% if user.gender == 'L' %}
+                <option value="L" selected="selected">Laki-laki</option>
+                <option value="P">Perempuan</option>
+                {% else %}
+                <option value="L">Laki-laki</option>
+                <option value="P" selected="selected">Perempuan</option>
+                {% endif %}
+              </select>
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="phone_number"
+              class="mb-2 font-semibold text-black"
+            >
+              Phone Number
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="08123456789" value="{{ user.phone_number }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="birth_date"
+              class="mb-2 font-semibold text-black"
+            >
+              Birth Date
+            </label>
+            <div class="relative mb-4">
+              <input type="date" class="form-control" name="birth_date" id="birth_date" value="{{ user.birth_date|stringformat:"s" }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="address"
+              class="mb-2 font-semibold text-black"
+            >
+              Address
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="address" id="address" placeholder="123 Main Street" value="{{ user.address }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="bank"
+              class="mb-2 font-semibold text-black"
+            >
+              Bank
+            </label>
+            <div class="relative mb-4">
+              {% if user.additional_infos.0 == "GoPay" %}
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay" selected="selected">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
+              {% elif user.additional_infos.0 == "OVO" %}
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO" selected="selected">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
+              {% elif user.additional_infos.0 == "Virtual Account BCA" %}
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA" selected="selected">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
+              {% elif user.additional_infos.0 == "Virtual Account BNI" %}
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI" selected="selected">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
+              {% elif user.additional_infos.0 == "Virtual Account Mandiri" %}
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri" selected="selected">Virtual Account Mandiri</option>
+              </select>
+              {% else %}
+              {{ user.additional_infos.0 }}
+              {% endif %}
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="bank_number"
+              class="mb-2 font-semibold text-black"
+            >
+              Nomor Rekening
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="bank_number" id="bank_number" placeholder="1234..." value="{{ user.additional_infos.1 }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="npwp"
+              class="mb-2 font-semibold text-black"
+            >
+              NPWP
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="npwp" id="npwp" placeholder="1234..." value="{{ user.additional_infos.2 }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="image_url"
+              class="mb-2 font-semibold text-black"
+            >
+              Profile Image URL
+            </label>
+            <div class="relative mb-4">
+              <input type="url" class="form-control" name="image_url" id="image_url" placeholder="https://..." value="{{ user.additional_infos.3 }}">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <button
-            type="submit"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
-          >
-            Simpan
-          </button>
-        </div>
-      </form>
-
-      {% if messages %}
+        {% if messages %}
       <div class="mt-4">
         {% for message in messages %}
         <div
@@ -106,51 +240,16 @@
         {% endfor %}
       </div>
       {% endif %}
+        <div>
+          <button
+            type="submit"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-{% elif user.is_authenticated %}
-<div
-  class="flex align-center justify-center min-w-screen min-h-screen bg-gray-100"
->
-  <div
-    class="flex flex-col align-center justify-center min-w-screen min-h-screen"
-  >
-    <div class="shadow-lg p-10 border border-gray-200 rounded-md">
-      <h1 class="text-3xl text-center font-semibold">Anda bukan pekerja!</h1>
-      <p class="text-center font-regular mt-2">
-        Anda tidak seharusnya mengakses url ini!
-      </p>
-      <div class="flex flex-col pt-5 text-center">
-        <a
-          href="{% url 'authentication:update_pengguna' %}"
-          class="bg-bg-[#006BFF] py-2 rounded-lg text-white hover:bg-blue-800 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
-          ><button>Edit profil pengguna</button></a
-        >
-      </div>
-    </div>
-  </div>
-</div>
-{% else %}
-<div
-  class="flex align-center justify-center min-w-screen min-h-screen bg-gray-100"
->
-  <div
-    class="flex flex-col align-center justify-center min-w-screen min-h-screen"
-  >
-    <div class="shadow-lg p-10 border border-gray-200 rounded-md">
-      <h1 class="text-3xl text-center font-semibold">You are not logged in!</h1>
-      <p class="text-center font-regular mt-2">
-        You must be logged in to be able to edit user!
-      </p>
-      <div class="flex flex-col pt-5 text-center">
-        <a
-          href="{% url 'authentication:logout' %}"
-          class="bg-red-700 py-2 rounded-lg text-white hover:bg-red-900 hover:shadow-md hover:-translate-y-0.5 transition duration-500"
-          ><button>Log Out</button></a
-        >
-      </div>
-    </div>
-  </div>
-</div>
-{% endif %} {% endblock content %}
+{% endblock content %}
