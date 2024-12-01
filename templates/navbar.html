@@ -3,7 +3,7 @@
 <nav
   class="bg-[#006BFF] fixed w-full z-20 top-0 start-0 border-b border-gray-200"
 >
-  {% if user.is_authenticated %}
+  {% if user.logged_in %}
   <!-- logged in -->
   <div
     class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
@@ -41,7 +41,7 @@
               >MyPay</a
             >
           </li>
-          {% if user.is_pengguna %}
+          {% if user.is_pekerja == False %}
           <li>
             <a
               href="{% url 'pemesanan_jasa:view_pemesanan' %}"
@@ -92,9 +92,9 @@
         type="button"
       >
         <div class="flex flex-col justify-start align-center">
-          <div>Hi, {{user.first_name}} {{user.last_name}}</div>
+          <div>Hi, {{user.name}}</div>
           <div class="text-xs">
-            {% if user.is_pekerja %} Pekerja {% elif user.is_pengguna %}
+            {% if user.is_pekerja %} Pekerja {% else %}
             Pengguna {% endif %}
           </div>
         </div>

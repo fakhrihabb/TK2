@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block meta %}
-<title>Register</title>
+<title>Edit Profil</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 {% endblock meta %} {% block content %} {% include 'navbar.html' %}
 {% if user.is_authenticated and user.is_pengguna %}
@@ -11,7 +11,7 @@
   >
     <div class="px-10">
       <h2 class="mt-4 text-center text-3xl font-semibold text-black">
-        Edit profile
+        Edit profil
       </h2>
       <form class="mt-8 space-y-6 px-10" method="POST">
         {% csrf_token %}

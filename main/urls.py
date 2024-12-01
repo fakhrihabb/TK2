@@ -13,5 +13,4 @@ urlpatterns = [
     path('discounts/', include('discounts.urls', namespace='discounts')),
     path('feedback/', include('feedback.urls')),
     path('subkategori/<int:id>/', views.subkategori_detail, name='subkategori_detail'),
-    path('not-logged-in/', views.not_logged_in, name='not_logged_in'),
 ]

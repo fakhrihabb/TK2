@@ -1,21 +1,6 @@
 {% load static %}
 {% include 'navbar.html' %}
 <br><br><br><br>
-{% if not user.is_authenticated %}
-    <div class="grid h-screen place-items-center bg-gray-100">
-        <div class="flex flex-col bg-white p-10 shadow-lg rounded-md">
-            <h1 class="text-xl font-semibold">Oops! Anda belum login :(</h1>
-            <div class="flex justify-center mt-2 gap-2">
-                <a href="{% url 'authentication:login' %}">
-                    <div class="bg-[#006BFF] py-2 px-4 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500">Login</div>
-                </a>
-                <a href="{% url 'authentication:register' %}">
-                    <div class="bg-[#006BFF] py-2 px-4 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500">Register</div>
-                </a>
-            </div>
-        </div>
-    </div>
-{% else %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -210,4 +195,3 @@
     
 </body>
 </html> 
-{% endif %}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block meta %}
-<title>Register</title>
+<title>Profile</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 {% endblock meta %} {% block content %} {% include 'navbar.html' %}
 <div
@@ -10,7 +10,7 @@
   >
     <div class="px-10">
       <h2 class="my-6 text-center text-3xl font-semibold text-black">
-        Hi, {{user.first_name}} {{ user.last_name }}
+        Hi, {{ user.name }}
       </h2>
     </div>
     <div>
@@ -19,16 +19,16 @@
         <div class="col-span-12 flex justify-center">
           <img
             class="object-scale-down w-48 mb-4 p-2 border-4 rounded-lg border-gray-200"
-            src="{{user.pekerja.image_url}}"
+            src="{{user.additional_infos.3}}"
           />
         </div>
         {% endif %}
         <p class="col-span-3 text-start">Nama</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.first_name}} {{ user.last_name }}</p>
+        <p class="col-span-8 text-start">{{ user.name }}</p>
         <p class="col-span-3 text-start">Jenis Kelamin</p>
         <p class="col-span-1">:</p>
-        {% if user.gender == "Laki" %}
+        {% if user.gender == "L" %}
         <p class="col-span-8 text-start">Laki-laki</p>
         {% else %}
         <p class="col-span-8 text-start">Perempuan</p>
@@ -44,23 +44,27 @@
         <p class="col-span-8 text-start">{{user.address}}</p>
         <p class="col-span-3 text-start">Saldo MyPay</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">Rp{{ user.saldo_mypay }}</p>
+        <p class="col-span-8 text-start">Rp{{ user.saldo }}</p>
         {% if user.is_pekerja %}
         <p class="col-span-3 text-start">Nama Bank</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.bank}}</p>
+        <p class="col-span-8 text-start">{{user.additional_infos.0}}</p>
         <p class="col-span-3 text-start">No Rekening</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.bank_number}}</p>
+        <p class="col-span-8 text-start">{{user.additional_infos.1}}</p>
         <p class="col-span-3 text-start">NPWP</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">{{user.pekerja.npwp}}</p>
+        <p class="col-span-8 text-start">{{user.additional_infos.2}}</p>
         <p class="col-span-3 text-start">Rating</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">5/5</p>
+        <p class="col-span-8 text-start">{{user.additional_infos.4}}/5</p>
         <p class="col-span-3 text-start">Pesanan Selesai</p>
         <p class="col-span-1">:</p>
-        <p class="col-span-8 text-start">2</p>
+        <p class="col-span-8 text-start">{{ user.additional_infos.5 }}</p>
+        {% elif user.is_pekerja == False %}
+        <p class="col-span-3 text-start">Level</p>
+        <p class="col-span-1">:</p>
+        <p class="col-span-8 text-start">{{ user.additional_infos.0 }}</p>
         {% endif %} {% if user.is_pekerja %}
         <a
           href="{% url 'authentication:update_pekerja' %}"
@@ -70,7 +74,7 @@
             Edit
           </button>
         </a>
-        {% elif user.is_pengguna %}
+        {% elif user.is_pekerja == False %}
         <a
           href="{% url 'authentication:update_pengguna' %}"
           class="mt-4 col-span-2"

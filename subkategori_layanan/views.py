@@ -125,6 +125,3 @@ def subkategori_list(request):
     return render(request, 'subkategori_layanan/subkategori_list.html', context)
 
 from django.shortcuts import render
-
-def not_logged_in(request):
-    return render(request, 'not_logged_in.html')

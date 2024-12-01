@@ -1,7 +1,9 @@
 {% extends 'base.html' %} {% block meta %}
 <title>Register</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-{% endblock meta %} {% block content %} {% include 'navbar.html' %}
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
 <div
   class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"
 >
@@ -9,7 +11,6 @@
     class="space-y-8 form-style bg-white mt-20 rounded-md border-gray-200 shadow-lg pb-10 w-full max-w-md"
   >
     <button
-      href=""
       class="mt-2 ml-2 text-white w-fit py-1 bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
     >
       <a
@@ -22,56 +23,185 @@
       <h2 class="mt-4 text-center text-3xl font-semibold text-black">
         Buat akun pekerja
       </h2>
-      <form class="mt-8 space-y-6 px-10" method="POST">
-        {% csrf_token %}
+      <form id="registrationForm" class="mt-8 space-y-6 px-10" method="POST">
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
-          {% for field in form %}
-          <div class="{% if not forloop.first %} mt-5 {% endif %}">
+          <div class="form-group">
             <label
-              for="{{ field.id_for_label }}"
+              for="first_name"
               class="mb-2 font-semibold text-black"
             >
-              {{ field.label }}
+              First Name
             </label>
             <div class="relative mb-4">
-              {{ field }}
+              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="John">
               <div
                 class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
               >
-                {% if field.errors %}
-                <svg
-                  class="h-5 w-5 text-red-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                {% endif %}
               </div>
             </div>
-            {% if field.errors %} {% for error in field.errors %}
-            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %} {% endif %}
           </div>
-          {% endfor %}
+          <div class="form-group mt-5">
+            <label
+              for="last_name"
+              class="mb-2 font-semibold text-black"
+            >
+              Last Name
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Doe">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="gender"
+              class="mb-2 font-semibold text-black"
+            >
+              Gender
+            </label>
+            <div class="relative mb-4">
+              <select class="form-control" id="gender" name="gender">
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="phone_number"
+              class="mb-2 font-semibold text-black"
+            >
+              Phone Number
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="08123456789">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="password"
+              class="mb-2 font-semibold text-black"
+            >
+              Password
+            </label>
+            <div class="relative mb-4">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="birth_date"
+              class="mb-2 font-semibold text-black"
+            >
+              Birth Date
+            </label>
+            <div class="relative mb-4">
+              <input type="date" class="form-control" name="birth_date" id="birth_date">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="address"
+              class="mb-2 font-semibold text-black"
+            >
+              Address
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="address" id="address" placeholder="123 Main Street">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="bank"
+              class="mb-2 font-semibold text-black"
+            >
+              Bank
+            </label>
+            <div class="relative mb-4">
+              <select class="form-control" id="bank" name="bank">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="bank_number"
+              class="mb-2 font-semibold text-black"
+            >
+              Nomor Rekening
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="bank_number" id="bank_number" placeholder="1234...">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="npwp"
+              class="mb-2 font-semibold text-black"
+            >
+              NPWP
+            </label>
+            <div class="relative mb-4">
+              <input type="text" class="form-control" name="npwp" id="npwp" placeholder="1234...">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-5">
+            <label
+              for="image_url"
+              class="mb-2 font-semibold text-black"
+            >
+              Profile Image URL
+            </label>
+            <div class="relative mb-4">
+              <input type="url" class="form-control" name="image_url" id="image_url" placeholder="https://...">
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <button
-            type="submit"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
-          >
-            Register
-          </button>
-        </div>
-      </form>
-
-      {% if messages %}
+        {% if messages %}
       <div class="mt-4">
         {% for message in messages %}
         <div
@@ -83,6 +213,15 @@
         {% endfor %}
       </div>
       {% endif %}
+        <div>
+          <button
+            type="submit"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#006BFF] py-2 rounded-lg text-white hover:bg-[#FFF100] hover:text-[#006BFF] hover:shadow-md hover:-translate-y-0.5 transition duration-500"
+          >
+            Register
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
