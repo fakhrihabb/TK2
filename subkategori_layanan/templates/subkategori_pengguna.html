@@ -75,30 +75,44 @@
             font-size: 1rem;
         }
         .button:hover {
-            background-color: #08C2FF;
-        }
-        .worker-list, .testimonial-list {
-        background: linear-gradient(to right, #006BFF,#08c2ff);
-        color: #333;
-        padding: 15px;
-        border-radius: 8px;
-        }
-        
-        .worker-item, .testimonial-item {
-            text-align: left;
-            padding: 10px;
-            border-radius: 5px;
-            color: #ffffff;
-        }
-        .worker-item a, .testimonial-text {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 100;
-        }
-        .worker-item a:hover {
-            text-decoration: underline;
-        }
-        
+    background-color: #08C2FF;
+}
+
+.worker-list, .testimonial-list {
+    background: linear-gradient(to right, #006BFF, #08c2ff);
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.worker-item, .testimonial-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 1rem;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.worker-item {
+    width: 200px; /* Ukuran khusus untuk worker-item */
+}
+
+.worker-item a, .testimonial-text {
+    color: #006BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.worker-item a:hover {
+    text-decoration: underline;
+}
+
+
         .testimonial-title {
             font-size: 1.5rem;
             font-weight: bold;
@@ -183,9 +197,9 @@
                 <div class="session-item">
                     <span>Sesi {{ sesi.sesi }}</span>
                     <span>Rp {{ sesi.harga|floatformat:0 }}</span>
-                    <form action="{% url 'pemesanan_jasa:create_pemesanan' sesi.id %}" method="get" style="display: inline;">
+                    <form action="{% url 'pemesanan_jasa:create_pemesanan' subkategori.id sesi.id %}" method="get" style="display: inline;">
                         <button class="button">Pesan</button>
-                    </form>
+                    </form>                    
                 </div>
             {% empty %}
                 <p>Tidak ada sesi layanan tersedia.</p>
@@ -195,19 +209,30 @@
         <!-- Daftar Pekerja -->
         <div class="worker-list">
             <h3>Pekerja</h3>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 1 %}">Nama Pekerja 1</a>
-            </div>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 2 %}">Nama Pekerja 2</a>
-            </div>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 3 %}">Nama Pekerja 3</a>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                {% for pekerja in pekerja_list %}
+                    <div class="worker-item">
+                        <div style="text-align: center;">
+                            <!-- Ikon Pekerja -->
+                            <div style="font-size: 2rem; color: #006BFF; text-align: left;">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <!-- Nama Pekerja dengan Link -->
+                            <div style="margin-top: 5px; font-weight: bold; font-size: 1.1rem; color: #006BFF;">
+                                <a href="{% url 'profil_pekerja' pekerja.id %}" style="text-decoration: none; color: inherit;">
+                                    {{ pekerja.nama_lengkap }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="color: white;">Tidak ada pekerja yang terdaftar.</p>
+                {% endfor %}
             </div>
         </div>
 
         <!-- Testimoni -->
-        <div class="testimonial-list">
+        <div class="testimonial-list" style="margin-top: 50px;">
             <h3 class="testimonial-title">Testimoni</h3>
             {% for testimoni in testimonis|slice:":3" %}
                 <div class="testimonial-card">

@@ -22,10 +22,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <!-- Google Fonts Noto Sans and Nunito -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Nunito:wght@400;700&display=swap">
     <style>
-        /* Font untuk seluruh halaman */
         body {
             font-family: 'Noto Sans', sans-serif;
             display: flex;
@@ -39,7 +37,6 @@
             width: 80%;
             margin: auto;
         }
-        /* Centered Welcome Message */
         .welcome-message {
             text-align: center;
             margin-top: 50px;
@@ -48,7 +45,7 @@
             font-size: 40px;
             margin: 0;
             color: #333;
-            font-weight: 700; /* Mengubah ketebalan font menjadi lebih tebal */
+            font-weight: 700;
         }
         .welcome-message p {
             font-size: 25px;
@@ -120,94 +117,98 @@
 </head>
 <body>
     <div class="welcome-message">
-        <h1 style="font-weight: 700;">Welcome to GOCLEAN!</h1>
-        <p style="font-weight: 200;">Sparkle Your Space, Elevate Your Place!</p>
+        <h1>Welcome to GOCLEAN!</h1>
+        <p>Sparkle Your Space, Elevate Your Place!</p>
     </div>
     
     <div class="container">
-        <!-- Filter Bar -->
         <div class="filter-bar">
+            <!-- Dropdown Filter Kategori -->
             <select id="categoryFilter" onchange="filterByCategory()">
-                <option value="">Kategori</option>
+                <option value="">Pilih Kategori</option>
                 {% for kategori in kategori_list %}
-                    <option value="{{ kategori.id }}">{{ kategori.nama }}</option>
+                    <option value="{{ kategori.0 }}">{{ kategori.1 }}</option>
                 {% endfor %}
             </select>
-            
-            <input type="text" id="searchBar" placeholder="Nama Subkategori" onkeyup="filterBySearch()">
-            
-            <button onclick="search()">Search</button>
+            <!-- Search Bar -->
+            <input type="text" id="searchBar" placeholder="Cari Subkategori" onkeyup="filterBySearch()">
+            <button onclick="search()">Cari</button>
         </div>
-
+    
+        <!-- Card Kategori dan Subkategori -->
         {% for kategori in kategori_list %}
             <div class="category-card">
-                <div class="category-header">{{ kategori.nama }}</div>
+                <div class="category-header">{{ kategori.1 }}</div>
                 <ul class="subcategory-list">
                     {% for subkategori in subkategori_list %}
-                        {% if subkategori.kategori == kategori %}
-                            <li class="subcategory-item">
+                        {% if subkategori.2 == kategori.0 %}
+                            <li class="subcategory-item" data-category-id="{{ subkategori.2 }}">
                                 {% if is_pengguna %}
-                                    <a href="{% url 'subkategori_pengguna' subkategori.id %}">
-                                        {{ subkategori.nama }}
+                                    <a href="{% url 'subkategori_pengguna' subkategori.0 %}">
+                                        {{ subkategori.1 }}
                                     </a>
                                 {% elif is_pekerja %}
-                                    <a href="{% url 'subkategori_pekerja' subkategori.id %}">
-                                        {{ subkategori.nama }}
+                                    <a href="{% url 'subkategori_pekerja' subkategori.0 %}">
+                                        {{ subkategori.1 }}
                                     </a>
                                 {% endif %}
                             </li>
-            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>                                                               
+            </div>
         {% endfor %}
-    </ul>
-</div>
-<div>
-    <h3>Debug Kategori List:</h3>
-    <pre>{{ kategori_list }}</pre>
-</div>
-<div>
-    <h3>Debug Subkategori List:</h3>
-    <pre>{{ subkategori_list }}</pre>
-</div>
-
-{% endfor %}
-
-    </div>
+    </div>    
 
     <script>
         function filterByCategory() {
             const selectedCategory = document.getElementById("categoryFilter").value;
             const subcategoryItems = document.querySelectorAll(".subcategory-item");
-    
+
             subcategoryItems.forEach(item => {
                 const categoryId = item.getAttribute("data-category-id");
-                if (selectedCategory === "" || categoryId === selectedCategory) {
-                    item.style.display = "block";
-                } else {
-                    item.style.display = "none";
-                }
+                item.style.display = (selectedCategory === "" || categoryId === selectedCategory) ? "block" : "none";
             });
         }
-    
+
         function filterBySearch() {
             const searchQuery = document.getElementById("searchBar").value.toLowerCase();
             const subcategoryItems = document.querySelectorAll(".subcategory-item");
-    
+
             subcategoryItems.forEach(item => {
                 const subcategoryName = item.textContent.toLowerCase();
-                if (subcategoryName.includes(searchQuery)) {
-                    item.style.display = "block";
-                } else {
-                    item.style.display = "none";
-                }
+                item.style.display = subcategoryName.includes(searchQuery) ? "block" : "none";
             });
         }
-    
+
         function search() {
             filterByCategory();
             filterBySearch();
-        }
+        }function filterByCategory() {
+    const selectedCategory = document.getElementById("categoryFilter").value;
+    const subcategoryItems = document.querySelectorAll(".subcategory-item");
+
+    subcategoryItems.forEach(item => {
+        const categoryId = item.getAttribute("data-category-id");
+        item.style.display = (selectedCategory === "" || categoryId === selectedCategory) ? "block" : "none";
+    });
+}
+
+function filterBySearch() {
+    const searchQuery = document.getElementById("searchBar").value.toLowerCase();
+    const subcategoryItems = document.querySelectorAll(".subcategory-item");
+
+    subcategoryItems.forEach(item => {
+        const subcategoryName = item.textContent.toLowerCase();
+        item.style.display = subcategoryName.includes(searchQuery) ? "block" : "none";
+    });
+}
+
+function search() {
+    filterByCategory();
+    filterBySearch();
+}
     </script>
-    
 </body>
-</html> 
+</html>
 {% endif %}

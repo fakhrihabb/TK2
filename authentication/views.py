@@ -10,6 +10,7 @@ from .models import Pengguna, Pekerja, User
 from django.views.generic import CreateView, UpdateView
 from .forms import PenggunaRegisterForm, PekerjaRegisterForm, UpdatePekerjaForm, UpdateUserForm, UserLoginForm
 from django.contrib.auth import logout
+from django.db import connection
 
 # Create your views here.
 
@@ -18,31 +19,38 @@ def register(request):
 
 
 def login_user(request):
-    # Check if the HTTP request method is POST (form submission)
     if request.method == "POST":
         phone_number = request.POST.get('phone_number')
         password = request.POST.get('password')
 
-        # Check if a user with the provided phone no exists
-        if not User.objects.filter(phone_number=phone_number).exists():
-            # Display an error message if the username does not exist
-            messages.error(request, 'Invalid Phone Number')
-            return redirect('authentication:login')
-
-        # Authenticate the user with the provided phone no and password
+        # Cek apakah user ada di authentication_user
         user = authenticate(phone_number=phone_number, password=password)
 
-        if user is None:
-            # Display an error message if authentication fails (invalid password)
-            messages.error(request, "Invalid Password")
-            return redirect('authentication:login')
-        else:
-            # Log in the user and redirect to the home page upon successful login
+        if user:
+            # Cek apakah user sudah terdaftar di profil_pekerja
+            query_check = "SELECT COUNT(*) FROM profil_pekerja WHERE user_id = %s"
+            with connection.cursor() as cursor:
+                cursor.execute(query_check, [user.id])
+                result = cursor.fetchone()
+
+            if result[0] == 0:  # Jika belum ada, tambahkan
+                query_insert = """
+                    INSERT INTO profil_pekerja (id, user_id, nama, nama_bank, nomor_rekening, rating, jml_pesanan_selesai)
+                    VALUES (gen_random_uuid(), %s, %s, 'Bank Mandiri', '123456789', 4.5, 0)
+                """
+                with connection.cursor() as cursor:
+                    cursor.execute(query_insert, [
+                        user.id,
+                        f"{user.first_name} {user.last_name}"
+                    ])
             login(request, user)
             return redirect('homepage')
+        else:
+            messages.error(request, "Invalid Phone Number or Password")
+            return redirect('authentication:login')
 
-    # Render the login page template (GET request)
     return render(request, 'login.html')
+
 
 def logout_user(request):
     logout(request)
@@ -94,11 +102,36 @@ class PekerjaRegisterView(CreateView):
     model = User
     form_class = PekerjaRegisterForm
     template_name = 'pekerja_register.html'
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'pekerja'
-        return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         user = form.save()
+        print(f"User berhasil dibuat: {user.id}, {user.phone_number}")
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO profil_pekerja (id, user_id, nama, phone_number, nama_bank, nomor_rekening, rating, jml_pesanan_selesai)
+                    VALUES (
+                        gen_random_uuid(), 
+                        %s, 
+                        %s, 
+                        %s, 
+                        %s, 
+                        %s, 
+                        %s, 
+                        %s
+                    )
+                """, [
+                    user.id,
+                    f"{user.first_name} {user.last_name}",
+                    user.phone_number,
+                    "Bank Default",
+                    "0000000000",
+                    0,
+                    0
+                ])
+
+                print("Pekerja berhasil ditambahkan ke profil_pekerja")
+        except Exception as e:
+            print(f"Error: {e}")
         login(self.request, user)
         return redirect('homepage')

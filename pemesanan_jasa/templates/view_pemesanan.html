@@ -165,11 +165,12 @@
         <div class="filter-bar">
             <!-- Dropdown Subkategori -->
             <select id="filterSubkategori">
-                <option value="">Subkategori</option>
-                <option value="Subkategori Jasa 1">Subkategori 1</option>
-                <option value="Subkategori Jasa 2">Subkategori 2</option>
-                <option value="Subkategori Jasa 3">Subkategori 3</option>
+                <option value="">Semua Subkategori</option>
+                {% for subkategori in daftar_subkategori %}
+                    <option value="{{ subkategori.0 }}">{{ subkategori.1 }}</option>
+                {% endfor %}
             </select>
+                       
 
             <!-- Dropdown Status Pesanan -->
             <select id="filterStatus">
@@ -190,6 +191,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Subkategori</th>
                     <th>Tanggal Pemesanan</th>
                     <th>Diskon</th>
                     <th>Total Pembayaran</th>
@@ -198,46 +200,59 @@
                 </tr>
             </thead>
             <tbody>
-                {% for pesanan in daftar_pesanan %}
-                    <tr>
-                        <td>{{ pesanan.tanggal_pemesanan }}</td>
-                        <td>{{ pesanan.diskon }}</td>
-                        <td>Rp {{ pesanan.total_pembayaran|floatformat:0 }}</td>
-                        <td>{{ pesanan.metode_pembayaran }}</td>
-                        <td>{{ pesanan.status }}</td>
-                    </tr>
+                {% for pesanan in pemesanan_dengan_status %}
+                <tr>
+                    <td>{{ pesanan.nama_subkategori }}</td>
+                    <td>{{ pesanan.tanggal_pemesanan }}</td>
+                    <td>{{ pesanan.diskon }}</td>
+                    <td>Rp {{ pesanan.total_pembayaran|floatformat:0 }}</td>
+                    <td>{{ pesanan.metode_pembayaran }}</td>
+                    <td>
+                        {{ pesanan.status }}
+                        <div>
+                            {% if pesanan.status == "Menunggu Pembayaran" or pesanan.status == "Mencari Pekerja Terdekat" %}
+                                <form action="{% url 'pemesanan_jasa:batalkan_pesanan' pesanan.id %}" method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button class="action-button cancel-button" type="submit">Batalkan</button>
+                                </form>
+                            {% elif pesanan.status == "Pesanan Selesai" %}
+                                <button class="action-button testimonial-button">Buat Testimoni</button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="5">Tidak ada pemesanan.</td>
-                    </tr>
+                <tr>
+                    <td colspan="5">Tidak ada pemesanan.</td>
+                </tr>
                 {% endfor %}
-            </tbody>
-        </table>        
+            </tbody>                
+        </table>     
     </div>
 
     <script>
         // Fungsi filter untuk subkategori, status, dan pencarian
         function filterRows() {
-            const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
-            const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('table tbody tr');
+    const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
+    const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+    const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('table tbody tr');
 
-            rows.forEach(row => {
-                const subkategori = row.cells[0].textContent.toLowerCase();
-                const status = row.cells[4].textContent.toLowerCase();
-                const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
+    rows.forEach(row => {
+        const subkategori = row.cells[0]?.textContent.toLowerCase() || ''; // Pastikan indeks kolom sesuai
+        const status = row.cells[4]?.textContent.toLowerCase() || ''; // Pastikan indeks kolom sesuai
+        const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
 
-                const matchesSubkategori = subkategoriFilter === "" || subkategori === subkategoriFilter;
-                const matchesStatus = statusFilter === "" || status === statusFilter;
+        const matchesSubkategori = subkategoriFilter === "" || subkategori.includes(subkategoriFilter);
+        const matchesStatus = statusFilter === "" || status.includes(statusFilter);
 
-                if (matchesSubkategori && matchesStatus && containsKeyword) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+        if (matchesSubkategori && matchesStatus && containsKeyword) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
         }
+    });
+}
     </script>
 </body>
 </html>

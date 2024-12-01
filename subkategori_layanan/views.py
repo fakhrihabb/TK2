@@ -1,130 +1,177 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Subkategori, SesiLayanan, Pekerja
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
-from django.core.management import call_command
-import os
-from django.conf import settings
-from uuid import UUID
-import json
-from django.http import JsonResponse
-from .models import Kategori, Subkategori
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.db import connection
+from django.http import HttpResponseBadRequest
 
-# def load_dummy_data(request):
-#     try:
-#         # Path ke file JSON
-#         file_path = 'subkategori_layanan/fixtures/data_dummy.json'
-
-#         # Membaca file JSON
-#         with open(file_path, 'r') as file:
-#             data = json.load(file)
-
-#         # Iterasi data dan simpan ke database
-#         for item in data:
-#             model_name = item['model']
-#             fields = item['fields']
-
-#             if model_name == 'subkategori_layanan.kategori':
-#                 Kategori.objects.update_or_create(
-#                     id=item['pk'],
-#                     defaults={'nama': fields['nama']}
-#                 )
-#             elif model_name == 'subkategori_layanan.subkategori':
-#                 kategori = Kategori.objects.get(id=fields['kategori'])
-#                 Subkategori.objects.update_or_create(
-#                     id=item['pk'],
-#                     defaults={'nama': fields['nama'], 'kategori': kategori}
-#                 )
-
-#         return JsonResponse({"status": "success", "message": "Data loaded successfully."})
-#     except Exception as e:
-#         return JsonResponse({"status": "error", "message": str(e)})
+# Fungsi untuk menjalankan query SQL
+def execute_query(query, params=None):
+    with connection.cursor() as cursor:
+        cursor.execute(query, params)
+        columns = [col[0] for col in cursor.description]
+        rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    return rows
 
 def homepage(request):
     return render(request, 'homepage.html')
 
-
-def subkategori_detail(request, subkategori_id):
-    subkategori = get_object_or_404(Subkategori, id=subkategori_id)
-    sesi_layanan = SesiLayanan.objects.filter(subkategori=subkategori)
-    pekerja_list = Pekerja.objects.filter(subkategori=subkategori)
-
-    context = {
-        'subkategori': subkategori,
-        'sesi_layanan': sesi_layanan,
-        'pekerja_list': pekerja_list,
-    }
-    return render(request, 'subkategori_pengguna.html', context)
-
-def load_dummy_testimoni():
-    file_path = os.path.join(settings.BASE_DIR, 'feedback/fixtures/dummy_testimoni.json')
-    with open(file_path, 'r') as json_file:
-        data = json.load(json_file)
-    return data
-
 def subkategori_pengguna(request, subkategori_id):
-    # Ambil Subkategori berdasarkan ID integer
-    subkategori = get_object_or_404(Subkategori, id=subkategori_id)
+    try:
+        # Ambil data subkategori
+        query_subkategori = """
+            SELECT id, nama, deskripsi, kategori_id
+            FROM subkategori_layanan_subkategori
+            WHERE id = %s
+        """
+        subkategori = execute_query(query_subkategori, [subkategori_id])
+        if not subkategori:
+            return HttpResponseBadRequest("Subkategori tidak ditemukan.")
+        subkategori = subkategori[0]
 
-    # Ambil SesiLayanan berdasarkan subkategori
-    sesi_layanan = SesiLayanan.objects.filter(subkategori_id=subkategori)
+        # Ambil sesi layanan
+        query_sesi_layanan = """
+            SELECT id, sesi, harga
+            FROM subkategori_layanan_sesilayanan
+            WHERE subkategori_id = %s AND tipe_layanan = 'pengguna'
+        """
+        sesi_layanan = execute_query(query_sesi_layanan, [subkategori_id])
 
-    # Debug: Tampilkan hasil query sesi_layanan
-    print(f"Sesi Layanan untuk Subkategori ID {subkategori_id}: {sesi_layanan}")
+        # Ambil daftar pekerja
+        query_pekerja = """
+            SELECT p.id, CONCAT(u.first_name, ' ', u.last_name) AS nama_lengkap, 
+                   p.nama_bank, p.nomor_rekening, p.link_foto, p.rating, p.jml_pesanan_selesai
+            FROM profil_pekerja p
+            INNER JOIN authentication_user u ON p.user_id = u.id
+            INNER JOIN subkategori_pekerja sp ON p.id = sp.pekerja_id
+            WHERE sp.subkategori_id = %s
+        """
+        pekerja_list = execute_query(query_pekerja, [subkategori_id])
 
-    # (Opsional) Load testimoni dummy
-    data = load_dummy_testimoni()
-    testimonis = data['testimonis']
-
-    context = {
-        'subkategori': subkategori,
-        'sesi_layanan': sesi_layanan,
-        'testimonis': testimonis,
-    }
-    return render(request, 'subkategori_pengguna.html', context)
+        context = {
+            'subkategori': subkategori,
+            'sesi_layanan': sesi_layanan,
+            'pekerja_list': pekerja_list,
+            'testimonis': []  # Dummy data untuk testimoni
+        }
+        return render(request, 'subkategori_pengguna.html', context)
+    except Exception as e:
+        return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")
 
 def subkategori_pekerja(request, subkategori_id):
-    subkategori = get_object_or_404(Subkategori, id=subkategori_id)
+    try:
+        # Ambil data subkategori
+        query_subkategori = """
+            SELECT id, nama, deskripsi, kategori_id
+            FROM subkategori_layanan_subkategori
+            WHERE id = %s
+        """
+        subkategori = execute_query(query_subkategori, [subkategori_id])
+        if not subkategori:
+            return HttpResponseBadRequest("Subkategori tidak ditemukan.")
+        subkategori = subkategori[0]
 
-    data = load_dummy_testimoni()  
-    testimonis = data['testimonis']  
+        # Ambil data sesi layanan terkait subkategori
+        query_sesi_layanan = """
+            SELECT id, sesi, harga
+            FROM subkategori_layanan_sesilayanan
+            WHERE subkategori_id = %s
+        """
+        sesi_layanan_list = execute_query(query_sesi_layanan, [subkategori_id])
 
-    context = {
-        'subkategori': subkategori,
-        'testimonis': testimonis,
-    }
-    return render(request, 'subkategori_pekerja.html', context)
+        # Ambil pekerja yang tergabung
+        query_pekerja = """
+            SELECT p.id, CONCAT(u.first_name, ' ', u.last_name) AS nama_lengkap, 
+                   p.nama_bank, p.nomor_rekening, p.link_foto, p.rating, p.jml_pesanan_selesai
+            FROM profil_pekerja p
+            INNER JOIN authentication_user u ON p.user_id = u.id
+            INNER JOIN subkategori_pekerja sp ON p.id = sp.pekerja_id
+            WHERE sp.subkategori_id = %s
+        """
+        pekerja_list = execute_query(query_pekerja, [subkategori_id])
 
-def create_pemesanan(request):
-    if request.method == 'POST':
-        # Logika untuk menyimpan pemesanan
-        pass
+        # Validasi user login
+        if not request.user.is_authenticated:
+            return HttpResponseBadRequest("User tidak terautentikasi.")
 
-    return render(request, 'pemesanan_jasa/create_pemesanan.html')
+        # Ambil ID pekerja dari user yang login
+        query_user_pekerja = """
+            SELECT id
+            FROM profil_pekerja
+            WHERE user_id = %s
+        """
+        pekerja_id_result = execute_query(query_user_pekerja, [request.user.id])
+        if not pekerja_id_result:
+            with connection.cursor() as cursor:
+                insert_query = """
+                    INSERT INTO profil_pekerja (
+                        id, nama, nama_bank, nomor_rekening, npwp, link_foto, rating, jml_pesanan_selesai, user_id
+                    ) VALUES (
+                        gen_random_uuid(), 
+                        %s, -- Gabungan First Name dan Last Name
+                        %s, %s, %s, %s, %s, %s, %s
+                    )
+                """
+                cursor.execute(insert_query, [
+                    f"{request.user.first_name} {request.user.last_name}",  # Gabungan nama depan dan belakang
+                    'Bank Default',        # Bank default
+                    '0000000000',          # Nomor rekening default
+                    'NPWP-DEFAULT',        # NPWP default
+                    'https://example.com/default-profile.jpg',  # Foto default
+                    0.0,                   # Rating default
+                    0,                     # Jumlah pesanan selesai default
+                    request.user.id        # ID user
+                ])
 
-def profil_pekerja(request, nama_pekerja):
-    # Data statis untuk profil pekerja
-    data_pekerja = {
-        "Pekerja 1": {"nama": "Pekerja 1", "rating": 4.5, "deskripsi": "Profesional dalam kebersihan rumah"},
-        "Pekerja 2": {"nama": "Pekerja 2", "rating": 4.2, "deskripsi": "Ahli dalam kebersihan apartemen"},
-        "Pekerja 3": {"nama": "Pekerja 3", "rating": 4.8, "deskripsi": "Berpengalaman dalam pembersihan kantor"},
-    }
+            pekerja_id_result = execute_query(query_user_pekerja, [request.user.id])
 
-    # Ambil data berdasarkan nama pekerja
-    pekerja = data_pekerja.get(nama_pekerja, {"nama": "Tidak Ditemukan", "rating": 0, "deskripsi": "Profil tidak tersedia"})
+        user_pekerja_id = pekerja_id_result[0]['id']
 
-    context = {
-        'pekerja': pekerja
-    }
-    return render(request, 'profil_pekerja.html', context)
+        # Tentukan apakah pekerja sudah bergabung
+        query_is_joined = """
+            SELECT 1
+            FROM subkategori_pekerja
+            WHERE pekerja_id = %s AND subkategori_id = %s
+        """
+        is_joined_result = execute_query(query_is_joined, [user_pekerja_id, subkategori_id])
+        show_join_button = not bool(is_joined_result)
 
-def subkategori_list(request):
-    subkategoris = Subkategori.objects.all()  # Ambil semua data Subkategori
-    context = {'subkategoris': subkategoris}
-    return render(request, 'subkategori_layanan/subkategori_list.html', context)
+        # Jika POST untuk bergabung
+        if request.method == 'POST' and show_join_button:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO subkategori_pekerja (pekerja_id, subkategori_id)
+                    VALUES (%s, %s)
+                """, [user_pekerja_id, subkategori_id])
+            return redirect('subkategori_pekerja', subkategori_id=subkategori_id)
 
-from django.shortcuts import render
+        context = {
+            'subkategori': subkategori,
+            'pekerja_list': pekerja_list,
+            'sesi_layanan_list': sesi_layanan_list,
+            'show_join_button': show_join_button,
+        }
+        return render(request, 'subkategori_pekerja.html', context)
+    except Exception as e:
+        return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")
+
+def profil_pekerja(request, pekerja_id):
+    pekerja = execute_query("""
+        SELECT 
+            p.id, 
+            CONCAT(u.first_name, ' ', u.last_name) AS nama_lengkap, 
+            p.nama_bank, 
+            p.nomor_rekening, 
+            p.npwp, 
+            p.link_foto, 
+            p.rating, 
+            p.jml_pesanan_selesai
+        FROM profil_pekerja p
+        INNER JOIN authentication_user u ON p.user_id = u.id
+        WHERE p.id = %s
+    """, [pekerja_id])
+    
+    if not pekerja:
+        return HttpResponseBadRequest("Profil pekerja tidak ditemukan.")
+    
+    return render(request, 'profil_pekerja.html', {'pekerja': pekerja[0]})
 
 def not_logged_in(request):
     return render(request, 'not_logged_in.html')

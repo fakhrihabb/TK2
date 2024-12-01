@@ -9,15 +9,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', sans-serif;
             display: flex;
             justify-content: center;
             margin: 20px;
             padding: 80px;
+            background-color: #ffffff;
+        }
+
+        .join-message {
+            display: none;
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
         }
         .container {
             width: 100%;
             max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         }
         .header, .description, .session-list, .worker-list, .testimonial-list {
             border: 1px solid #ddd;
@@ -28,45 +40,84 @@
         .header {
             display: flex;
             justify-content: space-between;
+            background-color: #08C2FF;
+            color: white;
+            font-weight: 700;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .description h3, .session-list h3{
+            color: #006BFF;
+            margin: 0 ;
+        }
+
+        .worker-list h3, .testimonial-list h3{
+            color: #ffffff;
+            margin: auto;
+        }
+        .description {
+            background-color: #F0F8FF;
+            color: #333;
+            font-size: 1rem;
         }
         .session-item, .worker-item, .testimonial-item {
             display: flex;
             justify-content: space-between;
-            border-top: 1px solid #ddd;
             padding: 10px 0;
+            border-top: 1px solid #ddd;
         }
         .session-item:first-child, .worker-item:first-child, .testimonial-item:first-child {
             border-top: none;
         }
         .button {
-            padding: 5px 15px;
+            padding: 10px 20px;
             background-color: #006BFF;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 20px;
             cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
         }
         .button:hover {
-            background-color: #006BFF;
-        }
-        .worker-list, .testimonial-list {
-            display: flex;
-            flex-direction: column;
-        }
-        .worker-item, .testimonial-item {
-            text-align: center;
-        }
-        .testimonial-text {
-            margin-top: 10px;
-            text-align: left;
-        }
-        .join-message {
-            display: none;
-            margin-top: 10px;
-            color: green;
-            font-weight: bold;
-        }
-                
+    background-color: #08C2FF;
+}
+
+.worker-list, .testimonial-list {
+    background: linear-gradient(to right, #006BFF, #08c2ff);
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.worker-item, .testimonial-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 1rem;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.worker-item {
+    width: 200px; /* Ukuran khusus untuk worker-item */
+}
+
+.worker-item a, .testimonial-text {
+    color: #006BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.worker-item a:hover {
+    text-decoration: underline;
+}
+
+
         .testimonial-title {
             font-size: 1.5rem;
             font-weight: bold;
@@ -75,7 +126,7 @@
             margin-bottom: 20px; 
             text-transform: uppercase; 
         }
-                
+
         .testimonial-list {
             background: linear-gradient(to right, #006BFF, #08c2ff);
             color: #333;
@@ -131,7 +182,6 @@
         }
 
     </style>
-    </style>
 </head>
 <body>
     <div class="container">
@@ -145,54 +195,79 @@
             <p>{{ subkategori.deskripsi }}</p>
         </div>        
 
+        <!-- Pilihan Sesi Layanan -->
+        <div class="session-list">
+            <h3>Pilihan Sesi Layanan</h3>
+            {% for sesi in sesi_layanan %}
+                <div class="session-item">
+                    <span>Sesi {{ sesi.sesi }}</span>
+                    <span>Rp {{ sesi.harga|floatformat:0 }}</span>
+                </div>
+            {% empty %}
+                <p>Tidak ada sesi layanan tersedia.</p>
+            {% endfor %}
+        </div>
+
         <!-- Daftar Pekerja -->
         <div class="worker-list">
             <h3>Pekerja</h3>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 1 %}" style="text-decoration: none; color: inherit;">
-                    Nama Pekerja 1
-                </a>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                {% for pekerja in pekerja_list %}
+                    <div class="worker-item">
+                        <div style="text-align: center;">
+                            <!-- Ikon Pekerja -->
+                            <div style="font-size: 2rem; color: #006BFF;">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <!-- Nama Pekerja -->
+                            <div style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">
+                                <a href="{% url 'profil_pekerja' pekerja.id %}" style="text-decoration: none; color: #006BFF;">
+                                    {{ pekerja.nama_lengkap }}
+                                </a>
+                            </div>                                                       
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Tidak ada pekerja yang terdaftar.</p>
+                {% endfor %}
             </div>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 2 %}" style="text-decoration: none; color: inherit;">
-                    Nama Pekerja 2
-                </a>
-            </div>
-            <div class="worker-item">
-                <a href="{% url 'profil_pekerja' 3 %}" style="text-decoration: none; color: inherit;">
-                    Nama Pekerja 3
-                </a>
-            </div>
-        </div>
-        
-        <!-- Button Bergabung -->
-        <div style="text-align: center; margin: 20px;">
-            <button class="button" onclick="joinService()">Button Bergabung</button>
-            <div class="join-message" id="joinMessage">Anda telah bergabung!</div>
-        </div>
+        </div>        
+
+<!-- Tombol Bergabung -->
+<div style="text-align: center; margin: 20px;">
+    {% if show_join_button %}
+        <!-- Jika belum bergabung, tampilkan tombol -->
+        <form method="POST">
+            {% csrf_token %}
+            <button class="button">Bergabung</button>
+        </form>
+    {% else %}
+        <!-- Jika sudah bergabung, tampilkan pesan -->
+        <p style="color: green; font-weight: bold;">Anda telah bergabung</p>
+    {% endif %}
+</div>
 
         <!-- Testimoni -->
-        <div class="testimonial-list">
-            <h3 class="testimonial-title">Testimoni</h3>
-            {% for testimoni in testimonis|slice:":3" %}
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
-                        <span>Tanggal: {{ testimoni.date_created }}</span>
-                    </div>
-                    <div class="testimonial-body">
-                        <p class="testimonial-text">{{ testimoni.comment }}</p>
-                    </div>
-                    <div class="testimonial-footer">
-                        <span class="worker-name">Nama Pekerja</span>
-                        <span class="rating">Rating: {{ testimoni.rating }}/5</span>
-                    </div> 
-                </div>
-            {% empty %}
-                <p>Tidak ada testimoni untuk ditampilkan.</p>
-            {% endfor %}
+<div class="testimonial-list" style="margin-top: 50px;">
+    <h3 class="testimonial-title">Testimoni</h3>
+    {% for testimoni in testimonis|slice:":3" %}
+        <div class="testimonial-card">
+            <div class="testimonial-header">
+                <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
+                <span>Tanggal: {{ testimoni.date_created }}</span>
+            </div>
+            <div class="testimonial-body">
+                <p class="testimonial-text">{{ testimoni.comment }}</p>
+            </div>
+            <div class="testimonial-footer">
+                <span class="worker-name">Nama Pekerja</span>
+                <span class="rating">Rating: {{ testimoni.rating }}/5</span>
+            </div> 
         </div>
-    </div>
+    {% empty %}
+        <p>Tidak ada testimoni untuk ditampilkan.</p>
+    {% endfor %}
+</div>
 
     <script>
         function joinService() {
