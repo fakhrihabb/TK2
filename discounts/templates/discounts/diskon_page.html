@@ -20,11 +20,11 @@
             <div class="voucher-details" style="flex-grow: 1; text-align: left;">
                 <h4 class="voucher-code" style="font-size: 1.6rem; color: #003072; font-weight: bold; margin-bottom: 10px;">Gunakan Kode Voucher: <span style="color: #006BFF; font-weight: bold;">{{ voucher.kode }}</span>!</h4>
                 <p style="font-size: 1rem; color: #555; margin: 5px 0;"><strong>Hanya Rp{{ voucher.harga }}</strong> untuk menikmati diskon menarik!</p>
-                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher ini memberikan potongan Rp{{ voucher.potongan }} untuk transaksi minimal Rp{{ voucher.min_transaksi }}.</p>
-                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher berlaku selama <strong>{{ voucher.jumlah_hari_berlaku }} hari</strong> setelah pembelian, dengan maksimal penggunaan hingga <strong>{{ voucher.kuota_penggunaan }} kali</strong>.</p>
+                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher ini memberikan potongan Rp{{ voucher.potongan }} untuk transaksi minimal Rp{{ voucher.mintrpemesanan }}.</p>
+                <p style="font-size: 1rem; color: #555; margin: 5px 0;">Voucher berlaku selama <strong>{{ voucher.jmlhariberlaku }} hari</strong> setelah pembelian, dengan maksimal penggunaan hingga <strong>{{ voucher.kuotapenggunaan }} kali</strong>.</p>
                 <button class="btn btn-primary btn-buy" 
                         style="background-color: #006BFF; color: white; font-weight: bold; padding: 10px 20px; border-radius: 20px; margin-top: 10px;" 
-                        onclick="buyVoucher('{{ voucher.harga }}', '{{ voucher.kode }}', '{{ voucher.jumlah_hari_berlaku }}', '{{ voucher.kuota_penggunaan }}')">
+                        onclick="selectPaymentMethod('{{ voucher.harga }}', '{{ voucher.kode }}', '{{ voucher.jmlhariberlaku}}')">
                     Dapatkan Sekarang
                 </button>
             </div>
@@ -33,11 +33,27 @@
     </div>
 </div>
 
+<!-- Modal Pilihan Metode Pembayaran -->
+<div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+    <div style="background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center;">
+        <h3 style="margin-bottom: 20px;">Pilih Metode Pembayaran</h3>
+        <select id="paymentMethod" style="width: 80%; padding: 10px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc;">
+            <option value="MyPay">MyPay</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="E-Wallet">E-Wallet</option>
+            <option value="Credit Card">Credit Card</option>
+        </select>
+        <button id="confirmPayment" 
+                onclick="confirmPayment()" 
+                style="background-color: #006BFF; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold;">Konfirmasi Pembayaran</button>
+    </div>
+</div>
+
 <!-- Custom Modal Notifikasi -->
 <div id="notificationModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
     <div style="background: white; padding: 20px; border-radius: 10px; width: 80%; max-width: 400px; text-align: center;">
         <div id="modalMessage" style="margin-bottom: 20px;"></div>
-        <button onclick="closeModal()" style="background-color: #006BFF; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold;">Tutup</button>
+        <button onclick="closeNotification()" style="background-color: #006BFF; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold;">Tutup</button>
     </div>
 </div>
 
@@ -54,7 +70,7 @@
                 </div>
                 <div class="promo-details" style="background-color: #e0f5fc; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex-grow: 1;">
                     <h4 style="font-size: 2rem; margin: 0; font-weight: bold; color: #003072;">{{ promo.kode }}</h4>
-                    <p style="font-size: 1.2rem; margin: 0; color: #003072; font-style: italic;">Berlaku hingga {{ promo.tanggal_akhir_berlaku }}</p>
+                    <p style="font-size: 1.2rem; margin: 0; color: #003072; font-style: italic;">Berlaku hingga {{ promo.tglakhirberlaku }}</p>
                 </div>
             </div>
         </div>
@@ -63,40 +79,87 @@
 </div>
 
 <script>
-    // Saldo pengguna (contoh)
-    let userBalance = 50000;
+function selectPaymentMethod(voucherPrice, voucherCode, validityPeriod) {
+    const paymentModal = document.getElementById("paymentModal");
+    const paymentButton = document.getElementById("confirmPayment");
 
-    function buyVoucher(voucherPrice, voucherCode, voucherExpiry, voucherQuota) {
-    const modalMessage = document.getElementById("modalMessage");
-    const notificationModal = document.getElementById("notificationModal");
+    // Set voucher details in confirm button
+    paymentButton.dataset.price = voucherPrice;
+    paymentButton.dataset.code = voucherCode;
+    paymentButton.dataset.validity = validityPeriod;
 
-    if (userBalance >= voucherPrice) {
-        userBalance -= voucherPrice;
-        modalMessage.innerHTML = `
-            <div style="background-color: #d4edda; color: #155724; font-size: 1rem; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center;">
-                <h3 style="font-weight: bold; margin-bottom: 10px;">SUKSES</h3>
-                <p>Selamat! Anda berhasil membeli voucher <strong>${voucherCode}</strong>.</p>
-                <p>Voucher ini berlaku hingga <strong>${voucherExpiry}</strong> dengan kuota penggunaan sebanyak <strong>${voucherQuota}</strong> kali.</p>
-            </div>
-        `;
-    } else {
-        modalMessage.innerHTML = `
-            <div style="background-color: #f8d7da; color: #721c24; font-size: 1rem; border: 1px solid #f5c6cb; border-radius: 8px; padding: 20px; text-align: center;">
-                <h3 style="font-weight: bold; margin-bottom: 10px;">GAGAL</h3>
-                <p>Maaf, saldo Anda tidak cukup untuk membeli voucher <strong>${voucherCode}</strong>.</p>
-            </div>
-        `;
+    // Show payment method modal
+    paymentModal.style.display = "flex";
+}
+
+function confirmPayment() {
+    const paymentMethodElement = document.getElementById("paymentMethod");
+    
+    // Cek apakah elemen dengan id "paymentMethod" ditemukan
+    if (!paymentMethodElement) {
+        console.error("Elemen paymentMethod tidak ditemukan!");
+        return; // Keluar dari fungsi jika elemen tidak ditemukan
     }
 
-    // Show modal
-    notificationModal.style.display = "flex";
-    }
+    const paymentMethod = document.getElementById("paymentMethod").value;
+    const voucherPrice = parseInt(document.getElementById("confirmPayment").dataset.price);
+    const voucherCode = document.getElementById("confirmPayment").dataset.code;
+    const validityPeriod = document.getElementById("confirmPayment").dataset.validity;
 
-    function closeModal() {
+    console.log('Payment Method:', paymentMethod);
+    console.log('Voucher Price:', voucherPrice);
+    console.log('Voucher Code:', voucherCode);
+    console.log('Validity Period:', validityPeriod);
+
+    // Create the data to be sent to the server
+    const data = new FormData();
+    data.append('voucher_code', voucherCode);
+    data.append('payment_method', paymentMethod);
+    data.append('voucher_price', voucherPrice);
+    data.append('voucher_validity', validityPeriod);
+
+    // Send AJAX request to the server
+    fetch("{% url 'discounts:beli_voucher' %}", {
+        method: "POST",
+        body: data,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Show success message with validity period
+            showNotification("SUKSES", data.message);
+        } else {
+            showNotification("GAGAL", data.message);
+        }
+    })
+    .catch(error => {
+        showNotification("GAGAL", "Terjadi kesalahan saat memproses pembayaran.");
+    });
+
+    closePaymentModal();
+}
+
+    function showNotification(title, message) {
+        const modalMessage = document.getElementById("modalMessage");
         const notificationModal = document.getElementById("notificationModal");
-        notificationModal.style.display = "none";
+
+        modalMessage.innerHTML = `
+            <div style="background-color: ${title === "SUKSES" ? "#d4edda" : "#f8d7da"}; color: ${title === "SUKSES" ? "#155724" : "#721c24"}; font-size: 1rem; border: 1px solid ${title === "SUKSES" ? "#c3e6cb" : "#f5c6cb"}; border-radius: 8px; padding: 20px; text-align: center;">
+                <h3 style="font-weight: bold; margin-bottom: 10px;">${title}</h3>
+                <p>${message}</p>
+            </div>
+        `;
+
+        notificationModal.style.display = "flex";
     }
 
+    function closePaymentModal() {
+        document.getElementById("paymentModal").style.display = "none";
+    }
+
+    function closeNotification() {
+        document.getElementById("notificationModal").style.display = "none";
+    }
 </script>
 </body>
 </html>

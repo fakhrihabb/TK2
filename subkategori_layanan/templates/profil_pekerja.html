@@ -5,50 +5,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Pekerja</title>
+    <!-- Tambahkan Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', sans-serif;
             display: flex;
             justify-content: center;
-            margin: 20px;
-            padding: 80px;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #08C2FF, #006BFF);
         }
         .profile-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .profile-picture {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background-color: #ddd;
-            margin: 20px auto;
+            background-color: #f0f0f0;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #006BFF;
+            font-size: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 1.8rem;
+            color: #006BFF;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
         .profile-info {
-            text-align: left;
             margin-top: 20px;
+            text-align: left;
         }
         .profile-info div {
-            margin: 10px 0;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        .profile-info div i {
+            color: #006BFF;
+            margin-right: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: #006BFF;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #08C2FF;
         }
     </style>
 </head>
 <body>
     <div class="profile-card">
-        <div class="profile-picture"></div>
-        <h2>PROFIL PEKERJA</h2>
-        <div class="profile-info">
-            <div>Nama: Xxx Xxx</div>
-            <div>Rating: X/10</div>
-            <div>Jumlah Pesanan Selesai: X</div>
-            <div>No HP: XXX</div>
-            <div>Tanggal Lahir: XX/XX/XXXX</div>
-            <div>Alamat: XXX</div>
+        <!-- Default Icon User -->
+        <div class="profile-picture">
+            <i class="fas fa-user-circle"></i>
         </div>
+        <h2>Profil Pekerja</h2>
+        <div class="profile-info">
+            <div><i class="fas fa-user"></i> Nama: {{ pekerja.nama_lengkap }}</div>
+            <div><i class="fas fa-star"></i> Rating: {{ pekerja.rating }}/10</div>
+            <div><i class="fas fa-tasks"></i> Jumlah Pesanan Selesai: {{ pekerja.jml_pesanan_selesai }}</div>
+            <div><i class="fas fa-money-check-alt"></i> No Rekening: {{ pekerja.nomor_rekening }}</div>
+            <div><i class="fas fa-university"></i> Nama Bank: {{ pekerja.nama_bank }}</div>
+            <div><i class="fas fa-id-card"></i> NPWP: {{ pekerja.npwp }}</div>
+        </div>        
     </div>
 </body>
 </html>
