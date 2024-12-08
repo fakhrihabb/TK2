@@ -198,7 +198,7 @@
         <!-- Pilihan Sesi Layanan -->
         <div class="session-list">
             <h3>Pilihan Sesi Layanan</h3>
-            {% for sesi in sesi_layanan %}
+            {% for sesi in sesi_layanan_list %}
                 <div class="session-item">
                     <span>Sesi {{ sesi.sesi }}</span>
                     <span>Rp {{ sesi.harga|floatformat:0 }}</span>

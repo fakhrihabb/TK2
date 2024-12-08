@@ -1,12 +1,28 @@
+import uuid
+from django.db import connection
 import psycopg2
 from datetime import datetime
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from decimal import Decimal
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
+def execute_query(query, params=None):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            columns = [col[0] for col in cursor.description]
+            rows = cursor.fetchall()
+            if not rows:
+                return []
+            result = [dict(zip(columns, row)) for row in rows]
+            return result
+    except Exception as e:
+        print(f"Terjadi kesalahan saat menjalankan query: {e}")
+        return []  
 
 # Fungsi untuk query SesiLayanan menggunakan psycopg2
 def get_sesi_layanan(sesi_layanan_id):
@@ -220,3 +236,30 @@ def delete_pemesanan(request, pk):
     except Exception as e:
         print(f"Error: {e}")
         return HttpResponseForbidden("Terjadi kesalahan.")
+
+@csrf_exempt
+@login_required
+def submit_testimonial(request):
+    if request.method == 'POST':
+        # Retrieve values from POST request
+        testimonial_text = request.POST.get('text')
+        rating = request.POST.get('rating')
+        id_tr_pemesanan = str(uuid.uuid4())
+
+        # Check if required fields are present
+        if testimonial_text and rating and id_tr_pemesanan:
+            try:
+                query_insert = """
+                    INSERT INTO Testimoni (IdTrPemesanan, Teks, Rating, tgl)
+                    VALUES (%s, %s, %s, NOW());
+                """
+                execute_query(query_insert, [id_tr_pemesanan, testimonial_text, rating])
+
+                return JsonResponse({'status': 'success'})
+            except Exception as e:
+                print(f"Error: {e}")  
+                return JsonResponse({'status': 'error', 'message': str(e)})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields'})
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

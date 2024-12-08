@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'pemesanan_jasa',
     'authentication',
     'discounts',
-    'feedback'
 ]
 
 MIDDLEWARE = [

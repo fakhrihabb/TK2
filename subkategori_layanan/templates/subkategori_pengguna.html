@@ -237,11 +237,11 @@
             {% for testimoni in testimonis|slice:":3" %}
                 <div class="testimonial-card">
                     <div class="testimonial-header">
-                        <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
-                        <span>Tanggal: {{ testimoni.date_created }}</span>
+                        <span><i class="fas fa-user"></i> testimoni.user </span>
+                        <span>Tanggal: {{ testimoni.tgl }}</span>
                     </div>
                     <div class="testimonial-body">
-                        <p class="testimonial-text">{{ testimoni.comment }}</p>
+                        <p class="testimonial-text">{{ testimoni.teks }}</p>
                     </div>
                     <div class="testimonial-footer">
                         <span class="worker-name">Nama Pekerja</span>

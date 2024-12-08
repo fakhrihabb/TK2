@@ -166,11 +166,17 @@
             <!-- Dropdown Subkategori -->
             <select id="filterSubkategori">
                 <option value="">Semua Subkategori</option>
-                {% for subkategori in daftar_subkategori %}
-                    <option value="{{ subkategori.0 }}">{{ subkategori.1 }}</option>
-                {% endfor %}
-            </select>
-                       
+                <option value="penyedot debu">Penyedot Debu</option>
+                <option value="pembersih sofa dan karpet">Pembersih Sofa dan Karpet</option>
+                <option value="dry cleaning">Dry Cleaning</option>
+                <option value="pemangkas rumput">Pemangkas Rumput</option>
+                <option value="penyemprot hama">Penyemprot Hama</option>
+                <option value="penyapu rumah">Penyapu Rumah</option>
+                <option value="pembersih jendela">Pembersih Jendela</option>
+                <option value="pencuci dan penyetrika pakaian">Pencuci dan Penyetrika Pakaian</option>
+                <option value="lipat pakaian">Lipat Pakaian</option>
+                <option value="perawatan taman">Perawatan Taman</option>
+            </select>                                              
 
             <!-- Dropdown Status Pesanan -->
             <select id="filterStatus">
@@ -216,7 +222,8 @@
                                     <button class="action-button cancel-button" type="submit">Batalkan</button>
                                 </form>
                             {% elif pesanan.status == "Pesanan Selesai" %}
-                                <button class="action-button testimonial-button">Buat Testimoni</button>
+                            <button class="action-button testimonial-button" onclick="showTestimonialModal()">Buat Testimoni</button>
+                            <!-- <button id="deleteTestimonialButton" onclick="deleteTestimonial()" style="display:none; background-color: #f44336; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; margin-top: 10px;">Hapus Testimoni</button> -->
                             {% endif %}
                         </div>
                     </td>
@@ -230,29 +237,113 @@
         </table>     
     </div>
 
+    <div id="testimonialModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+        <div style="background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 370px; text-align: center; position: relative;">
+            <!-- Tanda X untuk menutup -->
+            <button onclick="closeTestimonialModal()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5rem; color: #333; font-weight: bold; cursor: pointer;">&times;</button>
+            <h3 style="margin-bottom: 20px;">Buat Testimoni</h3>
+            
+            <!-- Rating 1-5 -->
+            <div style="margin-bottom: 20px; display: flex; align-items: center;">
+                <label for="rating" style="font-size: 1.2rem; margin-right: 10px;">Rating:</label>
+                <select id="rating" style="padding: 10px; border-radius: 8px; width: 250px; border: 1px solid #ccc;">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>            
+    
+            <!-- Testimoni -->
+            <textarea id="testimonialText" style="width: 100%; padding: 10px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ccc;" placeholder="Tuliskan testimoni Anda"></textarea>
+            
+            <!-- Tombol Kirim Testimoni -->
+            <button id="submitTestimonial" onclick="submitTestimonial()" style="background-color: #006BFF; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold;">Kirim Testimoni</button>
+        </div>
+    </div>
+    
+    
     <script>
-        // Fungsi filter untuk subkategori, status, dan pencarian
-        function filterRows() {
-    const subkategoriFilter = document.getElementById('filterSubkategori').value.toLowerCase();
-    const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
-    const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('table tbody tr');
+// Fungsi filter untuk subkategori, status, dan pencarian
+function filterRows() {
+    const subkategori = document.getElementById("filterSubkategori").value.toLowerCase();
+    const status = document.getElementById("filterStatus").value.toLowerCase();
+    const search = document.getElementById("searchInput").value.toLowerCase();
 
+    console.log(`Filter: Subkategori=${subkategori}, Status=${status}, Search=${search}`);
+
+    const rows = document.querySelectorAll("table tbody tr");
     rows.forEach(row => {
-        const subkategori = row.cells[0]?.textContent.toLowerCase() || ''; // Pastikan indeks kolom sesuai
-        const status = row.cells[4]?.textContent.toLowerCase() || ''; // Pastikan indeks kolom sesuai
-        const containsKeyword = row.textContent.toLowerCase().includes(searchKeyword);
+        const subkategoriCell = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+        const statusCell = row.querySelector("td:nth-child(6)").textContent.toLowerCase();
+        const rowText = row.textContent.toLowerCase();
 
-        const matchesSubkategori = subkategoriFilter === "" || subkategori.includes(subkategoriFilter);
-        const matchesStatus = statusFilter === "" || status.includes(statusFilter);
+        console.log(`Row Data: Subkategori=${subkategoriCell}, Status=${statusCell}, Text=${rowText}`);
 
-        if (matchesSubkategori && matchesStatus && containsKeyword) {
-            row.style.display = '';
+        const matchSubkategori = subkategori === "" || subkategoriCell.includes(subkategori);
+        const matchStatus = status === "" || statusCell.includes(status);
+        const matchSearch = search === "" || rowText.includes(search);
+
+        if (matchSubkategori && matchStatus && matchSearch) {
+            row.style.display = ""; // Tampilkan baris
         } else {
-            row.style.display = 'none';
+            row.style.display = "none"; // Sembunyikan baris
         }
     });
 }
+
+// Event listener untuk menjalankan fungsi filter saat dropdown berubah
+document.getElementById("filterSubkategori").addEventListener("change", filterRows);
+
+    function showTestimonialModal() {
+        document.getElementById("testimonialModal").style.display = "flex";
+    }
+
+    // Close Testimonial Modal
+    function closeTestimonialModal() {
+        document.getElementById("testimonialModal").style.display = "none";
+    }
+
+    function submitTestimonial() {
+        const testimonialText = document.getElementById("testimonialText").value;
+        const rating = document.getElementById("rating").value; // Get selected rating value
+
+        // Check if the testimonial text is empty
+        if (testimonialText.trim() === "") {
+            alert("Testimoni tidak boleh kosong.");
+            return;
+        }
+
+        const data = new FormData();
+        data.append("text", testimonialText);
+        data.append("rating", rating); 
+
+        fetch("{% url 'pemesanan_jasa:submit_testimonial' %}", {
+            method: "POST",
+            body: data,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById("testimonialText").value = "";
+                document.getElementById("rating").value = "1";  // Atau set ke nilai default lain jika diinginkan
+
+                // Menyembunyikan tombol Buat Testimoni dan menampilkan tombol Hapus Testimoni
+                document.querySelector(".testimonial-button").style.display = "none";  // Sembunyikan tombol Buat Testimoni
+                document.getElementById("deleteTestimonialButton").style.display = "inline-block";  // Tampilkan tombol Hapus Testimoni
+            
+            closeTestimonialModal();  
+                closeTestimonialModal();  
+            } else {
+                alert("Terjadi kesalahan.");
+            }
+        })
+        .catch(error => {
+            alert("Terjadi kesalahan, coba lagi.");
+        });
+    }
+
     </script>
 </body>
 </html>

@@ -5,5 +5,5 @@ app_name = 'discounts'
 
 urlpatterns = [
     path('diskon/', views.diskon_list, name='diskon_page'),  
-    path('diskon/beli/', views.beli_voucher, name='beli_voucher'),
+    path('beli-voucher/', views.beli_voucher_view, name='beli_voucher'),
 ]

@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.db import connection
 from django.http import HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
 
 # Fungsi untuk menjalankan query SQL
 def execute_query(query, params=None):
@@ -44,12 +45,23 @@ def subkategori_pengguna(request, subkategori_id):
             WHERE sp.subkategori_id = %s
         """
         pekerja_list = execute_query(query_pekerja, [subkategori_id])
+        
+        # JOIN TR_PEMESANAN_JASA P ON T.IdTrPemesanan = P.Id
+        query_testimoni = """
+        SELECT 
+            T.IdTrPemesanan,
+            T.Tgl,
+            T.Teks,
+            T.Rating
+        FROM TESTIMONI T;
+        """
+        testimonis = execute_query(query_testimoni)
 
         context = {
             'subkategori': subkategori,
             'sesi_layanan': sesi_layanan,
             'pekerja_list': pekerja_list,
-            'testimonis': []  # Dummy data untuk testimoni
+            'testimonis': testimonis,  
         }
         return render(request, 'subkategori_pengguna.html', context)
     except Exception as e:
@@ -72,7 +84,7 @@ def subkategori_pekerja(request, subkategori_id):
         query_sesi_layanan = """
             SELECT id, sesi, harga
             FROM subkategori_layanan_sesilayanan
-            WHERE subkategori_id = %s
+            WHERE subkategori_id = %s AND tipe_layanan = 'pekerja'
         """
         sesi_layanan_list = execute_query(query_sesi_layanan, [subkategori_id])
 

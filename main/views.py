@@ -2,7 +2,9 @@ import psycopg2
 from django.shortcuts import render
 import logging
 logger = logging.getLogger(__name__)
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def homepage(request):
     logger.info("Homepage function called") 
     print("Kepanggil nih homepage")
