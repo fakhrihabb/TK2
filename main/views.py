@@ -19,6 +19,8 @@ def get_db_connection():
 
 @login_required
 def homepage(request):
+    print(request.session.get('phone_number'))
+    print(request.session.get('is_pekerja'))
     logger.info("Homepage function called")
     print("Kepanggil nih homepage")
     try:
@@ -52,12 +54,14 @@ def homepage(request):
         return render(request, 'error_page.html', {'message': 'Error saat menjalankan query.'})
 
     # Tentukan role pengguna berdasarkan is_pengguna dan is_pekerja
-    is_pengguna = request.user.is_pengguna
-    is_pekerja = request.user.is_pekerja
+    is_pengguna = request.session['is_pekerja'] == False
+    is_pekerja = request.session['is_pekerja'] == True
 
     # Debugging role
-    print(f"User: {request.user}, Is Pengguna: {is_pengguna}, Is Pekerja: {is_pekerja}")
-    print(f"User: {request.user}, Is Pengguna: {getattr(request.user, 'is_pengguna', False)}, Is Pekerja: {getattr(request.user, 'is_pekerja', False)}")
+    # print(f"User: {request.user}, Is Pengguna: {is_pengguna}, Is Pekerja: {is_pekerja}")
+    # print(f"User: {request.user}, Is Pengguna: {getattr(request.user, 'is_pengguna', False)}, Is Pekerja: {getattr(request.user, 'is_pekerja', False)}")
+
+    user = get_user(request)
 
     # Render data ke template
     return render(request, 'homepage.html', {
@@ -65,6 +69,7 @@ def homepage(request):
         'subkategori_list': subkategori_list,
         'is_pengguna': is_pengguna,
         'is_pekerja': is_pekerja,
+        'user': user,
     })
 
 

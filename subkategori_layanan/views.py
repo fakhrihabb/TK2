@@ -11,9 +11,6 @@ def execute_query(query, params=None):
         rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
     return rows
 
-def homepage(request):
-    return render(request, 'homepage.html')
-
 def subkategori_pengguna(request, subkategori_id):
     try:
         # Ambil data subkategori

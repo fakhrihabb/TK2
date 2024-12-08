@@ -1,12 +1,14 @@
 # discounts/views.py
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db import connection
 from datetime import datetime, timedelta
 import uuid
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from authentication.views import login_required, get_user
+
 
 def execute_query(query, params=None):
     try:
@@ -20,25 +22,28 @@ def execute_query(query, params=None):
             return result
     except Exception as e:
         print(f"Terjadi kesalahan saat menjalankan query: {e}")
-        return []  
+        return []
 
 
 @login_required
 def diskon_list(request):
-    if not request.user.is_pengguna:
+    user = get_user(request)
+
+    if request.session.get('is_pekerja'):
         return HttpResponseForbidden("Anda tidak memiliki akses ke halaman ini.")
     
     try:
         # Query untuk mengambil saldo pengguna
         query_saldo = """
-        SELECT saldo 
-        FROM authentication_user
+        SELECT saldo
+        FROM "USER"
         WHERE id = %s;
         """
-        saldo_result = execute_query(query_saldo, [request.user.id])
-        
-        saldo = saldo_result[0]['saldo'] if saldo_result else 0
-
+        cursor = connection.cursor()
+        cursor.execute(query_saldo, [user['id']])
+        result = cursor.fetchone()
+        saldo = result[0]
+        print(saldo)
         # Query untuk mengambil daftar vouchers
         query_vouchers = """
         SELECT 
@@ -61,13 +66,13 @@ def diskon_list(request):
         WHERE TglAkhirBerlaku > CURRENT_DATE;
         """
         promos = execute_query(query_promos)
-        
+        user = get_user(request)
         context = {
             'saldo': saldo,
             'vouchers': vouchers,
-            'promos': promos,
+            'promos': promos, 'user': user,
         }
-        
+
         return render(request, 'discounts/diskon_page.html', context)
     
     except Exception as e:
@@ -76,6 +81,7 @@ def diskon_list(request):
 # Perbaikan pada bagian beli_voucher
 def beli_voucher(user_id, voucher_code, payment_method, price, validity, balance):
     try:
+        cursor = connection.cursor()
         # Pengecekan saldo jika pembayaran menggunakan MyPay
         if payment_method == 'MyPay':
             if balance < price:
@@ -83,17 +89,24 @@ def beli_voucher(user_id, voucher_code, payment_method, price, validity, balance
 
             # Kurangi saldo pengguna
             new_balance = balance - price
-            query_update_saldo = "UPDATE authentication_user SET saldo = %s WHERE id = %s;"
-            execute_query(query_update_saldo, [new_balance, user_id])
-        
-        # Ambil UUID metode pembayaran
-        query_get_method_uuid = "SELECT id FROM METODE_BAYAR WHERE nama = %s;"
-        method_result = execute_query(query_get_method_uuid, [payment_method])
 
-        if not method_result or method_result[0] is None:
+            cursor.execute("""
+            UPDATE "USER"
+            SET saldo = %s
+            WHERE id = %s;
+            """, [new_balance, user_id])
+            # query_update_saldo = 'UPDATE "USER" SET saldo = %s WHERE id = %s;'
+            # execute_query(query_update_saldo, [new_balance, user_id])
+
+        # Ambil UUID metode pembayaran
+        cursor = connection.cursor()
+        cursor.execute("SELECT id FROM METODE_BAYAR WHERE nama = %s;", [payment_method])
+        result = cursor.fetchone()
+
+        if not result or result[0] is None:
             return "Metode pembayaran tidak ditemukan atau tidak valid."
 
-        method_uuid = method_result[0]['id']
+        method_uuid = result[0]
         pembelian_id = str(uuid.uuid4())
 
         # Simpan data ke tabel TR_PEMBELIAN_VOUCHER
@@ -105,7 +118,7 @@ def beli_voucher(user_id, voucher_code, payment_method, price, validity, balance
             INSERT INTO TR_PEMBELIAN_VOUCHER (Id, IdPelanggan, IdVoucher, IdMetodeBayar, TglAwal, TglAkhir, TelahDigunakan)
             VALUES (%s, %s, %s, %s, %s, %s, 0);
         """
-        execute_query(query_insert, [pembelian_id, user_id, voucher_code, method_uuid, tgl_awal, tgl_akhir])
+        cursor.execute(query_insert, [pembelian_id, user_id, voucher_code, method_uuid, tgl_awal, tgl_akhir])
 
         # Ambil kuota voucher
         query_get_kuota = "SELECT KuotaPenggunaan FROM VOUCHER WHERE Kode = %s;"
@@ -128,14 +141,16 @@ def beli_voucher_view(request):
         payment_method = request.POST.get('payment_method')
         voucher_price = int(request.POST.get('voucher_price'))
         voucher_validity = request.POST.get('voucher_validity')
-
+        user = get_user(request)
         # Ambil saldo pengguna
-        query_saldo = "SELECT saldo FROM authentication_user WHERE id = %s;"
-        saldo_result = execute_query(query_saldo, [request.user.id])
-        saldo = saldo_result[0]['saldo'] if saldo_result else 0
+        cursor = connection.cursor()
+        query_saldo = 'SELECT saldo FROM "USER" WHERE id = %s;'
+        saldo_result = cursor.execute(query_saldo, [user['id']])
+        result = cursor.fetchone()
+        saldo = result[0]
 
         # Panggil fungsi beli_voucher
-        result_message = beli_voucher(request.user.id, voucher_code, payment_method, voucher_price, voucher_validity, saldo)
+        result_message = beli_voucher(user['id'], voucher_code, payment_method, voucher_price, voucher_validity, saldo)
 
         # Return the result to the front end
         if "berhasil" in result_message:
