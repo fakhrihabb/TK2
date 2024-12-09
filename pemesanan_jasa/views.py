@@ -1,28 +1,18 @@
-import uuid
 from django.db import connection
 import psycopg2
 from datetime import datetime
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden
 from decimal import Decimal
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse, HttpResponseForbidden
+import uuid
+from django.conf import settings
+from authentication.views import get_user
+from discounts.views import execute_query
 from django.views.decorators.csrf import csrf_exempt
-
-def execute_query(query, params=None):
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(query, params)
-            columns = [col[0] for col in cursor.description]
-            rows = cursor.fetchall()
-            if not rows:
-                return []
-            result = [dict(zip(columns, row)) for row in rows]
-            return result
-    except Exception as e:
-        print(f"Terjadi kesalahan saat menjalankan query: {e}")
-        return []  
 
 # Fungsi untuk query SesiLayanan menggunakan psycopg2
 def get_sesi_layanan(sesi_layanan_id):
@@ -50,8 +40,6 @@ def get_sesi_layanan(sesi_layanan_id):
 
     return sesi_layanan
 
-
-@login_required
 def create_pemesanan(request, subkategori_id, sesi_layanan_id):
     try:
         sesi_layanan = get_sesi_layanan(sesi_layanan_id)
@@ -59,81 +47,115 @@ def create_pemesanan(request, subkategori_id, sesi_layanan_id):
             return HttpResponseForbidden("Sesi layanan tidak ditemukan.")
 
         harga = sesi_layanan[1]
-        subkategori_id = sesi_layanan[2]  # Ambil subkategori_id dari sesi layanan
+        subkategori_id = sesi_layanan[2]
+
+        # Ambil data diskon dan metode pembayaran
+        diskon_list = get_diskon()
+        metode_pembayaran_list = get_metode_pembayaran()
+
+        # Tambahkan log debugging untuk memastikan fungsi dipanggil
+        print("Debug: create_pemesanan dipanggil")
+        print(f"Subkategori ID: {subkategori_id}, Sesi Layanan ID: {sesi_layanan_id}")
 
         if request.method == 'POST':
-            # Ambil tanggal dari form, jika kosong gunakan tanggal hari ini
             tanggal_pemesanan = request.POST.get('tanggal_pemesanan')
-            if not tanggal_pemesanan:
-                tanggal_pemesanan = datetime.now().date()
-            else:
-                try:
-                    tanggal_pemesanan = datetime.strptime(tanggal_pemesanan, "%Y-%m-%d").date()
-                except ValueError:
-                    return HttpResponseForbidden("Format tanggal tidak valid.")
-
             diskon = request.POST.get('diskon', None)
             metode_pembayaran = request.POST.get('metode_pembayaran')
 
             if not metode_pembayaran:
-                return HttpResponseForbidden("Data pemesanan tidak lengkap.")
+                return HttpResponseForbidden("Metode pembayaran tidak dipilih.")
 
+            try:
+                # Ambil user ID dari session
+                user = get_user(request)
+                if not user:
+                    return HttpResponseForbidden("Pengguna tidak ditemukan.")
+
+                # Pastikan saldo pengguna tersedia
+                query_saldo = """
+                SELECT saldo
+                FROM "USER"
+                WHERE id = %s;
+                """
+                cursor = connection.cursor()
+                cursor.execute(query_saldo, [user['id']])
+                result = cursor.fetchone()
+                if result is None:
+                    return HttpResponseForbidden("Saldo pengguna tidak ditemukan.")
+                saldo = result[0]
+                print(f"Debug: Saldo pengguna adalah {saldo}")
+            except Exception as e:
+                print(f"Error saat mengambil saldo: {e}")
+                return HttpResponseForbidden("Terjadi kesalahan saat validasi saldo pengguna.")
+
+            # Hitung total pembayaran dengan diskon
             total_pembayaran = harga
-            if diskon == "DISKON10":
-                total_pembayaran *= Decimal("0.9")
+            if diskon:
+                with psycopg2.connect(
+                    dbname=settings.DATABASES['default']['NAME'],
+                    user=settings.DATABASES['default']['USER'],
+                    password=settings.DATABASES['default']['PASSWORD'],
+                    host=settings.DATABASES['default']['HOST'],
+                    port=settings.DATABASES['default']['PORT']
+                ) as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute("SELECT potongan FROM diskon WHERE kode = %s;", (diskon,))
+                        potongan = cursor.fetchone()
+                        if potongan:
+                            total_pembayaran -= Decimal(potongan[0])
 
-            # Koneksi ke database
-            conn = psycopg2.connect(
+            # Simpan data ke database
+            with psycopg2.connect(
                 dbname=settings.DATABASES['default']['NAME'],
                 user=settings.DATABASES['default']['USER'],
                 password=settings.DATABASES['default']['PASSWORD'],
                 host=settings.DATABASES['default']['HOST'],
                 port=settings.DATABASES['default']['PORT']
-            )
-            cursor = conn.cursor()
+            ) as conn:
+                with conn.cursor() as cursor:
+                    try:
+                        # Simpan data ke tabel pemesanan_jasa_pemesananjasa
+                        insert_pemesanan_query = """
+                        INSERT INTO pemesanan_jasa_pemesananjasa (idpengguna, tanggal_pemesanan, diskon, total_pembayaran, metode_pembayaran, subkategori_id)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                        RETURNING id;
+                        """
+                        cursor.execute(insert_pemesanan_query, (
+                            user['id'], tanggal_pemesanan, diskon, total_pembayaran, metode_pembayaran, subkategori_id
+                        ))
+                        pemesanan_id = cursor.fetchone()[0]
 
-            try:
-                # Insert ke tabel pemesanan_jasa_pemesananjasa
-                insert_query_pemesanan = """
-                INSERT INTO pemesanan_jasa_pemesananjasa (pengguna_id, tanggal_pemesanan, diskon, total_pembayaran, metode_pembayaran, subkategori_id)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                RETURNING id;
-                """
-                cursor.execute(insert_query_pemesanan, (
-                    request.user.id, tanggal_pemesanan, diskon, total_pembayaran, metode_pembayaran, subkategori_id
-                ))
-                pemesanan_id = cursor.fetchone()[0]
+                        # Tambahkan status default "Menunggu Pembayaran"
+                        insert_status_query = """
+                        INSERT INTO pemesanan_jasa_trpemesananstatus (id_tr_pemesanan_id, id_status_id, tgl_waktu)
+                        VALUES (%s, %s, %s);
+                        """
+                        default_status_id = '60b058a8-e823-44e9-a57d-89c2ca13c77a'  # UUID status default
+                        cursor.execute(insert_status_query, (pemesanan_id, default_status_id, datetime.now()))
 
-                # Insert ke tabel pemesanan_jasa_trpemesananstatus dengan status default
-                insert_query_status = """
-                INSERT INTO pemesanan_jasa_trpemesananstatus (id_tr_pemesanan_id, id_status_id, tgl_waktu)
-                VALUES (%s, %s, %s);
-                """
-                cursor.execute(insert_query_status, (pemesanan_id, '60b058a8-e823-44e9-a57d-89c2ca13c77a', datetime.now()))
-
-                conn.commit()
-            except Exception as e:
-                conn.rollback()
-                print(f"Error saat menyimpan pemesanan: {e}")
-                return HttpResponseForbidden("Terjadi kesalahan saat menyimpan pemesanan.")
-            finally:
-                cursor.close()
-                conn.close()
+                        conn.commit()
+                    except Exception as e:
+                        conn.rollback()
+                        print(f"Error saat menyimpan pemesanan: {e}")
+                        return HttpResponseForbidden("Terjadi kesalahan saat menyimpan pemesanan.")
 
             return redirect('pemesanan_jasa:view_pemesanan')
-
+        
+        user = get_user(request)
         current_date = datetime.now().strftime("%Y-%m-%d")
         return render(request, 'create_pemesanan.html', {
             'harga_dasar': harga,
-            'sesi_layanan_id': sesi_layanan_id,
-            'current_date': current_date
+            'current_date': current_date,
+            'metode_pembayaran_list': metode_pembayaran_list,
+            'diskon_list': diskon_list,
+            'user':user,
         })
+
     except Exception as e:
         print(f"Error: {e}")
         return HttpResponseForbidden("Terjadi kesalahan.")
 
-
-def view_pemesanan(request):
+def get_metode_pembayaran():
     try:
         conn = psycopg2.connect(
             dbname=settings.DATABASES['default']['NAME'],
@@ -144,65 +166,104 @@ def view_pemesanan(request):
         )
         cursor = conn.cursor()
 
-        # Query untuk memperbaiki data subkategori_id yang kosong
-        update_query = """
-        UPDATE pemesanan_jasa_pemesananjasa
-        SET subkategori_id = (SELECT id FROM subkategori_layanan_subkategori LIMIT 1)
-        WHERE subkategori_id IS NULL;
-        """
-        cursor.execute(update_query)
+        query = "SELECT id, nama FROM metode_bayar;"
+        cursor.execute(query)
+        metode_pembayaran = cursor.fetchall()
 
-        # Query untuk mengambil daftar subkategori jasa
-        query_subkategori = """
-        SELECT id, nama FROM subkategori_layanan_subkategori;
-        """
-        cursor.execute(query_subkategori)
-        daftar_subkategori = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return metode_pembayaran
+    except Exception as e:
+        print(f"Error saat mengambil metode pembayaran: {e}")
+        return []
+    
+def get_diskon():
+    try:
+        conn = psycopg2.connect(
+            dbname=settings.DATABASES['default']['NAME'],
+            user=settings.DATABASES['default']['USER'],
+            password=settings.DATABASES['default']['PASSWORD'],
+            host=settings.DATABASES['default']['HOST'],
+            port=settings.DATABASES['default']['PORT']
+        )
+        cursor = conn.cursor()
+        query = "SELECT kode, potongan FROM diskon;"
+        cursor.execute(query)
+        diskon_list = cursor.fetchall()
 
-        # Query untuk mengambil daftar pesanan beserta statusnya
+        print(f"Debug: diskon_list={diskon_list}")  # Debugging
+        cursor.close()
+        conn.close()
+        return diskon_list
+    except Exception as e:
+        print(f"Error saat mengambil diskon: {e}")
+        return []
+
+def view_pemesanan(request):
+    try:
+        user = get_user(request)
+        if not user:
+            return HttpResponseForbidden("Anda harus login untuk mengakses halaman ini.")
+
+        user_id = user['id']
+
+        conn = psycopg2.connect(
+            dbname=settings.DATABASES['default']['NAME'],
+            user=settings.DATABASES['default']['USER'],
+            password=settings.DATABASES['default']['PASSWORD'],
+            host=settings.DATABASES['default']['HOST'],
+            port=settings.DATABASES['default']['PORT']
+        )
+        cursor = conn.cursor()
+
         query_pesanan = """
-        SELECT 
-            pj.id, pj.tanggal_pemesanan, pj.diskon, pj.total_pembayaran, pj.metode_pembayaran, 
-            pj.pengguna_id, ps.status, COALESCE(sk.nama, 'Subkategori tidak ditemukan') AS nama_subkategori
+        SELECT DISTINCT 
+            pj.id, pj.tanggal_pemesanan, pj.diskon, pj.total_pembayaran, 
+            COALESCE(mb.nama, 'Metode tidak ditemukan') AS metode_pembayaran,
+            pj.idpengguna, COALESCE(ps.status, 'Menunggu Pembayaran') AS status,
+            COALESCE(sk.nama, 'Subkategori tidak ditemukan') AS nama_subkategori
         FROM pemesanan_jasa_pemesananjasa pj
         LEFT JOIN pemesanan_jasa_trpemesananstatus ts ON pj.id = ts.id_tr_pemesanan_id
         LEFT JOIN pemesanan_jasa_statuspesanan ps ON ts.id_status_id = ps.id
         LEFT JOIN subkategori_layanan_subkategori sk ON pj.subkategori_id = sk.id
-        WHERE pj.pengguna_id = %s;
+        LEFT JOIN metode_bayar mb ON pj.metode_pembayaran = mb.id
+        WHERE pj.idpengguna = %s;
         """
-        cursor.execute(query_pesanan, (request.user.id,))
+        cursor.execute(query_pesanan, (str(user_id),))
         daftar_pesanan = cursor.fetchall()
 
-        print(f"Debug: Hasil query untuk pengguna_id={request.user.id}: {daftar_pesanan}")
-
-        # Proses hasil query
         pemesanan_dengan_status = []
         for pesanan in daftar_pesanan:
+            status = pesanan[6]
+            allow_cancellation = status in ["Menunggu Pembayaran", "Mencari Pekerja Terdekat"]
+
             pemesanan_dengan_status.append({
                 'id': pesanan[0],
                 'tanggal_pemesanan': pesanan[1],
                 'diskon': pesanan[2],
                 'total_pembayaran': pesanan[3],
                 'metode_pembayaran': pesanan[4],
-                'pengguna_id': pesanan[5],
-                'status': pesanan[6] or "Status tidak ditemukan",
-                'nama_subkategori': pesanan[7] or "Subkategori tidak ditemukan"
+                'idpengguna': pesanan[5],
+                'status': status,
+                'nama_subkategori': pesanan[7],
+                'allow_cancellation': allow_cancellation,  # Tambahkan flag
             })
 
         cursor.close()
         conn.close()
 
-        context = {
-            'pemesanan_dengan_status': pemesanan_dengan_status,
-            'daftar_subkategori': daftar_subkategori
-        }
-        return render(request, 'view_pemesanan.html', context)
-
+        user = get_user(request)
+        return render(request, 'view_pemesanan.html', {'pemesanan_dengan_status': pemesanan_dengan_status,'user':user})
     except Exception as e:
         print(f"Error: {e}")
         return HttpResponseForbidden("Terjadi kesalahan.")
 
 def delete_pemesanan(request, pk):
+    try:
+        pk = uuid.UUID(str(pk))  # Validasi UUID
+    except ValueError:
+        return HttpResponseForbidden("ID pesanan tidak valid.")
+
     try:
         conn = psycopg2.connect(
             dbname=settings.DATABASES['default']['NAME'],
@@ -213,38 +274,42 @@ def delete_pemesanan(request, pk):
         )
         cursor = conn.cursor()
 
-        # Hapus data terkait di tabel pemesanan_jasa_trpemesananstatus
+        # Hapus data terkait
         delete_related_query = """
         DELETE FROM pemesanan_jasa_trpemesananstatus WHERE id_tr_pemesanan_id = %s;
         """
         cursor.execute(delete_related_query, (pk,))
-        print(f"Debug: Data terkait untuk pesanan ID {pk} berhasil dihapus dari tabel pemesanan_jasa_trpemesananstatus.")
 
-        # Hapus data di tabel pemesanan_jasa_pemesananjasa
         delete_query = """
         DELETE FROM pemesanan_jasa_pemesananjasa WHERE id = %s;
         """
         cursor.execute(delete_query, (pk,))
-        print(f"Debug: Pesanan dengan ID {pk} berhasil dihapus dari tabel pemesanan_jasa_pemesananjasa.")
 
         conn.commit()
 
-        cursor.close()
-        conn.close()
-
-        return redirect('pemesanan_jasa:view_pemesanan')
+        
+        return JsonResponse({"message": "Pesanan berhasil dibatalkan."}, status=200)
     except Exception as e:
         print(f"Error: {e}")
-        return HttpResponseForbidden("Terjadi kesalahan.")
+        return HttpResponseForbidden("Terjadi kesalahan saat menghapus pesanan.")
 
 @csrf_exempt
-@login_required
 def submit_testimonial(request):
+    user = get_user(request)
     if request.method == 'POST':
         # Retrieve values from POST request
         testimonial_text = request.POST.get('text')
         rating = request.POST.get('rating')
-        id_tr_pemesanan = str(uuid.uuid4())
+
+        query_idtrpemesanan = """
+        SELECT Id
+        FROM TR_PEMESANAN_JASA
+        WHERE IdPelanggan =  %s;
+        """
+        cursor = connection.cursor()
+        cursor.execute(query_idtrpemesanan, [user['id']])
+        result = cursor.fetchone()
+        id_tr_pemesanan = result[0]
 
         # Check if required fields are present
         if testimonial_text and rating and id_tr_pemesanan:
@@ -257,9 +322,9 @@ def submit_testimonial(request):
 
                 return JsonResponse({'status': 'success'})
             except Exception as e:
-                print(f"Error: {e}")  
+                print(f"Error: {e}")
                 return JsonResponse({'status': 'error', 'message': str(e)})
         else:
             return JsonResponse({'status': 'error', 'message': 'Missing required fields'})
-    
+
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

@@ -70,7 +70,6 @@ def homepage(request):
         'user': user,
     })
 
-
 def not_logged_in(request):
     context = {
         'status': 'not-logged-in'

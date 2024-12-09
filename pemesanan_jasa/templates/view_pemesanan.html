@@ -203,6 +203,7 @@
                     <th>Total Pembayaran</th>
                     <th>Metode Pembayaran</th>
                     <th>Status</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -213,28 +214,30 @@
                     <td>{{ pesanan.diskon }}</td>
                     <td>Rp {{ pesanan.total_pembayaran|floatformat:0 }}</td>
                     <td>{{ pesanan.metode_pembayaran }}</td>
+                    <td>{{ pesanan.status }}</td> <!-- Tambahkan Status di Tabel -->
                     <td>
-                        {{ pesanan.status }}
-                        <div>
-                            {% if pesanan.status == "Menunggu Pembayaran" or pesanan.status == "Mencari Pekerja Terdekat" %}
-                                <form action="{% url 'pemesanan_jasa:batalkan_pesanan' pesanan.id %}" method="POST" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button class="action-button cancel-button" type="submit">Batalkan</button>
-                                </form>
-                            {% elif pesanan.status == "Pesanan Selesai" %}
-                            <button class="action-button testimonial-button" onclick="showTestimonialModal()">Buat Testimoni</button>
-                            <!-- <button id="deleteTestimonialButton" onclick="deleteTestimonial()" style="display:none; background-color: #f44336; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; margin-top: 10px;">Hapus Testimoni</button> -->
-                            {% endif %}
-                        </div>
+                        {% if pesanan.status == "Menunggu Pembayaran" or pesanan.status == "Mencari Pekerja Terdekat" %}
+                            <button 
+                                class="action-button cancel-button" 
+                                onclick="batalkanPesanan(event, '{{ pesanan.id }}', 'row-{{ pesanan.id }}')">
+                                Batalkan
+                            </button>
+                        {% elif pesanan.status == "Pesanan Selesai" %}
+                            <button 
+                                class="action-button testimonial-button" 
+                                onclick="showTestimonialModal('{{ pesanan.id }}')">
+                                Beri Testimoni
+                            </button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">Tidak ada pemesanan.</td>
+                    <td colspan="7">Tidak ada pemesanan.</td>
                 </tr>
                 {% endfor %}
-            </tbody>                
-        </table>     
+            </tbody>
+        </table>            
     </div>
 
     <div id="testimonialModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
@@ -344,6 +347,32 @@ document.getElementById("filterSubkategori").addEventListener("change", filterRo
         });
     }
 
+    function batalkanPesanan(event, pemesananId, rowId) {
+        event.preventDefault();
+        if (confirm("Apakah Anda yakin ingin membatalkan pesanan ini?")) {
+            fetch(`/pemesanan/delete/${pemesananId}/`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Gagal membatalkan pesanan");
+            })
+            .then(data => {
+                document.getElementById(rowId).remove();
+                alert(data.message || "Pesanan berhasil dibatalkan");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message || "Terjadi kesalahan. Silakan coba lagi.");
+            });
+        }
+    }
     </script>
 </body>
 </html>

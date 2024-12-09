@@ -7,14 +7,12 @@ from authentication.views import login_required, get_user
 def homepage(request):
     return render(request, 'homepage.html')
 
-
 def execute_query(query, params=None):
     with connection.cursor() as cursor:
         cursor.execute(query, params)
         columns = [col[0] for col in cursor.description]
         rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
     return rows
-
 
 @login_required
 def subkategori_pengguna(request, subkategori_id):
@@ -52,20 +50,20 @@ def subkategori_pengguna(request, subkategori_id):
 
         pekerja_list = execute_query(query_pekerja, [subkategori_id])
 
-        user = get_user(request)
+        user=get_user(request)
         context = {
             'subkategori': subkategori,
             'sesi_layanan': sesi_layanan,
             'pekerja_list': pekerja_list,
             'testimonis': [],  # Dummy data untuk testimoni
-            'user': user,
+            'user':user,
         }
 
         return render(request, 'subkategori_pengguna.html', context)
     except Exception as e:
         return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")
 
-
+@login_required
 def subkategori_pekerja(request, subkategori_id):
     user = get_user(request)
 
@@ -105,7 +103,6 @@ def subkategori_pekerja(request, subkategori_id):
 
         pekerja_list = execute_query(query_pekerja, [subkategori_id])
 
-        # Validasi user login
         # Validasi user login
         if not request.user.is_authenticated:
             return redirect('not_logged_in')
@@ -160,21 +157,18 @@ def subkategori_pekerja(request, subkategori_id):
                 """, [user_pekerja_id, subkategori_id])
             return redirect('subkategori_pekerja', subkategori_id=subkategori_id)
 
-        user = get_user(request)
-        print("User dari request:", request.user)
-        print("User dari get_user:", get_user(request))
+        user=get_user(request)
 
         context = {
             'subkategori': subkategori,
             'pekerja_list': pekerja_list,
             'sesi_layanan_list': sesi_layanan_list,
             'show_join_button': show_join_button,
-            'user': user,
+            'user':user,
         }
         return render(request, 'subkategori_pekerja.html', context)
     except Exception as e:
         return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")
-
 
 def profil_pekerja(request, pekerja_id):
     pekerja = execute_query("""
@@ -197,8 +191,5 @@ def profil_pekerja(request, pekerja_id):
 
     return render(request, 'profil_pekerja.html', {'pekerja': pekerja[0]})
 
-
 def not_logged_in(request):
-    if request.user.is_authenticated:
-        return redirect('homepage')
     return render(request, 'not_logged_in.html')
