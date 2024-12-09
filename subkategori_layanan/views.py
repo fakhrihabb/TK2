@@ -79,13 +79,15 @@ def subkategori_pengguna(request, subkategori_id):
             'testimonis': testimonis,  
             'user':user,
         }
-        
+
         return render(request, 'subkategori_pengguna.html', context)
     except Exception as e:
         return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")
 
 @login_required
 def subkategori_pekerja(request, subkategori_id):
+    user = get_user(request)
+
     try:
         # Ambil data subkategori
         query_subkategori = """
@@ -124,7 +126,7 @@ def subkategori_pekerja(request, subkategori_id):
 
         # Validasi user login
         if not request.user.is_authenticated:
-            return HttpResponseBadRequest("User tidak terautentikasi.")
+            return redirect('not_logged_in')
 
         # Ambil ID pekerja dari user yang login
         query_user_pekerja = """
@@ -132,7 +134,7 @@ def subkategori_pekerja(request, subkategori_id):
             FROM profil_pekerja
             WHERE user_id = %s
         """
-        pekerja_id_result = execute_query(query_user_pekerja, [request.user.id])
+        pekerja_id_result = execute_query(query_user_pekerja, [user.get("id")])
         if not pekerja_id_result:
             with connection.cursor() as cursor:
                 insert_query = """
@@ -140,19 +142,18 @@ def subkategori_pekerja(request, subkategori_id):
                         id, nama, nama_bank, nomor_rekening, npwp, link_foto, rating, jml_pesanan_selesai, user_id
                     ) VALUES (
                         gen_random_uuid(), 
-                        %s, -- Gabungan First Name dan Last Name
-                        %s, %s, %s, %s, %s, %s, %s
+                        %s, %s, %s, %s, %s, %s, %s, %s
                     )
                 """
                 cursor.execute(insert_query, [
-                    f"{request.user.first_name} {request.user.last_name}",  # Gabungan nama depan dan belakang
-                    'Bank Default',        # Bank default
-                    '0000000000',          # Nomor rekening default
-                    'NPWP-DEFAULT',        # NPWP default
+                    f"{user.get("first_name")} {request.user.last_name}",  # Gabungan nama depan dan belakang
+                    'Bank Default',  # Bank default
+                    '0000000000',  # Nomor rekening default
+                    'NPWP-DEFAULT',  # NPWP default
                     'https://example.com/default-profile.jpg',  # Foto default
-                    0.0,                   # Rating default
-                    0,                     # Jumlah pesanan selesai default
-                    request.user.id        # ID user
+                    0.0,  # Rating default
+                    0,  # Jumlah pesanan selesai default
+                    request.user.id  # ID user
                 ])
 
             pekerja_id_result = execute_query(query_user_pekerja, [request.user.id])
@@ -176,7 +177,7 @@ def subkategori_pekerja(request, subkategori_id):
                     VALUES (%s, %s)
                 """, [user_pekerja_id, subkategori_id])
             return redirect('subkategori_pekerja', subkategori_id=subkategori_id)
-        
+
         user=get_user(request)
 
         context = {
@@ -205,10 +206,10 @@ def profil_pekerja(request, pekerja_id):
         INNER JOIN "USER"" u ON p.user_id = u.id
         WHERE p.id = %s
     """, [pekerja_id])
-    
+
     if not pekerja:
         return HttpResponseBadRequest("Profil pekerja tidak ditemukan.")
-    
+
     return render(request, 'profil_pekerja.html', {'pekerja': pekerja[0]})
 
 def not_logged_in(request):
