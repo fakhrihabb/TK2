@@ -72,7 +72,7 @@ def diskon_list(request):
             'vouchers': vouchers,
             'promos': promos, 'user': user,
         }
-
+        cursor.close()
         return render(request, 'discounts/diskon_page.html', context)
     
     except Exception as e:
@@ -128,7 +128,7 @@ def beli_voucher(user_id, voucher_code, payment_method, price, validity, balance
             return "Voucher tidak ditemukan."
 
         kuota = kuota_result[0]['kuotapenggunaan']
-
+        cursor.close()
         return f"Selamat! Anda berhasil membeli voucher kode {voucher_code}. Voucher ini akan berlaku hingga tanggal {tgl_akhir.strftime('%d/%m/%Y')} dengan kuota penggunaan {kuota} kali."
     except Exception as e:
         return f"Terjadi kesalahan: {e}"
@@ -151,6 +151,8 @@ def beli_voucher_view(request):
 
         # Panggil fungsi beli_voucher
         result_message = beli_voucher(user['id'], voucher_code, payment_method, voucher_price, voucher_validity, saldo)
+
+        cursor.close()
 
         # Return the result to the front end
         if "berhasil" in result_message:
