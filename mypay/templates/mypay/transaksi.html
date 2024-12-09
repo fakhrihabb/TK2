@@ -11,7 +11,7 @@
         /* Global styles */
         body {
             font-family: 'Nunito Rounded', sans-serif;
-            background-color: #FFFFFF; /* White background */
+            background-color: #FFFFFF;
             color: #333;
             margin: 0;
             padding: 0;
@@ -21,7 +21,7 @@
         .form-container {
             width: 60%;
             margin: 0 auto;
-            padding: 40px 20px; /* Increased padding for more space */
+            padding: 40px 20px;
             background-color: #FFF;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
@@ -32,7 +32,7 @@
         .form-container h1 {
             color: #000000;
             text-align: center;
-            font-size: 2em; /* Larger font size */
+            font-size: 2em;
             margin-bottom: 30px;
             font-weight: 500;
         }
@@ -61,13 +61,13 @@
         }
 
         input[type="number"]:focus, input[type="text"]:focus, select:focus {
-            border-color: #08C2FF; /* Light blue border on focus */
+            border-color: #08C2FF; 
             outline: none;
         }
 
         /* Button styles */
         button[type="submit"] {
-            background-color: #FFF100; /* Bright yellow button */
+            background-color: #FFF100;
             color: #333;
             font-weight: bold;
             padding: 12px 20px;
@@ -78,110 +78,78 @@
         }
 
         button[type="submit"]:hover {
-            background-color: #08C2FF; /* Light blue on hover */
+            background-color: #08C2FF;
         }
 
         /* Section visibility */
         #topupFields, #jasaFields, #transferFields, #withdrawFields {
             display: none;
         }
-
-        /* Style for the select dropdown options */
-        select option {
-            padding: 10px;
-        }
-
-        /* Style for jasaPrice span */
-        #jasaPrice {
-            font-weight: bold;
-            color: #006BFF; /* Set jasa price text color to blue */
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 15px;
-            }
-
-            button[type="submit"] {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
     
     <div class="form-container">
-        <h1>Form Transaksi MyPay</h1> <!-- Title inside the box -->
-        <form method="post">
+        <h1>Form Transaksi MyPay</h1>
+        <!-- Hanya satu form yang digunakan -->
+        <form method="post" action="{% url 'mypay:transaksi' %}">
             {% csrf_token %}
             <label for="category">Kategori Transaksi</label>
-            <select name="category" id="category" onchange="updateFormState()" value="{{ request.POST.category|default:'topup' }}">
+            <select name="category" id="category" onchange="updateFormState()" required>
                 <option value="topup" {% if request.POST.category == 'topup' %}selected{% endif %}>Top Up MyPay</option>
                 <option value="jasa" {% if request.POST.category == 'jasa' %}selected{% endif %}>Bayar Jasa</option>
-                {% if user.is_pengguna %}
-                    <option value="transfer" {% if request.POST.category == 'transfer' %}selected{% endif %}>Transfer MyPay</option>
-                {% endif %}
+                <option value="transfer" {% if request.POST.category == 'transfer' %}selected{% endif %}>Transfer MyPay</option>
                 <option value="withdrawal" {% if request.POST.category == 'withdrawal' %}selected{% endif %}>Withdrawal</option>
             </select>
 
-            <!-- Bagian Top Up MyPay -->
+            <!-- Bagian Top Up -->
             <div id="topupFields" style="display:none;">
                 <label for="topupAmount">Nominal Top Up</label>
-                <input type="number" name="topupAmount" id="topupAmount" value="{{ request.POST.topupAmount }}" required>
-
-                <button type="submit">Top Up</button>
+                <input type="number" name="amount" id="topupAmount" value="{{ request.POST.amount }}" required>
+                <input type="hidden" name="description" value="Top Up MyPay">
             </div>
-
-            <!-- Bagian Bayar Jasa -->
+            
+            <!-- Bagian Jasa -->
             <div id="jasaFields" style="display:none;">
                 <label for="service">Pilih Jasa</label>
-                <select name="service" id="service">
-                    <option value="setrika">Setrika</option>
-                    <option value="home_cleaning">Home Cleaning</option>
-                    <option value="car_wash">Big Size Car Wash</option>
+                <select name="description" id="service" required>
+                    <option value="Setrika" {% if request.POST.description == 'Setrika' %}selected{% endif %}>Setrika</option>
+                    <option value="Home Cleaning" {% if request.POST.description == 'Home Cleaning' %}selected{% endif %}>Home Cleaning</option>
+                    <option value="Big Size Car Wash" {% if request.POST.description == 'Big Size Car Wash' %}selected{% endif %}>Big Size Car Wash</option>
                 </select>
 
-                <label for="jasaPrice">Harga Jasa</label>
-                <span id="jasaPrice">Rp 100000</span>
+                <label for="jasaPrice">Harga</label>
+                <span id="jasaPrice">Rp 100000</span> <!-- Harga ditentukan untuk setiap jasa, bisa diprogram lebih dinamis -->
+                <input type="hidden" name="amount" value="100000"> <!-- Harga tetap, bisa disesuaikan berdasarkan pilihan -->
 
-                <button type="submit">Bayar</button>
+                <button type="submit">Kirim</button>
             </div>
-
-            <!-- Bagian Transfer MyPay -->
+    
+            <!-- Bagian Transfer -->
             <div id="transferFields" style="display:none;">
                 <label for="phoneNumber">Nomor HP Tujuan</label>
-                <input type="number" name="phoneNumber" id="phoneNumber" value="{{ request.POST.phoneNumber }}">
-
+                <input type="text" name="description" id="phoneNumber" value="{{ request.POST.description }}" required>
                 <label for="transferAmount">Nominal Transfer</label>
-                <input type="number" name="transferAmount" id="transferAmount" value="{{ request.POST.transferAmount }}" required>
-
-                <button type="submit">Bayar</button>
+                <input type="number" name="amount" id="transferAmount" value="{{ request.POST.amount }}" required>
             </div>
 
             <!-- Bagian Withdrawal -->
             <div id="withdrawFields" style="display:none;">
                 <label for="bank">Pilih Bank</label>
-                <select name="bank" id="bank">
+                <select name="description" id="bank">
                     <option value="BCA">BCA</option>
                     <option value="Mandiri">Mandiri</option>
                     <option value="Bank Jago">Bank Jago</option>
                 </select>
-
-                <label for="accountNumber">Nomor Rekening</label>
-                <input type="text" name="accountNumber" id="accountNumber" value="{{ request.POST.accountNumber }}" required>
-
                 <label for="withdrawAmount">Nominal Withdraw</label>
-                <input type="number" name="withdrawAmount" id="withdrawAmount" value="{{ request.POST.withdrawAmount }}" required>
-
-                <button type="submit">Bayar</button>
+                <input type="number" name="amount" id="withdrawAmount" value="{{ request.POST.amount }}" required>
             </div>
 
+            <button type="submit">Kirim</button>
         </form>
-    </div>
+        </div>
 
-    <script src="{% static 'mypay/js/transaksi.js' %}"></script>
-    <script>
+        <script>
         function updateFormState() {
             var category = document.getElementById("category").value;
             
@@ -203,10 +171,13 @@
             }
         }
 
+
         // Memastikan form dimuat dengan kategori yang sudah dipilih
         window.onload = function() {
             updateFormState();
         };
-    </script>
-</body>
+        </script>
+    </body>
 </html>
+
+

@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseNotFound, JsonResponse
+from authentication.views import get_user
 
 # View untuk menampilkan job orders, termasuk form filter kategori dan subkategori
 def pekerjaan_jasa(request):
@@ -35,11 +36,13 @@ def pekerjaan_jasa(request):
     # Kirimkan URL ke template
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
+    user = get_user(request)
     return render(request, 'pekerjaan_jasa/urutan_pekerjaan.html', {
         'categories': categories,
         'orders': orders,
         'subcategories': subcategories,
         'get_subcategories_url': get_subcategories_url,
+        'user': user
     })
 
 
@@ -66,11 +69,13 @@ def job_status(request):
 
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
+    user = get_user(request)
     return render(request, 'pekerjaan_jasa/status_pekerjaan.html', {
         'categories': categories,
         'subcategories': subcategories,
         'orders': orders,
         'get_subcategories_url': get_subcategories_url,
+        'user': user
     })
 
 
