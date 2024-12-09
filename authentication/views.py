@@ -101,37 +101,25 @@ def register_pekerja(request):
 
 @csrf_exempt
 def login(request):
-    request.session['phone_number'] = 'not found'
-    request.session['is_pekerja'] = 'not found'
-    request.session['user_id'] = 'not found'
-
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
         password = request.POST.get('password')
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("SET search_path TO public")
-                cursor.execute("""
+        with connection.cursor() as cursor:
+            cursor.execute("""
                 SELECT phone_number, is_pekerja, id
                 FROM "USER"
-                WHERE phone_number = %s AND password = %s 
-                """, [phone_number, password])
-                result = cursor.fetchone()
-                if result:
-                    request.session['phone_number'] = result[0]
-                    request.session['is_pekerja'] = result[1]
-                    request.session['user_id'] = str(result[2])
-                    return redirect('homepage')
-                else:
-                    messages.error(request, 'Wrong phone number or password')
+                WHERE phone_number = %s AND password = %s
+            """, [phone_number, password])
+            result = cursor.fetchone()
 
-
-        except Exception as e:
-            messages.error(request, 'Error occured: ' + str(e))
-
-        return render(request, 'login.html')
+            if result:
+                request.session['phone_number'] = result[0]
+                request.session['is_pekerja'] = result[1]
+                request.session['user_id'] = str(result[2])
+                return redirect('homepage')
+            else:
+                messages.error(request, 'Wrong phone number or password')
     return render(request, 'login.html')
-
 
 def logout(request):
     request.session['phone_number'] = 'not found'

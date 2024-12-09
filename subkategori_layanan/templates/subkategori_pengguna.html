@@ -197,7 +197,7 @@
                 <div class="session-item">
                     <span>Sesi {{ sesi.sesi }}</span>
                     <span>Rp {{ sesi.harga|floatformat:0 }}</span>
-                    <form action="{% url 'pemesanan_jasa:create_pemesanan' subkategori.id sesi.id %}" method="get" style="display: inline;">
+                    <form action="{% url 'pemesanan_jasa:create_pemesanan' subkategori.id sesi.id %}" method="get">
                         <button class="button">Pesan</button>
                     </form>                    
                 </div>

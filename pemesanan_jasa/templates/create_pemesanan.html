@@ -88,11 +88,15 @@
                 <label for="diskon">Diskon</label>
                 <input type="text" id="diskon" name="diskon" placeholder="Masukkan kode diskon">
             </div>
+            <!-- Modal Pilihan Metode Pembayaran -->
             <div class="form-group">
-                <label for="metode_pembayaran">Metode Pembayaran</label>
-                <select id="metode_pembayaran" name="metode_pembayaran" required>
-                    <option value="transfer">Transfer</option>
-                    <option value="cash">Cash</option>
+                <label for="metode_pembayaran">Pilih Metode Pembayaran</label>
+                <select id="metode_pembayaran" name="metode_pembayaran" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+                    {% for metode in metode_pembayaran_list %}
+                        <option value="{{ metode.0 }}">{{ metode.1 }}</option>
+                    {% empty %}
+                        <option value="">Tidak ada metode pembayaran tersedia</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-group">
@@ -102,4 +106,16 @@
         </form>
     </div>
 </body>
+<script>
+    function showPaymentModal() {
+    document.getElementById("paymentModal").style.display = "flex";
+}
+
+function confirmPayment() {
+    const selectedPaymentMethod = document.getElementById("paymentMethod").value;
+    document.getElementById("paymentModal").style.display = "none";
+    alert(`Metode pembayaran dipilih: ${selectedPaymentMethod}`);
+}
+
+</script>
 </html>
