@@ -16,3 +16,6 @@ urlpatterns = [
     path('pekerjaan-jasa/', include('pekerjaan_jasa.urls')),
     path('subkategori/pengguna/<uuid:subkategori_id>/', subkategori_views.subkategori_pengguna, name='subkategori_pengguna'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
