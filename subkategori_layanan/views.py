@@ -56,13 +56,59 @@ def subkategori_pengguna(request, subkategori_id):
         """
         pekerja_list = execute_query(query_pekerja, [subkategori_id])
 
+        query_testimoni = """
+        SELECT 
+            CONCAT(u_pelanggan.first_name, ' ', u_pelanggan.last_name) AS nama_pelanggan,
+            t.Teks AS Testimoni, 
+            t.Rating AS Rating, 
+            t.Tgl AS TanggalTestimoni,
+            CONCAT(u_pekerja.first_name, ' ', u_pekerja.last_name) AS nama_pekerja
+        FROM 
+            Testimoni t
+        LEFT JOIN 
+            PEMESANAN_JASA_PEMESANANJASA tpj ON t.IdTrPemesanan = tpj.Id
+        LEFT JOIN 
+            "USER" u_pelanggan ON tpj.idpengguna = u_pelanggan.Id
+        LEFT JOIN 
+            "PEKERJA" p_pekerja ON tpj.idpekerja = p_pekerja.user_id
+        LEFT JOIN 
+            "USER" u_pekerja ON p_pekerja.user_id = u_pekerja.id
+        ORDER BY 
+            t.Tgl DESC;        
+        """
+        testimonis = execute_query(query_testimoni)
+
+        query_testimoni = """
+        SELECT 
+            CONCAT(u_pelanggan.first_name, ' ', u_pelanggan.last_name) AS nama_pelanggan,
+            t.Teks AS Testimoni, 
+            t.Rating AS Rating, 
+            t.Tgl AS TanggalTestimoni,
+            CONCAT(u_pekerja.first_name, ' ', u_pekerja.last_name) AS nama_pekerja
+        FROM 
+            Testimoni t
+        LEFT JOIN 
+            PEMESANAN_JASA_PEMESANANJASA tpj ON t.IdTrPemesanan = tpj.Id
+        LEFT JOIN 
+            "USER" u_pelanggan ON tpj.idpengguna = u_pelanggan.Id
+        LEFT JOIN 
+            "PEKERJA" p_pekerja ON tpj.idpekerja = p_pekerja.user_id
+        LEFT JOIN 
+            "USER" u_pekerja ON p_pekerja.user_id = u_pekerja.id
+        ORDER BY 
+            t.Tgl DESC;        
+        """
+        testimonis = execute_query(query_testimoni)
+
         user = get_user(request)
         context = {
             'subkategori': subkategori,
             'sesi_layanan': sesi_layanan,
             'pekerja_list': pekerja_list,
-            'user': user,
+            'testimonis': testimonis,  
+            'user':user,
         }
+
         return render(request, 'subkategori_pengguna.html', context)
     except Exception as e:
         return HttpResponseBadRequest(f"Terjadi kesalahan: {e}")

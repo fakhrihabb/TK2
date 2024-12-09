@@ -278,19 +278,19 @@
 </div>        
 
         <!-- Testimoni -->
-        <div class="testimonial-list" style="margin-top: 50px;">
+        <div class="testimonial-list" style="margin-top: 50px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
             <h3 class="testimonial-title">Testimoni</h3>
-            {% for testimoni in testimonis|slice:":3" %}
-                <div class="testimonial-card">
+            {% for testimoni in testimonis %}
+                <div class="testimonial-card" style="margin-bottom: 15px;">
                     <div class="testimonial-header">
-                        <span><i class="fas fa-user"></i> testimoni.user </span>
-                        <span>Tanggal: {{ testimoni.tgl }}</span>
+                        <span><i class="fas fa-user"></i> {{testimoni.nama_pelanggan}} </span>
+                        <span>Tanggal: {{ testimoni.tanggaltestimoni }}</span>
                     </div>
                     <div class="testimonial-body">
-                        <p class="testimonial-text">{{ testimoni.teks }}</p>
+                        <p class="testimonial-text">{{ testimoni.testimoni }}</p>
                     </div>
                     <div class="testimonial-footer">
-                        <span class="worker-name">Nama Pekerja</span>
+                        <span class="worker-name">{{ testimoni.nama_pekerja }}</span>
                         <span class="rating">Rating: {{ testimoni.rating }}/5</span>
                     </div> 
                 </div>

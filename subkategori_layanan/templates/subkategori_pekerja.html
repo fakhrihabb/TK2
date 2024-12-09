@@ -290,20 +290,20 @@
     {% endif %}
 </div>
 
-        <!-- Testimoni -->
-<div class="testimonial-list" style="margin-top: 50px;">
+<!-- Testimoni -->
+<div class="testimonial-list" style="margin-top: 50px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
     <h3 class="testimonial-title">Testimoni</h3>
-    {% for testimoni in testimonis|slice:":3" %}
-        <div class="testimonial-card">
+    {% for testimoni in testimonis %}
+        <div class="testimonial-card" style="margin-bottom: 15px;">
             <div class="testimonial-header">
-                <span><i class="fas fa-user"></i> {{ testimoni.user }}</span>
-                <span>Tanggal: {{ testimoni.date_created }}</span>
+                <span><i class="fas fa-user"></i> {{testimoni.nama_pelanggan}} </span>
+                <span>Tanggal: {{ testimoni.tanggaltestimoni }}</span>
             </div>
             <div class="testimonial-body">
-                <p class="testimonial-text">{{ testimoni.comment }}</p>
+                <p class="testimonial-text">{{ testimoni.testimoni }}</p>
             </div>
             <div class="testimonial-footer">
-                <span class="worker-name">Nama Pekerja</span>
+                <span class="worker-name">{{ testimoni.nama_pekerja }}</span>
                 <span class="rating">Rating: {{ testimoni.rating }}/5</span>
             </div> 
         </div>
@@ -311,6 +311,7 @@
         <p>Tidak ada testimoni untuk ditampilkan.</p>
     {% endfor %}
 </div>
+
 
     <script>
         function joinService() {

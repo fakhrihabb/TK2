@@ -2,9 +2,11 @@ import psycopg2
 from django.conf import settings
 from django.shortcuts import render, redirect
 import logging
+
+from authentication.views import login_required, get_user
+
 logger = logging.getLogger(__name__)
 
-from authentication.views import get_user, login, login_required
 
 
 # Fungsi untuk mendapatkan koneksi database PostgreSQL
