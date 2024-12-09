@@ -8,14 +8,14 @@
     <!-- Menambahkan FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            display: flex;
-            justify-content: center;
-            margin: 20px;
-            padding: 80px;
-            background-color: #ffffff;
-        }
+    body {
+        font-family: 'Nunito', sans-serif;
+        display: flex;
+        justify-content: center;
+        margin: 20px;
+        padding: 80px;
+        background-color: #f7f9fc;
+    }
 
         .join-message {
             display: none;
@@ -24,13 +24,13 @@
             font-weight: bold;
         }
         .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-        }
+        width: 100%;
+        max-width: 1200px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
         .header, .description, .session-list, .worker-list, .testimonial-list {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -51,16 +51,34 @@
             margin: 0 ;
         }
 
-        .worker-list h3, .testimonial-list h3{
-            color: #ffffff;
-            margin: auto;
-        }
+        .worker-list {
+        background: linear-gradient(to right, #006BFF, #08c2ff);
+        color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .worker-list h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .worker-item a {
+        text-decoration: none;
+        color: #006BFF;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .worker-item a:hover {
+        text-decoration: underline;
+    }
+
         .description {
             background-color: #F0F8FF;
             color: #333;
             font-size: 1rem;
         }
-        .session-item, .worker-item, .testimonial-item {
+        .session-item, .testimonial-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
@@ -103,9 +121,24 @@
     white-space: nowrap;
 }
 
+.worker-info {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #333;
+    }
+
+    .worker-info p {
+        margin: 5px 0;
+    }
+
 .worker-item {
-    width: 200px; /* Ukuran khusus untuk worker-item */
-}
+        background-color: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
 
 .worker-item a, .testimonial-text {
     color: #006BFF;
@@ -113,9 +146,25 @@
     font-weight: bold;
 }
 
-.worker-item a:hover {
-    text-decoration: underline;
-}
+.worker-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .worker-item img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+.worker-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+    }
 
 
         .testimonial-title {
@@ -210,25 +259,19 @@
 
         <!-- Daftar Pekerja -->
         <div class="worker-list">
-            <h3>Pekerja</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <h3>Daftar Pekerja</h3>
+            <div class="worker-grid">
                 {% for pekerja in pekerja_list %}
-                    <div class="worker-item">
-                        <div style="text-align: center;">
-                            <!-- Ikon Pekerja -->
-                            <div style="font-size: 2rem; color: #006BFF;">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
-                            <!-- Nama Pekerja -->
-                            <div style="margin-top: 5px; font-weight: bold; font-size: 1.1rem;">
-                                <a href="{% url 'profil_pekerja' pekerja.id %}" style="text-decoration: none; color: #006BFF;">
-                                    {{ pekerja.nama_lengkap }}
-                                </a>
-                            </div>                                                       
-                        </div>
+                <div class="worker-item">
+                    <!-- Foto Pekerja -->
+                    <div style="font-size: 2rem; color: #006BFF; text-align: left;">
+                        <i class="fas fa-user-circle"></i>
                     </div>
+                    <!-- Nama Pekerja -->
+                    <a href="{% url 'profil_pekerja' pekerja.pekerja_id %}">{{ pekerja.nama_lengkap }}</a>
+                </div>
                 {% empty %}
-                    <p>Tidak ada pekerja yang terdaftar.</p>
+                <p>Tidak ada pekerja yang terdaftar.</p>
                 {% endfor %}
             </div>
         </div>        
