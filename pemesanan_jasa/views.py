@@ -303,8 +303,8 @@ def submit_testimonial(request):
 
         query_idtrpemesanan = """
         SELECT Id
-        FROM TR_PEMESANAN_JASA
-        WHERE IdPelanggan =  %s;
+        FROM PEMESANAN_JASA_PEMESANANJASA
+        WHERE Idpengguna =  %s;
         """
         cursor = connection.cursor()
         cursor.execute(query_idtrpemesanan, [user['id']])
@@ -322,9 +322,9 @@ def submit_testimonial(request):
 
                 return JsonResponse({'status': 'success'})
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error: {e}")  
                 return JsonResponse({'status': 'error', 'message': str(e)})
         else:
             return JsonResponse({'status': 'error', 'message': 'Missing required fields'})
-
+    
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

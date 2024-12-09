@@ -38,24 +38,45 @@ def subkategori_pengguna(request, subkategori_id):
 
         # Ambil daftar pekerja (casting bigint ke uuid)
         query_pekerja = """
-    SELECT 
-        p.user_id,
-        CONCAT(u.first_name, ' ', u.last_name) AS nama_lengkap,
-        p.bank, p.bank_number, p.image_url, p.rating, p.order_complete
-    FROM subkategori_pekerja sp
-    INNER JOIN public."PEKERJA" p ON sp.pekerja_id = p.user_id
-    INNER JOIN "USER" u ON p.user_id = u.id
-    WHERE sp.subkategori_id = %s;
-"""
-
+            SELECT 
+                p.user_id,
+                CONCAT(u.first_name, ' ', u.last_name) AS nama_lengkap,
+                p.bank, p.bank_number, p.image_url, p.rating, p.order_complete
+            FROM subkategori_pekerja sp
+            INNER JOIN public."PEKERJA" p ON sp.pekerja_id = p.user_id
+            INNER JOIN "USER" u ON p.user_id = u.id
+            WHERE sp.subkategori_id = %s;
+        """
         pekerja_list = execute_query(query_pekerja, [subkategori_id])
+
+        query_testimoni = """
+        SELECT 
+            CONCAT(u_pelanggan.first_name, ' ', u_pelanggan.last_name) AS nama_pelanggan,
+            t.Teks AS Testimoni, 
+            t.Rating AS Rating, 
+            t.Tgl AS TanggalTestimoni,
+            CONCAT(u_pekerja.first_name, ' ', u_pekerja.last_name) AS nama_pekerja
+        FROM 
+            Testimoni t
+        LEFT JOIN 
+            PEMESANAN_JASA_PEMESANANJASA tpj ON t.IdTrPemesanan = tpj.Id
+        LEFT JOIN 
+            "USER" u_pelanggan ON tpj.idpengguna = u_pelanggan.Id
+        LEFT JOIN 
+            "PEKERJA" p_pekerja ON tpj.idpekerja = p_pekerja.user_id
+        LEFT JOIN 
+            "USER" u_pekerja ON p_pekerja.user_id = u_pekerja.id
+        ORDER BY 
+            t.Tgl DESC;        
+        """
+        testimonis = execute_query(query_testimoni)
 
         user=get_user(request)
         context = {
             'subkategori': subkategori,
             'sesi_layanan': sesi_layanan,
             'pekerja_list': pekerja_list,
-            'testimonis': [],  # Dummy data untuk testimoni
+            'testimonis': testimonis,  
             'user':user,
         }
         

@@ -9,5 +9,4 @@ urlpatterns = [
     # path('delete/<uuid:pk>/', views.delete_pemesanan, name='batalkan_pesanan'),  # Pastikan ini ada
     path('pemesanan/delete/<uuid:pk>/', views.delete_pemesanan, name='batalkan_pesanan'),  # Make sure this matches
     path('submit_testimonial/', views.submit_testimonial, name='submit_testimonial'),
-
 ]

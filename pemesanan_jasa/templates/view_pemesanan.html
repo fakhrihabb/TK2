@@ -223,11 +223,7 @@
                                 Batalkan
                             </button>
                         {% elif pesanan.status == "Pesanan Selesai" %}
-                            <button 
-                                class="action-button testimonial-button" 
-                                onclick="showTestimonialModal('{{ pesanan.id }}')">
-                                Beri Testimoni
-                            </button>
+                            <button class="action-button testimonial-button" onclick="showTestimonialModal('{{ pesanan.id }}')">Beri Testimoni</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -299,7 +295,7 @@ function filterRows() {
 // Event listener untuk menjalankan fungsi filter saat dropdown berubah
 document.getElementById("filterSubkategori").addEventListener("change", filterRows);
 
-    function showTestimonialModal() {
+function showTestimonialModal() {
         document.getElementById("testimonialModal").style.display = "flex";
     }
 
@@ -329,22 +325,15 @@ document.getElementById("filterSubkategori").addEventListener("change", filterRo
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
+                closeTestimonialModal();  
                 document.getElementById("testimonialText").value = "";
                 document.getElementById("rating").value = "1";  // Atau set ke nilai default lain jika diinginkan
-
-                // Menyembunyikan tombol Buat Testimoni dan menampilkan tombol Hapus Testimoni
                 document.querySelector(".testimonial-button").style.display = "none";  // Sembunyikan tombol Buat Testimoni
-                document.getElementById("deleteTestimonialButton").style.display = "inline-block";  // Tampilkan tombol Hapus Testimoni
-            
-            closeTestimonialModal();  
-                closeTestimonialModal();  
-            } else {
+         } else {
                 alert("Terjadi kesalahan.");
             }
         })
-        .catch(error => {
-            alert("Terjadi kesalahan, coba lagi.");
-        });
+
     }
 
     function batalkanPesanan(event, pemesananId, rowId) {
