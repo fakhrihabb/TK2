@@ -73,25 +73,66 @@
         .submit-button:hover {
             background-color: #08C2FF;
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        /* Styling tambahan untuk select */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 1em;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h3>Pesan Jasa</h3>
+
+        {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <label for="tanggal_pemesanan">Tanggal Pemesanan</label>
                 <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" value="{{ current_date }}" required>
-            </div>                        
+            </div>
+
+            <div class="form-group">
+                <label for="waktu_pekerjaan">Waktu Pekerjaan</label>
+                <select id="waktu_pekerjaan" name="waktu_pekerjaan" required>
+                    <option value="">Pilih waktu pekerjaan</option>
+                    <option value="pagi">Pagi (08.00 - 12.00)</option>
+                    <option value="siang">Siang (13.00 - 17.00)</option>
+                    <option value="malam">Malam (18.00 - 22.00)</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="diskon">Diskon</label>
                 <input type="text" id="diskon" name="diskon" placeholder="Masukkan kode diskon">
             </div>
-            <!-- Modal Pilihan Metode Pembayaran -->
+
             <div class="form-group">
-                <label for="metode_pembayaran">Pilih Metode Pembayaran</label>
-                <select id="metode_pembayaran" name="metode_pembayaran" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+                <label for="metode_pembayaran">Metode Pembayaran</label>
+                <select id="metode_pembayaran" name="metode_pembayaran" required>
+                    <option value="">Pilih metode pembayaran</option>
                     {% for metode in metode_pembayaran_list %}
                         <option value="{{ metode.0 }}">{{ metode.1 }}</option>
                     {% empty %}
@@ -99,23 +140,13 @@
                     {% endfor %}
                 </select>
             </div>
+
             <div class="form-group">
                 <p class="total-display">Total Pembayaran: Rp {{ harga_dasar|floatformat:0 }}</p>
-            </div>            
+            </div>
+
             <button type="submit" class="submit-button">Konfirmasi Pesanan</button>
         </form>
     </div>
 </body>
-<script>
-    function showPaymentModal() {
-    document.getElementById("paymentModal").style.display = "flex";
-}
-
-function confirmPayment() {
-    const selectedPaymentMethod = document.getElementById("paymentMethod").value;
-    document.getElementById("paymentModal").style.display = "none";
-    alert(`Metode pembayaran dipilih: ${selectedPaymentMethod}`);
-}
-
-</script>
 </html>

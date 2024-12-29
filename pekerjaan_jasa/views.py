@@ -1,39 +1,45 @@
 from django.shortcuts import render, redirect
-from django.http import Http404
-from django.contrib.auth.decorators import login_required
-from .models import ServiceCategory, ServiceOrder
-from django.http import JsonResponse
-from .models import ServiceSubcategory
-from django.core.serializers import serialize
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, Http404, HttpResponseNotFound
 from django.urls import reverse
+from django.db import connection
 from django.contrib import messages
-from django.http import HttpResponseNotFound, JsonResponse
 from authentication.views import get_user
+
+# Helper function to execute raw SQL queries
+def execute_sql(query, params=None):
+    with connection.cursor() as cursor:
+        cursor.execute(query, params or [])
+        if query.strip().lower().startswith("select"):
+            columns = [col[0] for col in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        return None
 
 # View untuk menampilkan job orders, termasuk form filter kategori dan subkategori
 def pekerjaan_jasa(request):
-    categories = ServiceCategory.objects.all()
+    categories = execute_sql("SELECT * FROM pekerjaan_jasa_servicecategory")
     selected_category = request.GET.get('category')
     selected_subcategory = request.GET.get('subcategory')
 
     # Filter pesanan berdasarkan kategori dan subkategori jika ada
-    orders = ServiceOrder.objects.filter(status='mencari')
-    if selected_category:
-        orders = orders.filter(subcategory__category_id=selected_category)
-    if selected_subcategory:
-        orders = orders.filter(subcategory_id=selected_subcategory)
+    orders_query = "SELECT * FROM pekerjaan_jasa_serviceorder WHERE status = %s"
+    orders_params = ['mencari']
 
-    # Validasi kategori dan subkategori
-    if selected_category and not ServiceCategory.objects.filter(id=selected_category).exists():
-        selected_category = None
-    if selected_subcategory and not ServiceSubcategory.objects.filter(id=selected_subcategory).exists():
-        selected_subcategory = None
+    if selected_category:
+        orders_query += " AND subcategory_id IN (SELECT id FROM pekerjaan_jasa_servicesubcategory WHERE category_id = %s)"
+        orders_params.append(selected_category)
+
+    if selected_subcategory:
+        orders_query += " AND subcategory_id = %s"
+        orders_params.append(selected_subcategory)
+
+    orders = execute_sql(orders_query, orders_params)
 
     # Subkategori untuk dropdown
-    subcategories = ServiceSubcategory.objects.filter(category_id=selected_category) if selected_category else []
+    subcategories = []
+    if selected_category:
+        subcategories = execute_sql("SELECT * FROM pekerjaan_jasa_servicesubcategory WHERE category_id = %s", [selected_category])
 
-    # Kirimkan URL ke template
+    # URL untuk mendapatkan subcategories
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
     user = get_user(request)
@@ -45,27 +51,30 @@ def pekerjaan_jasa(request):
         'user': user
     })
 
-
 # View untuk status pekerjaan
 def job_status(request):
-    categories = ServiceCategory.objects.all()
+    categories = execute_sql("SELECT * FROM pekerjaan_jasa_servicecategory")
     selected_category = request.GET.get('category')
-    selected_subcategory = request.GET.get('subcategory')  # Tambahkan ini untuk mengambil subkategori yang dipilih
+    selected_subcategory = request.GET.get('subcategory')
 
-    # Ambil pesanan dengan status 'menunggu'
-    orders = ServiceOrder.objects.exclude(status="dibatalkan")
+    # Ambil pesanan dengan status selain 'dibatalkan'
+    orders_query = "SELECT * FROM pekerjaan_jasa_serviceorder WHERE status != %s"
+    orders_params = ['dibatalkan']
+
     if selected_category:
-        orders = orders.filter(subcategory__category_id=selected_category)
-    if selected_subcategory:  # Sekarang aman karena variabel sudah didefinisikan
-        orders = orders.filter(subcategory_id=selected_subcategory)
+        orders_query += " AND subcategory_id IN (SELECT id FROM pekerjaan_jasa_servicesubcategory WHERE category_id = %s)"
+        orders_params.append(selected_category)
 
-    # Validasi kategori dan subkategori
-    if selected_category and not ServiceCategory.objects.filter(id=selected_category).exists():
-        selected_category = None
-    if selected_subcategory and not ServiceSubcategory.objects.filter(id=selected_subcategory).exists():
-        selected_subcategory = None
+    if selected_subcategory:
+        orders_query += " AND subcategory_id = %s"
+        orders_params.append(selected_subcategory)
 
-    subcategories = ServiceSubcategory.objects.filter(category_id=selected_category) if selected_category else []
+    orders = execute_sql(orders_query, orders_params)
+
+    # Subkategori untuk dropdown
+    subcategories = []
+    if selected_category:
+        subcategories = execute_sql("SELECT * FROM pekerjaan_jasa_servicesubcategory WHERE category_id = %s", [selected_category])
 
     get_subcategories_url = reverse('pekerjaan_jasa:get_subcategories', kwargs={'category_id': 0}).replace('0', '%s')
 
@@ -78,63 +87,67 @@ def job_status(request):
         'user': user
     })
 
-
-
 # View untuk memperbarui status pekerjaan
 def update_status(request, order_id, new_status):
-    # Dapatkan pesanan berdasarkan ID
-    order = get_object_or_404(ServiceOrder, id=order_id)
-    
-    # Validasi transisi status
     valid_transitions = {
         "menunggu": "tiba",
         "tiba": "dilakukan",
         "dilakukan": "selesai",
     }
 
-    # Cek apakah transisi valid
-    if new_status != valid_transitions.get(order.status):
+    # Ambil status pesanan saat ini
+    current_status_query = "SELECT status FROM pekerjaan_jasa_serviceorder WHERE id = %s"
+    current_status_result = execute_sql(current_status_query, [order_id])
+
+    if not current_status_result:
+        return HttpResponseNotFound("Pesanan tidak ditemukan.")
+
+    current_status = current_status_result[0]['status']
+
+    # Validasi transisi status
+    if new_status != valid_transitions.get(current_status):
         return HttpResponseNotFound("Transisi status tidak valid.")
 
     # Update status pesanan
-    order.status = new_status
-    order.save()
+    update_query = "UPDATE pekerjaan_jasa_serviceorder SET status = %s WHERE id = %s"
+    execute_sql(update_query, [new_status, order_id])
 
-    # Redirect kembali ke halaman job-status
     return redirect('pekerjaan_jasa:job-status')
 
 # View untuk mendapatkan subcategories berdasarkan kategori
 def get_subcategories(request, category_id):
     try:
-        # Ambil subcategories berdasarkan kategori
-        subcategories = ServiceSubcategory.objects.filter(category_id=category_id)
-        # Serialisasi data menjadi JSON-friendly format
-        subcategory_data = [{"id": sub.id, "name": sub.name} for sub in subcategories]
-        return JsonResponse(subcategory_data, safe=False)  # Kirim data sebagai JSON
-    except ServiceSubcategory.DoesNotExist:
-        return JsonResponse([], safe=False)  # Jika tidak ada subkategori, kirimkan array kosong
+        subcategories = execute_sql("SELECT id, name FROM pekerjaan_jasa_servicesubcategory WHERE category_id = %s", [category_id])
+        return JsonResponse(subcategories, safe=False)
+    except Exception:
+        return JsonResponse([], safe=False)
 
+# View untuk memindahkan pesanan ke status 'menunggu'
 def move_to_status(request, order_id):
-    order = get_object_or_404(ServiceOrder, id=order_id)
-    if order.status == 'mencari':
-        order.status = 'menunggu'
-        order.save()
+    order_query = "SELECT status FROM pekerjaan_jasa_serviceorder WHERE id = %s"
+    order_result = execute_sql(order_query, [order_id])
+
+    if not order_result:
+        return HttpResponseNotFound("Pesanan tidak ditemukan.")
+
+    if order_result[0]['status'] == 'mencari':
+        update_query = "UPDATE pekerjaan_jasa_serviceorder SET status = 'menunggu' WHERE id = %s"
+        execute_sql(update_query, [order_id])
     else:
         messages.error(request, 'Pesanan sudah dipindahkan sebelumnya!')
     return redirect('pekerjaan_jasa:pekerjaan_jasa')
 
+# View untuk menerima pesanan
 def accept_order(request, order_id):
-    try:
-        order = ServiceOrder.objects.get(id=order_id)
-    except ServiceOrder.DoesNotExist:
+    order_result = execute_sql("SELECT * FROM pekerjaan_jasa_serviceorder WHERE id = %s", [order_id])
+
+    if not order_result:
         raise Http404("Order not found")
-    
-    # Pastikan hanya pekerja dengan role tertentu yang bisa menerima order
-    if not request.user.is_worker:
+
+    if not getattr(request.user, 'is_worker', False):
         messages.error(request, "You are not authorized to accept orders.")
         return redirect('pekerjaan_jasa:pekerjaan_jasa')
-    
-    order.status = 'menunggu'
-    order.assigned_worker = request.user
-    order.save()
+
+    update_query = "UPDATE pekerjaan_jasa_serviceorder SET status = %s, assigned_worker_id = %s WHERE id = %s"
+    execute_sql(update_query, ['menunggu', request.user.id, order_id])
     return redirect('pekerjaan_jasa:pekerjaan_jasa')
