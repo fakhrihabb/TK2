@@ -1,5 +1,8 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+
+from goclean import settings
 from main import views as main_views
 from subkategori_layanan import views as subkategori_views
 
