@@ -73,12 +73,12 @@ def create_pemesanan(request, subkategori_id, sesi_layanan_id):
     try:
         # Get sesi layanan details
         sesi_layanan = get_sesi_layanan(sesi_layanan_id)
-        if not sesi_layanan:
+        if not sesi_layanan or sesi_layanan[1] <= 0:
             return render(request, 'create_pemesanan.html', {
-                'error_message': "Sesi layanan tidak ditemukan."
+                'error_message': "Sesi layanan tidak valid atau harga tidak sesuai."
             })
 
-        harga = sesi_layanan[1]
+        harga = Decimal(sesi_layanan[1])  # Convert to Decimal
         subkategori_id = sesi_layanan[2]
 
         # Get user, diskon, dan metode pembayaran
@@ -93,6 +93,7 @@ def create_pemesanan(request, subkategori_id, sesi_layanan_id):
 
         # Debug logs
         print("Debug: create_pemesanan dipanggil")
+        print(f"Debug: harga awal = {harga}")
         print(f"Subkategori ID: {subkategori_id}, Sesi Layanan ID: {sesi_layanan_id}")
 
         if request.method == 'POST':
@@ -127,16 +128,38 @@ def create_pemesanan(request, subkategori_id, sesi_layanan_id):
                 # Check user balance
                 cursor = connection.cursor()
                 cursor.execute("SELECT saldo FROM \"USER\" WHERE id = %s;", [user['id']])
-                saldo = cursor.fetchone()[0]
+                saldo = Decimal(cursor.fetchone()[0])  # Convert to Decimal
                 print(f"Debug: Saldo pengguna adalah {saldo}")
 
                 # Calculate total payment
-                total_pembayaran = harga
+                total_pembayaran = Decimal(harga)
                 if diskon_kode and diskon_kode.strip():
-                    cursor.execute("SELECT potongan FROM diskon WHERE kode = %s;", (diskon_kode,))
-                    potongan = cursor.fetchone()
-                    if potongan:
-                        total_pembayaran -= Decimal(potongan[0])
+                    print(f"Debug: Mencoba menggunakan voucher {diskon_kode}")
+                    cursor.execute("SELECT potongan, mintrpemesanan FROM diskon WHERE kode = %s;", (diskon_kode,))
+                    diskon = cursor.fetchone()
+                    if diskon:
+                        potongan, min_pemesanan = Decimal(diskon[0]), Decimal(diskon[1])
+                        print(f"Debug: potongan={potongan}, min_pemesanan={min_pemesanan}")
+
+                        if harga >= min_pemesanan:
+                            total_pembayaran -= potongan
+                            print(f"Debug: Total setelah diskon = {total_pembayaran}")
+                        else:
+                            return render(request, 'create_pemesanan.html', {
+                                'error_message': f"Minimum pemesanan untuk voucher ini adalah Rp {min_pemesanan:,.2f}",
+                                'harga_dasar': harga,
+                                'current_date': datetime.now().strftime("%Y-%m-%d"),
+                                'metode_pembayaran_list': metode_pembayaran,
+                                'user': user
+                            })
+                    else:
+                        return render(request, 'create_pemesanan.html', {
+                            'error_message': "Kode voucher tidak valid",
+                            'harga_dasar': harga,
+                            'current_date': datetime.now().strftime("%Y-%m-%d"),
+                            'metode_pembayaran_list': metode_pembayaran,
+                            'user': user
+                        })
 
                 # Check if balance is sufficient
                 if total_pembayaran > saldo:
@@ -451,19 +474,11 @@ def get_metode_pembayaran():
 
 def get_diskon():
     try:
-        conn = psycopg2.connect(
-            dbname=settings.DATABASES['default']['NAME'],
-            user=settings.DATABASES['default']['USER'],
-            password=settings.DATABASES['default']['PASSWORD'],
-            host=settings.DATABASES['default']['HOST'],
-            port=settings.DATABASES['default']['PORT']
-        )
+        conn = psycopg2.connect(...)
         cursor = conn.cursor()
-        query = "SELECT kode, potongan FROM diskon;"
+        query = "SELECT kode, potongan, mintrpemesanan FROM diskon;"  # Tambahkan mintrpemesanan
         cursor.execute(query)
         diskon_list = cursor.fetchall()
-
-        print(f"Debug: diskon_list={diskon_list}")  # Debugging
         cursor.close()
         conn.close()
         return diskon_list
